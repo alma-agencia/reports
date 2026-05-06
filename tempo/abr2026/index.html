@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Tempo Geração — Abril 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tbl tfoot td { font-weight: 700; background: var(--light); border-top: 2px solid var(--border); }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
+
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  .funnel { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 34px; background: var(--border);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 4px; display: flex;
+    align-items: center; padding-left: 10px; transition: width 1s ease;
+  }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 160px; }
+  .funnel-val { font-size: 12px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
+  .funnel-pct { font-size: 11px; color: white; font-weight: 700; }
+
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  .compare-row {
+    display: flex; gap: 16px; align-items: stretch; width: 100%; margin-bottom: 12px;
+  }
+  .compare-col {
+    flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 16px;
+  }
+  .compare-col.before { border-top: 3px solid var(--red); }
+  .compare-col.after  { border-top: 3px solid var(--green); }
+  .compare-col .c-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .compare-col.before .c-label { color: var(--red); }
+  .compare-col.after  .c-label { color: var(--green); }
+  .compare-col .c-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border);
+  }
+  .compare-col .c-row:last-child { border-bottom: none; }
+  .compare-col .c-row .c-k { color: var(--gray); }
+  .compare-col .c-row .c-v { font-weight: 700; color: var(--dark); }
+
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 18px 72px; }
+    .cover-title { font-size: 32px; }
+    .cover-sub { font-size: 14px; margin-bottom: 28px; }
+    .cover-meta { gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .cover-meta-item .val { font-size: 22px; }
+    .slide-title { font-size: 20px; }
+    .slide-desc { font-size: 12px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi .k-val { font-size: 18px; }
+    .two-col, .two-col-4060 { grid-template-columns: 1fr; gap: 16px; }
+    .region-grid { grid-template-columns: 1fr; }
+    .funnel-label { width: 120px; font-size: 11px; }
+    .funnel-val { width: 48px; font-size: 11px; }
+    #nav { padding: 0 16px; }
+    .nav-btn { width: 38px; height: 38px; font-size: 14px; }
+    .compare-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- SLIDE 0 — CAPA -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago</div>
+      <div class="cover-title">Tempo Geração</div>
+      <div class="cover-sub">Performance Meta Ads · Abril 2026</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$1.226</div>
+          <div class="lbl">Investido</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">85</div>
+          <div class="lbl">Leads</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">6</div>
+          <div class="lbl">Contratos Fechados</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$4.155</div>
+          <div class="lbl">Receita Mensal</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">103x</div>
+          <div class="lbl">ROAS LTV</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1 — KPIs DE TRÁFEGO -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">KPIs de Tráfego — Abril 2026</div>
+      <div class="slide-desc">Métricas consolidadas da conta · Comparativo com março · Meta CPL: R$10</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$1.226</div>
+        <div class="k-sub">Meta: R$3.000/mês</div>
+        <div class="k-delta dn">↓ 53,5% vs março</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Leads</div>
+        <div class="k-val">85</div>
+        <div class="k-sub">179 em março</div>
+        <div class="k-delta dn">↓ 52,5% vs março</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPL</div>
+        <div class="k-val">R$14,43</div>
+        <div class="k-sub">Meta: R$10,00</div>
+        <div class="k-delta up">↑ 2,2% melhora vs março</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
+        <div class="k-val">1,73%</div>
+        <div class="k-sub">1,53% em março</div>
+        <div class="k-delta up">↑ +0,20pp vs março</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">CPM</div>
+        <div class="k-val">R$11,04</div>
+        <div class="k-sub">R$33,86 em março</div>
+        <div class="k-delta up">↓ 67,4% — muito mais barato</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPC</div>
+        <div class="k-val">R$0,64</div>
+        <div class="k-sub">R$2,21 em março</div>
+        <div class="k-delta up">↓ 71,1% vs março</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Alcance</div>
+        <div class="k-val">52,3K</div>
+        <div class="k-sub">35,0K em março</div>
+        <div class="k-delta up">↑ +49,4% vs março</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Frequência</div>
+        <div class="k-val">2,12</div>
+        <div class="k-sub">2,23 em março</div>
+        <div class="k-delta up">↓ Leve melhora</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>O leilão de abril ficou drasticamente mais barato: CPM caiu de R$33,86 para R$11,04 (-67%), e o CPC despencou para R$0,64. Com menos de metade do investimento de março, a conta alcançou 49% mais pessoas — o ambiente de mídia estava favorável. O principal ponto de atenção é o gasto total (R$1.226 vs meta de R$3.000): houve subentrega expressiva que precisa ser investigada.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — RESULTADOS COMERCIAIS -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Resultados Comerciais</div>
+      <div class="slide-title">Contratos Fechados — Abril 2026</div>
+      <div class="slide-desc">6 negócios ganhos · Total: R$4.155,89 · Dados exportados do CRM</div>
+    </div>
+
+    <div class="kpi-row" style="margin-bottom:20px">
+      <div class="kpi">
+        <div class="k-label">Receita Mensal</div>
+        <div class="k-val">R$4.155,89</div>
+        <div class="k-sub">6 contratos fechados</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">ROAS Imediato</div>
+        <div class="k-val">3,39x</div>
+        <div class="k-sub">R$4.155/mês ÷ R$1.226 investido</div>
+        <div class="k-delta up">↑ Já positivo no 1º mês</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">ROAS LTV</div>
+        <div class="k-val" style="color:var(--orange)">103x</div>
+        <div class="k-sub">R$126.795 LTV ÷ R$1.226 investido</div>
+        <div class="k-delta up">↑ Cada R$1 gera R$103 em receita</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CAC</div>
+        <div class="k-val">R$204,42</div>
+        <div class="k-sub">LTV/CAC: 103x</div>
+        <div class="k-delta up">↑ CAC extremamente saudável</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th class="num">Valor/mês</th>
+            <th>Plano</th>
+            <th>Fidelidade</th>
+            <th class="num">LTV</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Condomínio Residencial Vila Romana</td>
+            <td class="num">R$2.216,47</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$79.792,92</strong></td>
+            <td><span class="badge green">Ganho</span></td>
+          </tr>
+          <tr>
+            <td>Jose Midice da Costa</td>
+            <td class="num">R$424,48</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$15.281,28</strong></td>
+            <td><span class="badge green">Ganho</span></td>
+          </tr>
+          <tr>
+            <td>Marilia Pereira Marques</td>
+            <td class="num">R$305,95</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$11.014,20</strong></td>
+            <td><span class="badge green">Ganho</span></td>
+          </tr>
+          <tr>
+            <td>Reginaldo Pereira Cagy</td>
+            <td class="num">R$258,28</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$9.298,08</strong></td>
+            <td><span class="badge green">Ganho</span></td>
+          </tr>
+          <tr>
+            <td>Silverio Nery da Silva</td>
+            <td class="num">R$629,40</td>
+            <td>Plano 20%</td>
+            <td>12 meses</td>
+            <td class="num"><strong>R$7.552,80</strong></td>
+            <td><span class="badge green">Ganho</span></td>
+          </tr>
+          <tr>
+            <td>Diego Alexandrino Bozi</td>
+            <td class="num">R$321,31</td>
+            <td>Plano 15%</td>
+            <td>Sem fidelidade</td>
+            <td class="num"><strong>R$3.855,72</strong></td>
+            <td><span class="badge green">Ganho</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>TOTAL</strong></td>
+            <td class="num"><strong>R$4.155,89/mês</strong></td>
+            <td colspan="2"></td>
+            <td class="num"><strong>R$126.795,00</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top:16px">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>4 dos 6 contratos são no Plano 25% — o ticket mais alto. O Condomínio Vila Romana sozinho representa 53,3% da receita do mês (R$2.216). Taxa de conversão Lead→Venda: 7,06% (6 de 85 leads). O ROAS de 3,39x já é positivo, e há espaço para crescer com mais volume de leads.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 — FUNIL DE CONVERSÃO -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Funil</div>
+      <div class="slide-title">Funil de Conversão — Abril 2026</div>
+      <div class="slide-desc">Da impressão ao contrato fechado · Onde estão os gargalos</div>
+    </div>
+
+    <div class="funnel" id="funnel">
+      <div class="funnel-step">
+        <div class="funnel-label">Impressões</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00)">
+            <span class="funnel-pct">100%</span>
+          </div>
+        </div>
+        <div class="funnel-val">111.106</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Alcance único</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:47%;background:linear-gradient(90deg,#FF8C3A,#FF6B00)">
+            <span class="funnel-pct">47%</span>
+          </div>
+        </div>
+        <div class="funnel-val">52.304</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Cliques totais</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:1.7%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+          </div>
+        </div>
+        <div class="funnel-val">1.923</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Cliques no link</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:1.5%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+          </div>
+        </div>
+        <div class="funnel-val">1.712</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Landing Page Views</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.15%;background:linear-gradient(90deg,#d97706,#d97706);">
+          </div>
+        </div>
+        <div class="funnel-val">162</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Leads</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.08%;background:linear-gradient(90deg,#16a34a,#16a34a);">
+          </div>
+        </div>
+        <div class="funnel-val">85</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Contratos Fechados</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.006%;background:linear-gradient(90deg,#16a34a,#16a34a);">
+          </div>
+        </div>
+        <div class="funnel-val">6</div>
+      </div>
+    </div>
+
+    <div class="kpi-row" style="margin-top:20px">
+      <div class="kpi">
+        <div class="k-label">CTR (Clique/Impressão)</div>
+        <div class="k-val">1,73%</div>
+        <div class="k-sub">Criativos performando bem</div>
+        <div class="k-delta up">↑ Acima de 1,5% benchmark</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">LPV → Lead CVR</div>
+        <div class="k-val">52,5%</div>
+        <div class="k-sub">85 leads de 162 LPVs</div>
+        <div class="k-delta up">↑ LP convertendo bem</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Lead → Venda CVR</div>
+        <div class="k-val">7,06%</div>
+        <div class="k-sub">6 contratos de 85 leads</div>
+        <div class="k-delta amber">⚠ Oportunidade de melhora</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Click → LPV Drop</div>
+        <div class="k-val">9,5%</div>
+        <div class="k-sub">162 de 1.712 link clicks</div>
+        <div class="k-delta dn">↓ Gargalo na LP / tempo de carga</div>
+      </div>
+    </div>
+
+    <!-- LTV Analysis -->
+    <div class="slide-header" style="margin-top:20px;margin-bottom:12px">
+      <div class="slide-tag" style="font-size:10px">LTV — CONTRATOS DE 3 ANOS (36 MESES)</div>
+    </div>
+    <div class="kpi-row kpi-row-3" style="margin-bottom:0">
+      <div class="kpi">
+        <div class="k-label">LTV Médio por Contrato</div>
+        <div class="k-val">R$21.133</div>
+        <div class="k-sub">Ponderado por plano e fidelidade</div>
+        <div class="k-delta up">↑ Valor real do cliente no tempo</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">LTV Total — 6 Contratos</div>
+        <div class="k-val">R$126.795</div>
+        <div class="k-sub">Plano 25%×4 (36m) + 20%×1 (12m) + 15%×1 (12m)</div>
+        <div class="k-delta up">↑ Receita garantida pelos contratos</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">ROAS LTV</div>
+        <div class="k-val" style="color:var(--orange)">103x</div>
+        <div class="k-sub">R$126.795 ÷ R$1.226 investido</div>
+        <div class="k-delta up">↑ Cada R$1 gera R$103 em receita</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>O maior gargalo está na passagem Clique → Landing Page View: apenas 9,5% dos que clicaram efetivamente carregaram a LP (o vídeo VID_TG_14abr_V1 foi responsável por 161 das 162 LPVs). A LP converte bem quando o usuário chega (52,5% LPV→Lead). No LTV corrigido por plano — Plano 25% (36m), Plano 20% (12m), Plano 15% (12m) — cada real investido retorna R$103 em receita contratada. O CAC de R$204 frente ao LTV médio de R$21.133 representa uma relação LTV/CAC de 103x — resultado extremamente saudável.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 — MELHORES CRIATIVOS -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Criativos</div>
+      <div class="slide-title">Top Criativos — Abril 2026</div>
+      <div class="slide-desc">Ranking por leads gerados e CPL · Dados diretos da API Meta · 9 anúncios ativos no mês</div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-bottom:16px">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Criativo</th>
+            <th class="num">Gasto</th>
+            <th class="num">Leads</th>
+            <th class="num">CPL</th>
+            <th class="num">CTR</th>
+            <th class="num">CPM</th>
+            <th class="num">LPVs</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🥇</strong></td>
+            <td><strong>post 16/11 — passa de 250?</strong><br><span style="font-size:11px;color:var(--gray)">Post orgânico impulsionado · Ad Set A</span></td>
+            <td class="num">R$314,73</td>
+            <td class="num"><strong>40</strong></td>
+            <td class="num" style="color:var(--green);font-weight:700">R$7,87</td>
+            <td class="num">1,81%</td>
+            <td class="num">R$26,05</td>
+            <td class="num">—</td>
+            <td><span class="badge green">✅ Abaixo da meta</span></td>
+          </tr>
+          <tr>
+            <td><strong>🥈</strong></td>
+            <td><strong>post 16/11 — passa de 250?</strong><br><span style="font-size:11px;color:var(--gray)">Post orgânico impulsionado · Ad Set B</span></td>
+            <td class="num">R$312,81</td>
+            <td class="num"><strong>26</strong></td>
+            <td class="num" style="color:var(--amber);font-weight:700">R$12,03</td>
+            <td class="num">1,36%</td>
+            <td class="num">R$23,57</td>
+            <td class="num">—</td>
+            <td><span class="badge amber">⚠ Acima da meta</span></td>
+          </tr>
+          <tr>
+            <td><strong>🥉</strong></td>
+            <td><strong>ad2 — passa de 350?</strong><br><span style="font-size:11px;color:var(--gray)">Ad Set A</span></td>
+            <td class="num">R$151,76</td>
+            <td class="num"><strong>12</strong></td>
+            <td class="num" style="color:var(--amber);font-weight:700">R$12,65</td>
+            <td class="num">1,53%</td>
+            <td class="num">R$30,49</td>
+            <td class="num">—</td>
+            <td><span class="badge amber">⚠ Acima da meta</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>ad2 — passa de 350?</strong><br><span style="font-size:11px;color:var(--gray)">Ad Set B</span></td>
+            <td class="num">R$77,67</td>
+            <td class="num"><strong>7</strong></td>
+            <td class="num" style="color:var(--amber);font-weight:700">R$11,10</td>
+            <td class="num">1,90%</td>
+            <td class="num">R$34,29</td>
+            <td class="num">—</td>
+            <td><span class="badge amber">⚠ Acima da meta</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>VID_TG_14abr_V1</strong><br><span style="font-size:11px;color:var(--gray)">Vídeo · Tráfego para LP</span></td>
+            <td class="num">R$73,67</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num" style="color:var(--green);font-weight:700">4,88%</td>
+            <td class="num">R$13,42</td>
+            <td class="num" style="color:var(--green);font-weight:700">161</td>
+            <td><span class="badge orange">🎯 Destaque LP</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><strong>CAR_TG_20abr_V1</strong><br><span style="font-size:11px;color:var(--gray)">Carrossel · Tráfego</span></td>
+            <td class="num">R$73,99</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1,92%</td>
+            <td class="num" style="color:var(--green);font-weight:700">R$4,36</td>
+            <td class="num">—</td>
+            <td><span class="badge orange">CPM barato</span></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><strong>IMG_TG_22abr_V1</strong><br><span style="font-size:11px;color:var(--gray)">Imagem · Tráfego</span></td>
+            <td class="num">R$73,98</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1,48%</td>
+            <td class="num" style="color:var(--green);font-weight:700">R$3,72</td>
+            <td class="num">—</td>
+            <td><span class="badge orange">CPM barato</span></td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><strong>IMG_TG_15abr_V1</strong><br><span style="font-size:11px;color:var(--gray)">Imagem · Tráfego</span></td>
+            <td class="num">R$73,95</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1,54%</td>
+            <td class="num" style="color:var(--green);font-weight:700">R$4,05</td>
+            <td class="num">—</td>
+            <td><span class="badge orange">CPM barato</span></td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><strong>CAR_TG_17abr_V1</strong><br><span style="font-size:11px;color:var(--gray)">Carrossel · Tráfego</span></td>
+            <td class="num">R$73,93</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">1,32%</td>
+            <td class="num" style="color:var(--green);font-weight:700">R$4,12</td>
+            <td class="num">—</td>
+            <td><span class="badge orange">CPM barato</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="insight-box good">
+          <h4>🏆 Criativo Campeão — "passa de 250?" (Ad Set A)</h4>
+          <p>Único criativo abaixo da meta de CPL R$10: gerou 40 leads a R$7,87 cada. Sozinho respondeu por 47% dos leads do mês. Prioridade para escalar em maio.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>⚡ Vídeo VID_TG_14abr_V1 — gargalo de funil revelado</h4>
+          <p>CTR de 4,88% (mais que o dobro da média) e responsável por 161 das 162 LPVs do mês. Porém não gerou leads — o vídeo atrai cliques mas a LP não está capturando ou o objetivo da campanha está errado.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box good">
+          <h4>💡 Criativos de imagem e carrossel — tráfego barato</h4>
+          <p>5 criativos (CAR/IMG) com CPM entre R$3,72 e R$4,36 — muito abaixo da média da conta. Boa eficiência de alcance mas sem configuração de captura de leads. Oportunidade de reaproveitamento.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>🔴 "ad2 — passa de 350?" — CPL acima da meta</h4>
+          <p>Gera leads mas com CPL entre R$11 e R$12,65. Pode ser mantido como teste, mas não deve receber aumento de orçamento sem otimização de copy ou público.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — COMPARATIVO MAR vs ABR -->
+  <div class="slide" id="s5_comp">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Comparativo</div>
+      <div class="slide-title">Março vs. Abril 2026</div>
+      <div class="slide-desc">Evolução das principais métricas · O que melhorou e o que precisa de atenção</div>
+    </div>
+
+    <div class="compare-row">
+      <div class="compare-col before">
+        <div class="c-label">Março 2026</div>
+        <div class="c-row"><span class="c-k">Investimento</span><span class="c-v">R$2.640,05</span></div>
+        <div class="c-row"><span class="c-k">Impressões</span><span class="c-v">77.969</span></div>
+        <div class="c-row"><span class="c-k">Alcance</span><span class="c-v">34.998</span></div>
+        <div class="c-row"><span class="c-k">Leads</span><span class="c-v">179</span></div>
+        <div class="c-row"><span class="c-k">CPL</span><span class="c-v">R$14,75</span></div>
+        <div class="c-row"><span class="c-k">CPM</span><span class="c-v">R$33,86</span></div>
+        <div class="c-row"><span class="c-k">CPC</span><span class="c-v">R$2,21</span></div>
+        <div class="c-row"><span class="c-k">CTR</span><span class="c-v">1,53%</span></div>
+        <div class="c-row"><span class="c-k">Frequência</span><span class="c-v">2,23</span></div>
+        <div class="c-row"><span class="c-k">LPVs</span><span class="c-v">2</span></div>
+      </div>
+      <div class="compare-col after">
+        <div class="c-label">Abril 2026</div>
+        <div class="c-row"><span class="c-k">Investimento</span><span class="c-v" style="color:var(--red)">R$1.226,49 ↓53,5%</span></div>
+        <div class="c-row"><span class="c-k">Impressões</span><span class="c-v" style="color:var(--green)">111.106 ↑42,5%</span></div>
+        <div class="c-row"><span class="c-k">Alcance</span><span class="c-v" style="color:var(--green)">52.304 ↑49,4%</span></div>
+        <div class="c-row"><span class="c-k">Leads</span><span class="c-v" style="color:var(--red)">85 ↓52,5%</span></div>
+        <div class="c-row"><span class="c-k">CPL</span><span class="c-v" style="color:var(--green)">R$14,43 ↓2,2%</span></div>
+        <div class="c-row"><span class="c-k">CPM</span><span class="c-v" style="color:var(--green)">R$11,04 ↓67,4%</span></div>
+        <div class="c-row"><span class="c-k">CPC</span><span class="c-v" style="color:var(--green)">R$0,64 ↓71,1%</span></div>
+        <div class="c-row"><span class="c-k">CTR</span><span class="c-v" style="color:var(--green)">1,73% ↑0,20pp</span></div>
+        <div class="c-row"><span class="c-k">Frequência</span><span class="c-v" style="color:var(--green)">2,12 ↓4,9%</span></div>
+        <div class="c-row"><span class="c-k">LPVs</span><span class="c-v" style="color:var(--green)">162 ↑8.000%</span></div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Abril entregou eficiência muito superior: mesmo com metade do gasto, o alcance cresceu 49% e o CPM caiu 67%. O leilão estava ótimo — o ambiente favorável não foi aproveitado por falta de volume de investimento. A queda de leads foi proporcional à queda de gasto, o que confirma que a máquina está funcionando. Prioridade: recompor o investimento para R$3.000 e monitorar CPL.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 — RECOMENDAÇÕES -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Próximos Passos</div>
+      <div class="slide-title">Recomendações — Maio 2026</div>
+      <div class="slide-desc">Prioridades estratégicas para o próximo ciclo</div>
+    </div>
+
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>🔴 Urgente <span class="pop">Gasto</span></h4>
+        <p>Investigar por que o gasto ficou em R$1.226 com meta de R$3.000. Verificar se campanhas foram pausadas, houve limite de conta ou redução de verba.</p>
+        <div class="strat">→ Recompor investimento para R$3.000/mês em maio</div>
+      </div>
+      <div class="region-card">
+        <h4>🟡 Prioritário <span class="pop">CPL</span></h4>
+        <p>CPL em R$14,43 ainda 44% acima da meta de R$10. Testar novos criativos e segmentações para reduzir o custo por lead sem perder volume.</p>
+        <div class="strat">→ Rodar 2-3 variações de copy + público frio novo</div>
+      </div>
+      <div class="region-card">
+        <h4>🟡 Prioritário <span class="pop">LP Speed</span></h4>
+        <p>Apenas 9,5% dos cliques chegaram à LP. Verificar velocidade de carregamento no mobile e alinhamento entre criativo e landing page.</p>
+        <div class="strat">→ Teste A/B de LP com foco em mobile e tempo de carga</div>
+      </div>
+      <div class="region-card">
+        <h4>🟢 Manter <span class="pop">Criativos</span></h4>
+        <p>CTR de 1,73% está acima da referência de 1,5%. Os criativos estão performando bem — não pausar o que está rodando.</p>
+        <div class="strat">→ Manter criativos ativos e escalar os de melhor CTR</div>
+      </div>
+      <div class="region-card">
+        <h4>🟢 Manter <span class="pop">Estrutura</span></h4>
+        <p>O CPM baixo de abril (R$11,04) mostra que a estrutura de campanha está adequada. Manter formato e segmentação base.</p>
+        <div class="strat">→ Não mexer na estrutura — apenas aumentar orçamento</div>
+      </div>
+      <div class="region-card">
+        <h4>📈 Oportunidade <span class="pop">Escala</span></h4>
+        <p>ROAS de 3,39x com apenas 41% do orçamento utilizado. Com R$3.000 investidos e CPM nesse patamar, projeção é de ~230 leads e ~16 contratos.</p>
+        <div class="strat">→ Escalar gradualmente respeitando regra dos 20%</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>O mês de abril mostrou que a máquina está eficiente — o problema foi volume, não qualidade. Com o investimento recomposto para R$3.000 e o gargalo de LPV resolvido, a projeção para maio é de um mês bem acima em volume de leads e contratos. O ROAS de 3,39x já é positivo com metade do orçamento.</p>
+    </div>
+  </div>
+
+</div><!-- /slides -->
+
+<!-- NAVEGAÇÃO -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">&#8594;</button>
+</div>
+
+<script>
+  const slideLabels = [
+    'Capa',
+    'KPIs de Tráfego',
+    'Resultados Comerciais',
+    'Funil + LTV',
+    'Top Criativos',
+    'Março vs. Abril',
+    'Recomendações'
+  ];
+
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const track = document.getElementById('nav-track');
+  const label = document.getElementById('slide-label');
+  const bar = document.getElementById('progress-bar');
+
+  // Criar dots
+  slideLabels.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    track.children[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, total - 1));
+    slides[current].classList.add('active');
+    track.children[current].classList.add('active');
+    label.textContent = slideLabels[current];
+    bar.style.width = ((current / (total - 1)) * 100) + '%';
+  }
+
+  function changeSlide(dir) { goTo(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+
+  // Swipe touch
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) changeSlide(dx > 0 ? 1 : -1);
+  });
+</script>
+</body>
+</html>
