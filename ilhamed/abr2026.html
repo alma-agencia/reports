@@ -174,70 +174,79 @@
   .creative-conv-bar-fill.amber { background: linear-gradient(90deg, #fcd34d, #d97706); }
 
   @media (max-width: 768px) {
-    /* Impede overflow horizontal em todos os slides */
+
+    /* ── SLIDE: clip horizontal sem quebrar scroll vertical ─── */
     .slide {
       padding: 20px 16px 72px;
-      overflow-x: hidden;
+      overflow-x: clip;   /* clip ≠ hidden: não cria scroll context, não interfere com overflow-y */
       overflow-y: auto;
     }
 
-    /* ── CAPA ─────────────────────────────── */
-    .cover-title { font-size: 26px; line-height: 1.15; }
-    .cover-sub   { font-size: 13px; }
-    /* Grid 2×2 em vez de flex row — evita overflow */
+    /* ── CAPA ─────────────────────────────────────────────── */
+    .cover-title { font-size: 26px !important; line-height: 1.15; }
+    .cover-sub   { font-size: 13px !important; }
     .cover-meta  {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      width: 100%;
-      margin-top: 24px;
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 16px !important;
+      width: 100% !important;
+      margin-top: 20px;
     }
-    .cover-divider { display: none; }
-    .cover-meta-item .val { font-size: 20px; }
-    .cover-meta-item .lbl { font-size: 10px; }
+    .cover-divider { display: none !important; }
+    .cover-meta-item .val { font-size: 20px !important; }
+    .cover-meta-item .lbl { font-size: 10px !important; }
 
-    /* ── KPIs ─────────────────────────────── */
-    .kpi-row   { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .kpi-row-3 { grid-template-columns: repeat(2, 1fr); }
+    /* ── KPIs ─────────────────────────────────────────────── */
+    .kpi-row   { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+    .kpi-row-3 { grid-template-columns: repeat(2, 1fr) !important; }
     .kpi .k-val   { font-size: 17px; }
     .kpi .k-label { font-size: 9px; }
     .kpi .k-sub   { font-size: 10px; }
     .kpi .k-delta { font-size: 10px; }
 
-    /* ── TABELAS ──────────────────────────── */
-    /* Wrapper contém o scroll sem vazar pro slide */
+    /* ── TABELAS ─────────────────────────────────────────── */
+    /* Bounded width explícito = scroll funciona sem vazar */
     .tbl-wrap {
-      overflow-x: auto;
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: scroll !important;
       overflow-y: visible;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-x pan-y;
-      max-width: 100%;
-      border-radius: 8px;
     }
-    /* Força as células em linha única para o scroll funcionar */
-    .tbl { font-size: 11px; min-width: 480px; width: max-content; }
+    /* Tira width: 100% base e deixa o conteúdo determinar a largura */
+    .tbl {
+      width: auto !important;
+      min-width: 500px;
+      font-size: 11px;
+    }
     .tbl th,
-    .tbl td { padding: 7px 8px; white-space: nowrap; }
+    .tbl td {
+      padding: 6px 8px;
+      white-space: nowrap !important;
+    }
 
-    /* ── LAYOUT ───────────────────────────── */
-    .two-col, .two-col-4060, .two-col-6040 { grid-template-columns: 1fr; gap: 14px; }
-    .region-grid  { grid-template-columns: 1fr; gap: 12px; }
-    .compare-row  { flex-direction: column; }
+    /* ── LAYOUT ──────────────────────────────────────────── */
+    .two-col, .two-col-4060, .two-col-6040 {
+      grid-template-columns: 1fr !important;
+      gap: 14px;
+    }
+    .region-grid { grid-template-columns: 1fr !important; gap: 12px; }
+    .compare-row { flex-direction: column !important; }
 
-    /* ── FUNIL ────────────────────────────── */
-    .funnel-label { width: 90px; font-size: 10px; }
+    /* ── FUNIL ───────────────────────────────────────────── */
+    .funnel-label { width: 88px; font-size: 10px; }
     .funnel-val   { font-size: 10px; width: 36px; }
 
-    /* ── CRIATIVOS ────────────────────────── */
-    .creative-grid  { grid-template-columns: 1fr; gap: 14px; }
-    .creative-thumb { aspect-ratio: 16/9; }
+    /* ── CRIATIVOS ───────────────────────────────────────── */
+    .creative-grid  { grid-template-columns: 1fr !important; gap: 14px; }
+    .creative-thumb { aspect-ratio: 16/9 !important; }
 
-    /* ── SLIDE HEADER ─────────────────────── */
+    /* ── HEADERS ─────────────────────────────────────────── */
     .slide-title { font-size: 20px; line-height: 1.2; }
     .slide-desc  { font-size: 12px; }
-
-    /* ── NOTAS ────────────────────────────── */
-    .notas p { font-size: 12px; }
+    .notas p     { font-size: 12px; }
   }
 </style>
 </head>
@@ -257,17 +266,14 @@
           <div class="val">R$1.811</div>
           <div class="lbl">Investido em Abril</div>
         </div>
-        <div class="cover-divider"></div>
         <div class="cover-meta-item">
           <div class="val">130</div>
           <div class="lbl">Conversas WPP</div>
         </div>
-        <div class="cover-divider"></div>
         <div class="cover-meta-item">
           <div class="val">33,8x</div>
           <div class="lbl">ROAS Consolidado</div>
         </div>
-        <div class="cover-divider"></div>
         <div class="cover-meta-item">
           <div class="val">R$61.229</div>
           <div class="lbl">Faturamento Abril</div>
