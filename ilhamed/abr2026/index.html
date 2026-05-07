@@ -88,7 +88,23 @@
   .kpi .k-delta.warn { color: var(--amber); }
 
   /* TABELA */
-  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  /* Fade na borda direita — indica que há mais conteúdo */
+  .tbl-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 48px;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.92));
+    pointer-events: none;
+    border-radius: 0 6px 6px 0;
+    transition: opacity .3s ease;
+  }
+  .tbl-wrap.scrolled-end::after { opacity: 0; }
+  /* Badge "deslize" no canto superior direito */
+  .tbl-wrap::before {
+    display: none; /* só no mobile */
+  }
   .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
   .tbl th { background: var(--dark); color: white; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px; }
   .tbl th:first-child { border-radius: 6px 0 0 6px; }
@@ -223,7 +239,6 @@
     .kpi .k-delta { font-size: 10px; }
 
     /* ── TABELAS ─────────────────────────────────────────── */
-    /* Bounded width explícito = scroll funciona sem vazar */
     .tbl-wrap {
       display: block;
       width: 100%;
@@ -232,7 +247,26 @@
       overflow-y: visible;
       -webkit-overflow-scrolling: touch;
       touch-action: pan-x pan-y;
+      border-radius: 8px;
     }
+    /* Fade direito: visível no mobile */
+    .tbl-wrap::after {
+      display: block;
+    }
+    /* Badge "↔ deslize" acima da tabela */
+    .tbl-wrap::before {
+      display: block;
+      content: '↔  deslize para ver mais';
+      font-size: 10px;
+      color: var(--gray);
+      text-align: right;
+      padding: 0 4px 4px;
+      letter-spacing: .3px;
+      font-style: italic;
+    }
+    /* Quando chegou no fim, esconde o fade e o hint */
+    .tbl-wrap.scrolled-end::after { opacity: 0 !important; }
+    .tbl-wrap.scrolled-end::before { opacity: 0 !important; }
     /* Tira width: 100% base e deixa o conteúdo determinar a largura */
     .tbl {
       width: auto !important;
@@ -1214,6 +1248,23 @@
   });
 
   goTo(0);
+
+  // Scroll indicator: adiciona/remove classe quando tbl-wrap chega no fim horizontal
+  function initTableScrollHints() {
+    document.querySelectorAll('.tbl-wrap').forEach(wrap => {
+      function check() {
+        const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
+        wrap.classList.toggle('scrolled-end', atEnd);
+      }
+      wrap.addEventListener('scroll', check, { passive: true });
+      // Checa estado inicial (tabela que já cabe na tela não precisa do hint)
+      requestAnimationFrame(check);
+    });
+  }
+  initTableScrollHints();
+  // Re-inicializa ao trocar slide (novas tabelas ficam visíveis)
+  document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => setTimeout(initTableScrollHints, 420)));
+  document.addEventListener('touchend', () => setTimeout(initTableScrollHints, 420));
 </script>
 </body>
 </html>
