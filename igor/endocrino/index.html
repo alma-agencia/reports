@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dificuldade para Emagrecer? Pode Ser Hormonal | Dr. Igor Neri</title>
+<meta name="description" content="Médico especialista em metabolismo e hormônios em Feira de Santana. Avaliação completa, protocolo personalizado. Agende sua consulta.">
+<style>
+  :root {
+    --verde: #1a7a4a;
+    --verde-claro: #e8f5ed;
+    --verde-hover: #156040;
+    --cinza: #f5f5f5;
+    --texto: #1a1a1a;
+    --subtexto: #555;
+    --branco: #fff;
+    --sombra: 0 4px 20px rgba(0,0,0,0.10);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; color: var(--texto); background: var(--branco); }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(160deg, #0d4f2e 0%, #1a7a4a 60%, #25a363 100%);
+    color: white;
+    padding: 48px 24px 40px;
+    text-align: center;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 5px 14px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(24px, 6vw, 36px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero h1 span { color: #7ee8aa; }
+  .hero p {
+    font-size: 16px;
+    line-height: 1.6;
+    opacity: 0.9;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25d366;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 16px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 6px 24px rgba(37,211,102,0.40);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .cta-btn:active { transform: scale(0.97); }
+  .cta-btn svg { flex-shrink: 0; }
+  .hero-credentials {
+    margin-top: 20px;
+    font-size: 12px;
+    opacity: 0.7;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── PROBLEMA ── */
+  .problem {
+    background: #fff8ee;
+    border-left: 4px solid #f5a623;
+    margin: 32px 20px;
+    border-radius: 0 12px 12px 0;
+    padding: 20px 20px;
+  }
+  .problem-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #c97d10;
+    margin-bottom: 8px;
+  }
+  .problem p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #444;
+  }
+  .problem ul {
+    margin-top: 10px;
+    padding-left: 18px;
+  }
+  .problem ul li {
+    font-size: 15px;
+    color: #444;
+    margin-bottom: 4px;
+    line-height: 1.5;
+  }
+
+  /* ── SOLUÇÃO ── */
+  .section { padding: 36px 24px; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--verde);
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-size: clamp(20px, 5vw, 28px);
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+  .section p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--subtexto);
+    margin-bottom: 14px;
+  }
+
+  /* ── CARDS DE AVALIAÇÃO ── */
+  .eval-grid {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .eval-card {
+    background: var(--verde-claro);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .eval-icon {
+    background: var(--verde);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .eval-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .eval-card p { font-size: 13px; color: var(--subtexto); line-height: 1.5; margin: 0; }
+
+  /* ── DIFERENCIAL ── */
+  .diff-section {
+    background: var(--cinza);
+    padding: 36px 24px;
+  }
+  .diff-list { margin-top: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .diff-item {
+    background: white;
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--sombra);
+  }
+  .diff-check {
+    background: var(--verde);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .diff-item p { font-size: 14px; line-height: 1.5; color: var(--texto); margin: 0; }
+  .diff-item strong { font-weight: 700; }
+
+  /* ── MÉDICO ── */
+  .doctor-section { padding: 36px 24px; text-align: center; }
+  .doctor-photo {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #1a7a4a, #25a363);
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: white;
+    font-weight: 800;
+  }
+  .doctor-name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .doctor-spec {
+    font-size: 14px;
+    color: var(--verde);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .doctor-crm {
+    display: inline-flex;
+    gap: 8px;
+    background: var(--verde-claro);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--verde);
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .doctor-bio {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--subtexto);
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  /* ── SERVIÇOS ── */
+  .services { padding: 36px 24px; background: white; }
+  .service-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip {
+    background: var(--verde-claro);
+    color: var(--verde);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 20px;
+  }
+
+  /* ── CTA FINAL ── */
+  .cta-section {
+    background: linear-gradient(160deg, #0d4f2e, #1a7a4a);
+    color: white;
+    padding: 44px 24px;
+    text-align: center;
+  }
+  .cta-section h2 {
+    font-size: clamp(20px, 5.5vw, 30px);
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+  .cta-section p {
+    font-size: 15px;
+    opacity: 0.85;
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+  .cta-section .cta-btn { font-size: 17px; padding: 18px 32px; }
+  .cta-section .address {
+    margin-top: 24px;
+    font-size: 13px;
+    opacity: 0.65;
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 20px 24px;
+    text-align: center;
+    font-size: 11px;
+    color: #aaa;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Consulta presencial e online</div>
+  <h1>Hormônios desregulados <span>sabotam seu emagrecimento</span></h1>
+  <p>Dr. Igor Neri investiga a raiz do problema: metabolismo, hormônios e composição corporal — e monta um protocolo personalizado para você.</p>
+  <a href="https://wa.me/5575997047880?text=Ol%C3%A1%21%20Vi%20o%20an%C3%BAncio%20e%20estou%20com%20dificuldade%20para%20emagrecer.%20Gostaria%20de%20saber%20mais%20sobre%20a%20consulta%20com%20o%20Dr.%20Igor." class="cta-btn" id="cta-hero">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.552 4.103 1.516 5.829L.057 23.427a.5.5 0 0 0 .609.627l5.736-1.504A11.938 11.938 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.868 0-3.63-.482-5.162-1.329l-.371-.213-3.854 1.011 1.029-3.742-.228-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+    Agendar consulta no WhatsApp
+  </a>
+  <div class="hero-credentials">CRM-BA 29593 · RQE 21763 · Nutrologia</div>
+</section>
+
+<!-- PROBLEMA -->
+<div class="problem">
+  <div class="problem-title">Você se identifica com isso?</div>
+  <p>Muitas pessoas buscam um <strong>endocrinologista para emagrecer</strong> e descobrem que o especialista certo para tratar a causa hormonal e metabólica do excesso de peso é o <strong>nutrólogo</strong>.</p>
+  <ul>
+    <li>Faz dieta, mas o peso não sai</li>
+    <li>Cansa fácil, tem falta de disposição</li>
+    <li>Suspeita que algo hormonal está errado</li>
+    <li>Já tentou de tudo e não conseguiu resultado</li>
+  </ul>
+</div>
+
+<!-- SOLUÇÃO -->
+<section class="section">
+  <div class="section-label">A solução</div>
+  <h2>Avaliação completa que vai além do básico</h2>
+  <p>O Dr. Igor Neri não trata só o sintoma — ele investiga o que está impedindo você de emagrecer: hormônios, metabolismo, composição corporal e estado nutricional.</p>
+
+  <div class="eval-grid">
+    <div class="eval-card">
+      <div class="eval-icon">⚡</div>
+      <div>
+        <h3>Avaliação metabólica</h3>
+        <p>Análise do metabolismo basal e gasto energético real para montar seu protocolo.</p>
+      </div>
+    </div>
+    <div class="eval-card">
+      <div class="eval-icon">🧬</div>
+      <div>
+        <h3>Painel hormonal completo</h3>
+        <p>Tireóide, insulina, cortisol, hormônios sexuais — tudo que pode estar sabotando seu peso.</p>
+      </div>
+    </div>
+    <div class="eval-card">
+      <div class="eval-icon">📊</div>
+      <div>
+        <h3>Bioimpedância + composição</h3>
+        <p>Medição precisa de gordura, massa muscular e distribuição corporal.</p>
+      </div>
+    </div>
+    <div class="eval-card">
+      <div class="eval-icon">📋</div>
+      <div>
+        <h3>Protocolo personalizado</h3>
+        <p>Plano individualizado: alimentação, suplementação, reposição hormonal (quando indicada) e acompanhamento contínuo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAIS -->
+<section class="diff-section">
+  <div class="section-label">Por que o Dr. Igor?</div>
+  <h2 style="font-size: clamp(20px,5vw,26px); font-weight:800;">Especialista em metabolismo e hormônios</h2>
+
+  <div class="diff-list">
+    <div class="diff-item">
+      <div class="diff-check">✓</div>
+      <p><strong>Médico Nutrólogo</strong> — especialidade que une metabolismo, hormônios e nutrição clínica em um único tratamento</p>
+    </div>
+    <div class="diff-item">
+      <div class="diff-check">✓</div>
+      <p><strong>Reposição hormonal</strong> quando indicada — abordagem integrada para equilibrar hormônios e facilitar o emagrecimento</p>
+    </div>
+    <div class="diff-item">
+      <div class="diff-check">✓</div>
+      <p><strong>Acompanhamento contínuo</strong> — não é consulta única. É protocolo com reavaliações periódicas</p>
+    </div>
+    <div class="diff-item">
+      <div class="diff-check">✓</div>
+      <p><strong>Atendimento presencial e online</strong> — Feira de Santana ou consulta remota para todo o Brasil</p>
+    </div>
+  </div>
+</section>
+
+<!-- MÉDICO -->
+<section class="doctor-section">
+  <div class="doctor-photo">I</div>
+  <div class="doctor-name">Dr. Igor Neri</div>
+  <div class="doctor-spec">Médico Nutrólogo · Especialista em Metabolismo</div>
+  <div class="doctor-crm">
+    <span>CRM-BA 29593</span>
+    <span>·</span>
+    <span>RQE 21763</span>
+  </div>
+  <p class="doctor-bio">Nutrólogo com foco em emagrecimento com saúde, ganho de massa muscular, reposição hormonal e melhora da performance. Atende presencialmente em Feira de Santana – BA e de forma remota.</p>
+</section>
+
+<!-- SERVIÇOS -->
+<section class="services">
+  <div class="section-label">Tratamentos</div>
+  <h2 style="font-size:22px; font-weight:800;">O que o Dr. Igor trata</h2>
+  <div class="service-chips">
+    <span class="chip">Emagrecimento</span>
+    <span class="chip">Reposição hormonal</span>
+    <span class="chip">Ganho de massa muscular</span>
+    <span class="chip">Tratamento da obesidade</span>
+    <span class="chip">Resistência à insulina</span>
+    <span class="chip">Sarcopenia</span>
+    <span class="chip">Performance física</span>
+    <span class="chip">Síndrome metabólica</span>
+    <span class="chip">Nutrição clínica</span>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <h2>Pronto para entender por que você não consegue emagrecer?</h2>
+  <p>Agende sua consulta com o Dr. Igor Neri. Avaliação completa, protocolo sob medida — trate a causa, não apenas o sintoma.</p>
+  <a href="https://wa.me/5575997047880?text=Ol%C3%A1%21%20Vi%20o%20an%C3%BAncio%20e%20estou%20com%20dificuldade%20para%20emagrecer.%20Gostaria%20de%20saber%20mais%20sobre%20a%20consulta%20com%20o%20Dr.%20Igor." class="cta-btn" id="cta-final">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.552 4.103 1.516 5.829L.057 23.427a.5.5 0 0 0 .609.627l5.736-1.504A11.938 11.938 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.868 0-3.63-.482-5.162-1.329l-.371-.213-3.854 1.011 1.029-3.742-.228-.374A9.944 9.944 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+    Quero agendar minha consulta
+  </a>
+  <div class="address">
+    📍 Av. João Durval Carneiro, 3665 · Ed. Multiplace, Sala 1406<br>
+    Feira de Santana – BA · Atendimento também online
+  </div>
+</section>
+
+<footer>
+  Dr. Igor Neri · CRM-BA 29593 · RQE 21763 · Nutrologia<br>
+  © 2026 · Este anúncio é de caráter informativo e não substitui consulta médica
+</footer>
+
+<script>
+  // UTM tracking para Google Ads
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const utms = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid'];
+    const extras = [];
+    utms.forEach(u => { if(params.get(u)) extras.push(u + '=' + encodeURIComponent(params.get(u))); });
+    if(extras.length) {
+      document.querySelectorAll('.cta-btn').forEach(btn => {
+        btn.href += (btn.href.includes('?') ? '&' : '?') + extras.join('&');
+      });
+    }
+  })();
+</script>
+</body>
+</html>
