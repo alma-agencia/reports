@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório SPK — Vagas Abertas · Maio 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  /* CAPA */
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title { font-size: 52px; font-weight: 800; color: var(--dark); line-height: 1.1; margin-bottom: 12px; }
+  .cover-sub { font-size: 18px; color: var(--gray); margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  /* SLIDE HEADER */
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  /* KPI CARDS */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0; }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--orange); }
+  .kpi .k-label { font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--gray); margin-bottom: 5px; }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi .k-delta.ok { color: var(--amber); }
+
+  /* TABELA */
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  .tbl-hint { display: none; font-size: 11px; color: var(--gray); margin-bottom: 5px; text-align: center; }
+  .tbl-hint.show { display: block; }
+  .tbl-fade { display: none; position: absolute; top: 0; right: 0; width: 52px; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.97)); pointer-events: none; z-index: 2; border-radius: 0 6px 6px 0; }
+  .tbl-fade.show { display: block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th { background: var(--dark); color: white; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px; }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--dark); vertical-align: middle; }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
+
+  /* INSIGHT BOX */
+  .insight-box { background: white; border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 10px; }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  /* FUNIL */
+  .funnel { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap { flex: 1; height: 34px; background: var(--border); border-radius: 4px; overflow: hidden; position: relative; }
+  .funnel-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; transition: width 1s ease; }
+  .funnel-bar span { font-size: 11px; font-weight: 700; color: white; }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 180px; }
+  .funnel-val { font-size: 12px; color: var(--gray); white-space: nowrap; width: 70px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* NOTAS */
+  .notas { width: 100%; margin-top: 18px; flex-shrink: 0; background: #1a1a1a; border-radius: 10px; padding: 16px 20px; }
+  .notas-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #FF6B00; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  /* REGION GRID */
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat { font-size: 11px; font-weight: 600; color: var(--dark); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+
+  /* ALMA LOGO */
+  .alma-logo-wrap { position: absolute; top: 20px; right: 20px; z-index: 10; }
+  .alma-logo-img { height: 44px; width: auto; filter: invert(1); opacity: 0.82; }
+
+  /* MINI BARRA RANKING */
+  .mini-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+  .mini-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--orange-light), var(--orange)); }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 16px 72px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; flex-wrap: nowrap; justify-content: center; align-items: center; }
+    .cover-meta-item .val { font-size: 20px; }
+    .cover-divider { width: 1px; height: 32px; flex-shrink: 0; }
+    .slide-title { font-size: 18px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .kpi .k-val { font-size: 17px; }
+    .tbl { font-size: 12px; min-width: 560px; }
+    .two-col, .two-col-4060 { grid-template-columns: 1fr; gap: 12px; }
+    .region-grid { grid-template-columns: 1fr; gap: 10px; }
+    .funnel-label { width: 120px; font-size: 10px; }
+    .funnel-val { width: 50px; font-size: 10px; }
+    #nav { padding: 0 12px; }
+    .nav-btn { width: 36px; height: 36px; font-size: 13px; }
+    .alma-logo-img { height: 32px; }
+    .alma-logo-wrap { top: 14px; right: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- SLIDE 0 — CAPA -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Relatório RH · Vagas Abertas · 01–11 Mai 2026</div>
+      <div class="cover-title">SPK Autopeças</div>
+      <div class="cover-sub">Performance Meta Ads — Campanha de Recrutamento · Maio 2026</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$ 715</div>
+          <div class="lbl">Investido</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">233</div>
+          <div class="lbl">Conexões via MSG</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$ 3,07</div>
+          <div class="lbl">Custo / Conexão</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1 — VISÃO GERAL -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">KPIs da Campanha — Vagas Abertas</div>
+      <div class="slide-desc">Consolidado de todas as vagas · 01 a 11 de maio de 2026 (11 dias)</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$ 715,26</div>
+        <div class="k-sub">Orçamento mensal: R$ 3.500</div>
+        <div class="k-delta ok">≈ 20% do mês consumido</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Conexões via MSG</div>
+        <div class="k-val">233</div>
+        <div class="k-sub">Candidatos iniciaram conversa</div>
+        <div class="k-delta up">↑ Volume consistente</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Custo por Conexão</div>
+        <div class="k-val">R$ 3,07</div>
+        <div class="k-sub">Meta: sem alvo fixo</div>
+        <div class="k-delta up">✓ Eficiente</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Conversas Iniciadas</div>
+        <div class="k-val">185</div>
+        <div class="k-sub">79,4% das conexões</div>
+        <div class="k-delta up">↑ Alta taxa de avanço</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Impressões</div>
+        <div class="k-val">123.075</div>
+        <div class="k-sub">Alcance: 38.357 pessoas</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Frequência Média</div>
+        <div class="k-val">3,21</div>
+        <div class="k-sub">Anúncios por pessoa</div>
+        <div class="k-delta dn">⚠ Atenção — saturação</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR Médio</div>
+        <div class="k-val">0,74%</div>
+        <div class="k-sub">Cliques: 916</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPM Médio</div>
+        <div class="k-val">R$ 5,81</div>
+        <div class="k-sub">Custo por mil impressões</div>
+        <div class="k-delta up">↑ Baixo — saudável</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">📋 Notas do Gestor</div>
+      <p>Campanha rodando há 11 dias com 5 ad sets ativos para diferentes vagas. Volume de conexões está bom. Frequência média de 3,21 merece atenção — especialmente no ad set do Pará (3,40), que pode estar saturando o público. Estoquista MULHER (Goiânia) foi o melhor custo/conexão do período: R$ 1,53.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — PERFORMANCE POR VAGA -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Performance por Vaga</div>
+      <div class="slide-title">Resultado por Ad Set — Cada Vaga</div>
+      <div class="slide-desc">Ordenado por volume de conexões · 01 a 11 mai 2026</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <div class="tbl-fade show"></div>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Vaga / Ad Set</th>
+            <th>Status</th>
+            <th class="num">Gasto</th>
+            <th class="num">Impressões</th>
+            <th class="num">Alcance</th>
+            <th class="num">Freq.</th>
+            <th class="num">CTR</th>
+            <th class="num">CPM</th>
+            <th class="num">Conexões</th>
+            <th class="num">R$/Conexão</th>
+            <th class="num">Conv. Iniciadas</th>
+            <th class="num">1ª Resposta</th>
+            <th class="num">Prof. 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ass. Administrativo</strong><br><small style="color:var(--gray)">Local 5km · Goiânia</small></td>
+            <td><span class="badge green">Ativo</span></td>
+            <td class="num">R$ 194,49</td>
+            <td class="num">38.932</td>
+            <td class="num">13.377</td>
+            <td class="num">2,91</td>
+            <td class="num">0,58%</td>
+            <td class="num">R$ 5,00</td>
+            <td class="num"><strong>80</strong></td>
+            <td class="num">R$ 2,43</td>
+            <td class="num">54</td>
+            <td class="num">44</td>
+            <td class="num">23</td>
+          </tr>
+          <tr>
+            <td><strong>Comprador — Seg. Peças</strong><br><small style="color:var(--gray)">Local 5km · Goiânia</small></td>
+            <td><span class="badge green">Ativo</span></td>
+            <td class="num">R$ 202,47</td>
+            <td class="num">31.782</td>
+            <td class="num">12.624</td>
+            <td class="num">2,52</td>
+            <td class="num">0,68%</td>
+            <td class="num">R$ 6,37</td>
+            <td class="num"><strong>49</strong></td>
+            <td class="num">R$ 4,13</td>
+            <td class="num">36</td>
+            <td class="num">33</td>
+            <td class="num">15</td>
+          </tr>
+          <tr>
+            <td><strong>Estoquista — Pará</strong><br><small style="color:var(--gray)">Estado do Pará</small></td>
+            <td><span class="badge green">Ativo</span></td>
+            <td class="num">R$ 194,22</td>
+            <td class="num">38.464</td>
+            <td class="num">11.304</td>
+            <td class="num" style="color:var(--red);font-weight:700">3,40 ⚠</td>
+            <td class="num">0,76%</td>
+            <td class="num">R$ 5,05</td>
+            <td class="num"><strong>47</strong></td>
+            <td class="num">R$ 4,13</td>
+            <td class="num">44</td>
+            <td class="num">42</td>
+            <td class="num">5</td>
+          </tr>
+          <tr>
+            <td><strong>Estoquista MULHER</strong><br><small style="color:var(--gray)">Local 2km · Goiânia</small></td>
+            <td><span class="badge amber">Pausado</span></td>
+            <td class="num">R$ 64,24</td>
+            <td class="num">8.867</td>
+            <td class="num">4.402</td>
+            <td class="num">2,01</td>
+            <td class="num" style="color:var(--green);font-weight:700">1,40%</td>
+            <td class="num">R$ 7,24</td>
+            <td class="num"><strong>42</strong></td>
+            <td class="num" style="color:var(--green);font-weight:700">R$ 1,53</td>
+            <td class="num">38</td>
+            <td class="num">38</td>
+            <td class="num">3</td>
+          </tr>
+          <tr>
+            <td><strong>Estoquista HOMEM</strong><br><small style="color:var(--gray)">Local 2km · Goiânia</small></td>
+            <td><span class="badge red">Pausado</span></td>
+            <td class="num">R$ 59,84</td>
+            <td class="num">5.030</td>
+            <td class="num">1.937</td>
+            <td class="num">2,60</td>
+            <td class="num">1,13%</td>
+            <td class="num">R$ 11,90</td>
+            <td class="num"><strong>15</strong></td>
+            <td class="num">R$ 3,99</td>
+            <td class="num">13</td>
+            <td class="num">13</td>
+            <td class="num">1</td>
+          </tr>
+          <tr style="background: var(--light);">
+            <td><strong>TOTAL</strong></td>
+            <td>—</td>
+            <td class="num"><strong>R$ 715,26</strong></td>
+            <td class="num"><strong>123.075</strong></td>
+            <td class="num"><strong>38.357</strong></td>
+            <td class="num"><strong>3,21</strong></td>
+            <td class="num"><strong>0,74%</strong></td>
+            <td class="num"><strong>R$ 5,81</strong></td>
+            <td class="num"><strong>233</strong></td>
+            <td class="num"><strong>R$ 3,07</strong></td>
+            <td class="num"><strong>185</strong></td>
+            <td class="num"><strong>170</strong></td>
+            <td class="num"><strong>47</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 — FUNIL DE CONVERSÃO -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Funil de Conversão</div>
+      <div class="slide-title">Da Impressão à Conversa Real</div>
+      <div class="slide-desc">Como os candidatos avançam pelo funil — campanha consolidada</div>
+    </div>
+
+    <div class="two-col-4060" style="align-items: start;">
+      <div>
+        <div class="funnel">
+          <div class="funnel-step">
+            <div class="funnel-label">Impressões</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:100%; background: linear-gradient(90deg,#374151,#1a1a1a);">
+                <span>123.075</span>
+              </div>
+            </div>
+            <div class="funnel-val">100%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Cliques no Anúncio</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:74%; background: linear-gradient(90deg,#6366f1,#4f46e5);">
+                <span>916</span>
+              </div>
+            </div>
+            <div class="funnel-val">0,74%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Conexões MSG</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:60%; background: linear-gradient(90deg, var(--orange-light), var(--orange));">
+                <span>233</span>
+              </div>
+            </div>
+            <div class="funnel-val">25,4% cliques</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Conv. Iniciadas (7d)</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:48%; background: linear-gradient(90deg,#f59e0b,#d97706);">
+                <span>185</span>
+              </div>
+            </div>
+            <div class="funnel-val">79,4% conexões</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">1ª Resposta do Candidato</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:44%; background: linear-gradient(90deg,#34d399,#16a34a);">
+                <span>170</span>
+              </div>
+            </div>
+            <div class="funnel-val">91,9% conv.</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Profundidade 2 (engajados)</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:12%; background: linear-gradient(90deg,#60a5fa,#2563eb);">
+                <span>47</span>
+              </div>
+            </div>
+            <div class="funnel-val">27,6% 1ª resp.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="insight-box good">
+          <h4>✅ Alta taxa de 1ª resposta (91,9%)</h4>
+          <p>Quase todos os que iniciaram conversa responderam — indica que o criativo está atraindo candidatos genuinamente interessados na vaga.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>✅ 79% das conexões viram conversa real</h4>
+          <p>Perda de apenas 21% entre conexão e conversa iniciada. Padrão saudável para campanhas de recrutamento via WhatsApp.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>⚠ Profundidade 2 ainda baixa (27,6%)</h4>
+          <p>Apenas 47 de 170 candidatos avançaram para uma segunda troca de mensagem. Pode ser gargalo no processo de triagem ou demora no retorno da equipe de RH.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 — RANKING DAS VAGAS -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Ranking por Eficiência</div>
+      <div class="slide-title">Qual Vaga Performou Melhor?</div>
+      <div class="slide-desc">Ordenado por custo por conexão (menor = melhor)</div>
+    </div>
+
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>🥇 Estoquista MULHER <span class="pop">Melhor CPL</span></h4>
+        <p>42 conexões · R$ 1,53/conexão · CTR 1,40%</p>
+        <p style="margin-top:6px; color:var(--dark); font-size:12px;">Local 2km · Goiânia · Pausado</p>
+        <div class="mini-bar-wrap"><div class="mini-bar" style="width:100%"></div></div>
+        <div class="strat">→ Reativar — melhor eficiência do grupo. Considerar aumentar orçamento e expandir raio para 5km.</div>
+      </div>
+      <div class="region-card">
+        <h4>🥈 Ass. Administrativo <span class="pop">Maior Volume</span></h4>
+        <p>80 conexões · R$ 2,43/conexão · CTR 0,58%</p>
+        <p style="margin-top:6px; color:var(--dark); font-size:12px;">Local 5km · Goiânia · Ativo</p>
+        <div class="mini-bar-wrap"><div class="mini-bar" style="width:63%"></div></div>
+        <div class="strat">→ Melhor volume absoluto. Frequência 2,91 — monitorar. Testar novo criativo se CTR cair abaixo de 0,5%.</div>
+      </div>
+      <div class="region-card">
+        <h4>🥉 Estoquista HOMEM <span class="pop">Goiânia</span></h4>
+        <p>15 conexões · R$ 3,99/conexão · CTR 1,13%</p>
+        <p style="margin-top:6px; color:var(--dark); font-size:12px;">Local 2km · Goiânia · Pausado hoje</p>
+        <div class="mini-bar-wrap"><div class="mini-bar" style="width:38%"></div></div>
+        <div class="strat">→ Pausado hoje. CPM mais alto (R$11,90) e menor alcance. Revisar segmentação ou consolidar com versão feminina.</div>
+      </div>
+      <div class="region-card">
+        <h4>Comprador — Seg. Peças</h4>
+        <p>49 conexões · R$ 4,13/conexão · CTR 0,68%</p>
+        <p style="margin-top:6px; color:var(--dark); font-size:12px;">Local 5km · Goiânia · Ativo</p>
+        <div class="mini-bar-wrap"><div class="mini-bar" style="width:37%"></div></div>
+        <div class="strat">→ Custo/conexão igual ao Estoquista Pará. Público mais restrito (nicho). Avaliar se volume de candidatos está satisfazendo o RH.</div>
+      </div>
+      <div class="region-card">
+        <h4>Estoquista — Pará</h4>
+        <p>47 conexões · R$ 4,13/conexão · CTR 0,76%</p>
+        <p style="margin-top:6px; color:var(--dark); font-size:12px;">Estado do Pará · Ativo</p>
+        <div class="mini-bar-wrap"><div class="mini-bar" style="width:37%"></div></div>
+        <div class="strat">→ Frequência 3,40 — maior da campanha. Trocar criativo urgente ou expandir o público geográfico dentro do Pará.</div>
+      </div>
+      <div class="region-card" style="border: 2px dashed var(--border); background: var(--light);">
+        <h4 style="color:var(--gray);">+ Nova Vaga?</h4>
+        <p style="color:var(--gray);">Slot disponível para próxima vaga que precisar de divulgação via Meta Ads.</p>
+        <div class="strat" style="color:var(--gray);">→ Seguir modelo de ad set com targeting por localidade + segmentação por interesse profissional.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — RECOMENDAÇÕES -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Recomendações</div>
+      <div class="slide-title">Próximos Passos — RH Maio 2026</div>
+      <div class="slide-desc">Ações para maximizar qualidade e volume de candidatos</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="insight-box good">
+          <h4>✅ Reativar Estoquista MULHER (Goiânia)</h4>
+          <p>Melhor custo/conexão da campanha: R$ 1,53. Foi pausada antes de atingir saturação (freq. 2,01). Reativar e ampliar raio de 2km para 5km para ganhar escala.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>⚠ Renovar criativo — Estoquista Pará</h4>
+          <p>Frequência 3,40 indica que o público já viu o anúncio 3,4x em média. Trocar imagem ou copy do criativo esta semana para evitar queda de CTR e aumento de CPM.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>⚠ Monitorar Ass. Administrativo</h4>
+          <p>Maior volume de conexões (80), mas frequência chegando a 2,91. Preparar criativo alternativo para rodar quando frequência superar 3,5.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box bad">
+          <h4>🔴 Gargalo na Profundidade 2</h4>
+          <p>Apenas 27,6% dos candidatos que responderam avançaram para uma 2ª troca. Recomendo checar com o RH o tempo de resposta às mensagens — candidatos esfriando por falta de retorno rápido.</p>
+        </div>
+        <div class="insight-box">
+          <h4>📊 Consolidar Estoquista HOMEM</h4>
+          <p>CPM alto (R$ 11,90) e menor alcance (1.937). Avaliar se a distinção HOMEM/MULHER é necessária ou se um único ad set neutro com maior alcance performa melhor.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>✅ CPM global está excelente: R$ 5,81</h4>
+          <p>Custo por mil impressões muito abaixo da média de mercado para RH. Indica boa relevância dos criativos e segmentação eficiente. Manter estrutura atual.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">📋 Notas do Gestor</div>
+      <p>Campanha de vagas está performando bem em volume e custo. Prioridade agora é: (1) reativar Estoquista MULHER, (2) trocar criativo no Pará antes da frequência subir mais, (3) alinhar com RH sobre tempo de resposta no WhatsApp para reduzir perda no funil de Profundidade 2.</p>
+    </div>
+  </div>
+
+</div><!-- /slides -->
+
+<!-- NAVEGAÇÃO -->
+<nav id="nav">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</nav>
+
+<script>
+const slideLabels = [
+  "Capa",
+  "Visão Geral",
+  "Performance por Vaga",
+  "Funil de Conversão",
+  "Ranking por Eficiência",
+  "Recomendações"
+];
+
+const slides = document.querySelectorAll('.slide');
+const track = document.getElementById('nav-track');
+const label = document.getElementById('slide-label');
+const bar = document.getElementById('progress-bar');
+let current = 0;
+
+// Criar dots
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  track.appendChild(d);
+});
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  track.children[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length - 1));
+  slides[current].classList.add('active');
+  track.children[current].classList.add('active');
+  label.textContent = slideLabels[current] || '';
+  bar.style.width = ((current / (slides.length - 1)) * 100) + '%';
+  slides[current].scrollTop = 0;
+  // Animar funil quando slide 3 ativo
+  if (current === 3) animateFunnel();
+}
+
+function animateFunnel() {
+  const bars = document.querySelectorAll('#s3 .funnel-bar');
+  bars.forEach(b => { const w = b.style.width; b.style.width = '0'; setTimeout(() => b.style.width = w, 100); });
+}
+
+document.getElementById('btn-prev').onclick = () => goTo(current - 1);
+document.getElementById('btn-next').onclick = () => goTo(current + 1);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+});
+
+// Swipe touch
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 40) goTo(current + (dx > 0 ? 1 : -1));
+});
+
+// Scroll hints nas tabelas
+document.querySelectorAll('.tbl-wrap').forEach(wrap => {
+  const fade = wrap.querySelector('.tbl-fade');
+  if (!fade) return;
+  wrap.addEventListener('scroll', () => {
+    const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 10;
+    if (fade) fade.classList.toggle('show', !atEnd);
+  });
+});
+
+goTo(0);
+</script>
+</body>
+</html>
