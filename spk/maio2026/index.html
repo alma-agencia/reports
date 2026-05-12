@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório SPK Autopeças — Maio 2026</title>
+<style>
+  :root {
+    --orange:#FF6B00;--orange-light:#FF8C3A;--orange-pale:#FFF0E6;
+    --dark:#1a1a1a;--gray:#6b7280;--light:#f9fafb;--white:#fff;
+    --border:#e5e7eb;--green:#16a34a;--red:#dc2626;--amber:#d97706;
+    --blue:#2563eb;--blue-pale:#eff6ff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:#fff;}
+  body{overflow:hidden;}
+  #slides{position:relative;width:100%;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:44px 60px 76px;opacity:0;pointer-events:none;transition:opacity .4s ease;overflow-y:auto;}
+  .slide.active{opacity:1;pointer-events:all;}
+  #progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--orange);transition:width .4s ease;z-index:200;}
+  #nav{position:fixed;bottom:0;left:0;right:0;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-top:1px solid var(--border);z-index:100;}
+  .nav-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark);font-size:15px;transition:all .2s;flex-shrink:0;}
+  .nav-btn:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-pale);}
+  #nav-center{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+  #slide-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);}
+  #nav-track{display:flex;align-items:center;gap:5px;}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s;}
+  .dot.active{background:var(--orange);width:14px;border-radius:3px;}
+
+  /* CAPA */
+  .cover-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;text-align:center;}
+  .cover-badge{background:var(--orange-pale);color:var(--orange);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:24px;}
+  .cover-title{font-size:52px;font-weight:800;color:var(--dark);line-height:1.1;margin-bottom:10px;}
+  .cover-sub{font-size:17px;color:var(--gray);margin-bottom:36px;}
+  .cover-meta{display:flex;gap:28px;justify-content:center;}
+  .cover-meta-item{text-align:center;}
+  .cover-meta-item .val{font-size:28px;font-weight:800;color:var(--orange);}
+  .cover-meta-item .lbl{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+  .cover-divider{width:1px;background:var(--border);}
+  .cover-split{display:flex;gap:12px;margin-top:28px;}
+  .cover-pill{padding:6px 18px;border-radius:100px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;}
+  .cover-pill.vendas{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;}
+  .cover-pill.rh{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
+
+  /* SLIDE HEADER */
+  .slide-header{width:100%;margin-bottom:20px;flex-shrink:0;}
+  .slide-tag{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:5px;}
+  .slide-tag.blue{color:var(--blue);}
+  .slide-title{font-size:26px;font-weight:800;color:var(--dark);line-height:1.2;}
+  .slide-desc{font-size:13px;color:var(--gray);margin-top:5px;}
+
+  /* SECTION DIVIDER */
+  .section-div{display:flex;align-items:center;gap:10px;width:100%;margin:16px 0 12px;flex-shrink:0;}
+  .section-div-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;padding:4px 12px;border-radius:100px;}
+  .section-div-label.vendas{background:#fff7ed;color:#c2410c;}
+  .section-div-label.rh{background:#eff6ff;color:#1d4ed8;}
+  .section-div-line{flex:1;height:1px;background:var(--border);}
+
+  /* KPI */
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;margin-bottom:16px;flex-shrink:0;}
+  .kpi-row-3{grid-template-columns:repeat(3,1fr);}
+  .kpi-row-2{grid-template-columns:repeat(2,1fr);}
+  .kpi-row-5{grid-template-columns:repeat(5,1fr);}
+  .kpi{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--orange);}
+  .kpi.blue::before{background:var(--blue);}
+  .kpi .k-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;}
+  .kpi .k-val{font-size:20px;font-weight:800;color:var(--dark);line-height:1;}
+  .kpi .k-sub{font-size:11px;color:var(--gray);margin-top:3px;}
+  .kpi .k-delta{font-size:11px;font-weight:600;margin-top:3px;}
+  .kpi .k-delta.up{color:var(--green);}
+  .kpi .k-delta.dn{color:var(--red);}
+  .kpi .k-delta.ok{color:var(--amber);}
+
+  /* TABELA */
+  .tbl-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative;}
+  .tbl-fade{position:absolute;top:0;right:0;width:40px;height:100%;background:linear-gradient(to right,rgba(255,255,255,0),rgba(255,255,255,.95));pointer-events:none;z-index:2;}
+  .tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .tbl th{background:var(--dark);color:#fff;padding:9px 10px;text-align:left;font-weight:600;font-size:11px;letter-spacing:.3px;}
+  .tbl th:first-child{border-radius:6px 0 0 6px;}
+  .tbl th:last-child{border-radius:0 6px 6px 0;}
+  .tbl td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--dark);vertical-align:middle;}
+  .tbl tr:hover td{background:var(--orange-pale);}
+  .tbl tr:last-child td{border-bottom:none;}
+  .tbl .num{text-align:right;font-variant-numeric:tabular-nums;}
+  .tbl .total-row td{background:var(--light);font-weight:700;}
+
+  /* BADGE */
+  .badge{display:inline-block;padding:2px 9px;border-radius:100px;font-size:10.5px;font-weight:600;}
+  .badge.green{background:#dcfce7;color:var(--green);}
+  .badge.red{background:#fee2e2;color:var(--red);}
+  .badge.amber{background:#fef3c7;color:var(--amber);}
+  .badge.orange{background:var(--orange-pale);color:var(--orange);}
+  .badge.blue{background:#dbeafe;color:var(--blue);}
+
+  /* LAYOUTS */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;}
+  .col-6040{display:grid;grid-template-columns:3fr 2fr;gap:20px;width:100%;}
+  .col-4060{display:grid;grid-template-columns:2fr 3fr;gap:20px;width:100%;}
+
+  /* CREATIVE GRID */
+  .creative-grid{display:grid;gap:10px;width:100%;}
+  .creative-grid-3{grid-template-columns:repeat(3,1fr);}
+  .creative-grid-4{grid-template-columns:repeat(4,1fr);}
+  .creative-grid-5{grid-template-columns:repeat(5,1fr);}
+  .creative-card{border:1px solid var(--border);border-radius:10px;padding:12px;background:#fff;display:flex;flex-direction:column;}
+  .creative-thumb{width:100%;aspect-ratio:1/1;border-radius:6px;overflow:hidden;background:var(--light);margin-bottom:8px;display:flex;align-items:center;justify-content:center;position:relative;}
+  .creative-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .creative-thumb .no-img{font-size:11px;color:var(--gray);text-align:center;padding:8px;}
+  .creative-thumb .fmt-badge{position:absolute;bottom:5px;left:5px;background:rgba(0,0,0,.65);color:#fff;font-size:9px;font-weight:600;padding:2px 7px;border-radius:100px;}
+  .creative-card .cr-name{font-size:11px;font-weight:700;color:var(--dark);line-height:1.3;margin-bottom:6px;}
+  .creative-card .cr-metric{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;border-bottom:1px solid var(--border);}
+  .creative-card .cr-metric:last-child{border-bottom:none;}
+  .creative-card .cr-metric .ml{color:var(--gray);}
+  .creative-card .cr-metric .mv{font-weight:600;}
+
+  /* VAGA CARD (slide por vaga) */
+  .vaga-layout{display:grid;grid-template-columns:1fr 220px;gap:20px;width:100%;align-items:start;}
+  .vaga-creatives{display:flex;flex-direction:column;gap:10px;}
+  .vaga-cr-card{border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#fff;}
+  .vaga-cr-thumb{width:100%;aspect-ratio:4/3;background:var(--light);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .vaga-cr-thumb img{width:100%;height:100%;object-fit:cover;}
+  .vaga-cr-info{padding:8px 10px;}
+  .vaga-cr-info .cr-name{font-size:11px;font-weight:700;color:var(--dark);}
+  .vaga-cr-info .cr-status{font-size:10px;color:var(--gray);margin-top:2px;}
+
+  /* INSIGHT BOX */
+  .insight-box{background:#fff;border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:8px;}
+  .insight-box h4{font-size:12.5px;font-weight:700;color:var(--dark);margin-bottom:3px;}
+  .insight-box p{font-size:12.5px;color:var(--gray);line-height:1.5;}
+  .insight-box.good{border-left-color:var(--green);}
+  .insight-box.bad{border-left-color:var(--red);}
+  .insight-box.warn{border-left-color:var(--amber);}
+  .insight-box.blue{border-left-color:var(--blue);}
+
+  /* FUNNEL */
+  .funnel{display:flex;flex-direction:column;gap:5px;width:100%;}
+  .funnel-step{display:flex;align-items:center;gap:8px;}
+  .funnel-bar-wrap{flex:1;height:30px;background:var(--border);border-radius:4px;overflow:hidden;}
+  .funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;transition:width .9s ease;}
+  .funnel-bar span{font-size:11px;font-weight:700;color:#fff;}
+  .funnel-label{font-size:11.5px;color:var(--dark);font-weight:600;white-space:nowrap;width:170px;}
+  .funnel-val{font-size:11px;color:var(--gray);white-space:nowrap;width:65px;text-align:right;}
+
+  /* NOTAS */
+  .notas{width:100%;margin-top:14px;flex-shrink:0;background:#1a1a1a;border-radius:10px;padding:14px 18px;}
+  .notas-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FF6B00;margin-bottom:6px;}
+  .notas p{font-size:12.5px;color:#d1d5db;line-height:1.7;}
+
+  /* REGION GRID */
+  .region-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;}
+  .region-card{border:1px solid var(--border);border-radius:10px;padding:14px;background:#fff;}
+  .region-card h4{font-size:12.5px;font-weight:700;color:var(--dark);margin-bottom:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .region-card .pop{font-size:10px;color:var(--orange);background:var(--orange-pale);padding:2px 7px;border-radius:100px;}
+  .region-card p{font-size:11.5px;color:var(--gray);line-height:1.5;margin-top:3px;}
+  .region-card .strat{font-size:11px;font-weight:600;color:var(--dark);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);}
+
+  /* MOBILE */
+  @media(max-width:768px){
+    .slide{padding:18px 14px 68px;}
+    .cover-title{font-size:28px;}
+    .cover-sub{font-size:13px;}
+    .cover-meta{gap:14px;flex-wrap:nowrap;align-items:center;}
+    .cover-divider{width:1px;height:30px;flex-shrink:0;}
+    .cover-meta-item .val{font-size:20px;}
+    .kpi-row{grid-template-columns:repeat(2,1fr);gap:8px;}
+    .kpi .k-val{font-size:16px;}
+    .tbl{font-size:11px;min-width:500px;}
+    .two-col,.col-6040,.col-4060{grid-template-columns:1fr;gap:12px;}
+    .region-grid{grid-template-columns:1fr;}
+    .creative-grid-4,.creative-grid-5{grid-template-columns:repeat(2,1fr);}
+    .vaga-layout{grid-template-columns:1fr;}
+    .funnel-label{width:110px;font-size:10px;}
+    #nav{padding:0 10px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+<div id="slides">
+
+<!-- ══ S0 — CAPA ══ -->
+<div class="slide active" id="s0">
+  <div class="cover-wrap">
+    <div class="cover-badge">Relatório Meta Ads · 01–11 Maio 2026</div>
+    <div class="cover-title">SPK Autopeças</div>
+    <div class="cover-sub">Performance de Campanhas — Vendas + RH · Maio 2026</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><div class="val">R$ 1.734</div><div class="lbl">Investido</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">73</div><div class="lbl">Leads Vendas</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">305</div><div class="lbl">Leads + Conexões RH</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">4</div><div class="lbl">Campanhas Ativas</div></div>
+    </div>
+    <div class="cover-split">
+      <div class="cover-pill vendas">🛒 Vendas — R$ 881,66</div>
+      <div class="cover-pill rh">👥 RH — R$ 852,20</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S1 — CONSOLIDADO ══ -->
+<div class="slide" id="s1">
+  <div class="slide-header">
+    <div class="slide-tag">01 · Visão Geral</div>
+    <div class="slide-title">KPIs Consolidados — Todos os Objetivos</div>
+    <div class="slide-desc">01 a 11 de maio de 2026 · 4 campanhas ativas · R$ 1.733,86 investidos</div>
+  </div>
+
+  <div class="section-div"><div class="section-div-label vendas">🛒 Vendas</div><div class="section-div-line"></div></div>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="k-label">Investimento</div><div class="k-val">R$ 881,66</div>
+      <div class="k-sub">2 campanhas ativas</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Leads (Formulário)</div><div class="k-val">73</div>
+      <div class="k-sub">53 Marabá + 20 Estados</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">CPL Médio</div><div class="k-val">R$ 12,07</div>
+      <div class="k-sub">Meta: R$ 8,00</div><div class="k-delta dn">⚠ Acima da meta</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Impressões</div><div class="k-val">71.822</div>
+      <div class="k-sub">Alcance: 26.672 pessoas</div>
+    </div>
+  </div>
+
+  <div class="section-div"><div class="section-div-label rh">👥 RH</div><div class="section-div-line"></div></div>
+  <div class="kpi-row">
+    <div class="kpi blue">
+      <div class="k-label">Investimento</div><div class="k-val">R$ 852,20</div>
+      <div class="k-sub">2 campanhas ativas</div>
+    </div>
+    <div class="kpi blue">
+      <div class="k-label">Conexões MSG (Vagas)</div><div class="k-val">233</div>
+      <div class="k-sub">Custo/conexão: R$ 3,07</div><div class="k-delta up">✓ Eficiente</div>
+    </div>
+    <div class="kpi blue">
+      <div class="k-label">Leads Form (Representante)</div><div class="k-val">72</div>
+      <div class="k-sub">CPL: R$ 1,90 · Meta: R$ 2,00</div><div class="k-delta up">✓ Abaixo da meta</div>
+    </div>
+    <div class="kpi blue">
+      <div class="k-label">Impressões</div><div class="k-val">133.536</div>
+      <div class="k-sub">Alcance: 44.724 pessoas</div>
+    </div>
+  </div>
+
+  <div class="notas">
+    <div class="notas-label">📋 Resumo do Período</div>
+    <p>RH está performando excelente — R$ 1,90/lead em representante e R$ 3,07/conexão nas vagas. Vendas precisa de atenção: CPL de Marabá (R$ 13,38) está acima da meta de R$ 8. Campanha de Estados vai bem (R$ 8,63). Projeção mensal: ~R$ 3.461 — dentro do orçamento de R$ 3.500.</p>
+  </div>
+</div>
+
+<!-- ══ S2 — VENDAS OVERVIEW + TABELA ══ -->
+<div class="slide" id="s2">
+  <div class="slide-header">
+    <div class="slide-tag">02 · Vendas</div>
+    <div class="slide-title">🛒 Performance de Vendas por Ad Set</div>
+    <div class="slide-desc">Campanhas: Marabá e Estados · Meta CPL Form: R$ 8,00</div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="k-label">Gasto Total</div><div class="k-val">R$ 881,66</div><div class="k-sub">de R$ 3.500/mês</div></div>
+    <div class="kpi"><div class="k-label">Total Leads</div><div class="k-val">73</div><div class="k-sub">via formulário</div></div>
+    <div class="kpi"><div class="k-label">CPL Médio</div><div class="k-val">R$ 12,07</div><div class="k-sub">Meta: R$ 8,00</div><div class="k-delta dn">⚠ Acima</div></div>
+    <div class="kpi"><div class="k-label">Mensagens Iniciadas</div><div class="k-val">53</div><div class="k-sub">paralelas ao formulário</div></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <div class="tbl-fade"></div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Campanha</th><th>Ad Set</th><th>Status</th>
+          <th class="num">Gasto</th><th class="num">Imp.</th><th class="num">Alcance</th>
+          <th class="num">Freq.</th><th class="num">CTR</th><th class="num">CPM</th>
+          <th class="num">Cliques</th><th class="num">Leads</th><th class="num">CPL</th><th class="num">MSG</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td rowspan="2"><strong>Marabá</strong><br><small style="color:var(--gray);font-size:10px">Lançamentos Unidade</small></td>
+          <td>ST · Empresários</td>
+          <td><span class="badge green">Ativo</span></td>
+          <td class="num">R$ 233,50</td><td class="num">18.961</td><td class="num">9.163</td>
+          <td class="num">2,07</td><td class="num">1,39%</td><td class="num">R$ 12,31</td>
+          <td class="num">264</td><td class="num">17</td>
+          <td class="num">R$ 13,74</td><td class="num">14</td>
+        </tr>
+        <tr>
+          <td>IG · Interesses + Adm</td>
+          <td><span class="badge green">Ativo</span></td>
+          <td class="num">R$ 475,54</td><td class="num">41.303</td><td class="num">15.728</td>
+          <td class="num">2,63</td><td class="num">1,61%</td><td class="num">R$ 11,51</td>
+          <td class="num">666</td><td class="num">36</td>
+          <td class="num">R$ 13,21</td><td class="num">29</td>
+        </tr>
+        <tr style="background:#fff7ed;">
+          <td colspan="2"><strong>Subtotal Marabá</strong></td>
+          <td>—</td>
+          <td class="num"><strong>R$ 709,04</strong></td><td class="num"><strong>60.264</strong></td><td class="num"><strong>19.617</strong></td>
+          <td class="num"><strong>2,49</strong></td><td class="num">—</td><td class="num">—</td>
+          <td class="num"><strong>930</strong></td><td class="num"><strong>53</strong></td>
+          <td class="num" style="color:var(--red)"><strong>R$ 13,38 ⚠</strong></td><td class="num"><strong>43</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Estados</strong><br><small style="color:var(--gray);font-size:10px">Lançamentos e Promos</small></td>
+          <td>IG · Interesses + Adm</td>
+          <td><span class="badge green">Ativo</span></td>
+          <td class="num">R$ 172,63</td><td class="num">11.560</td><td class="num">7.055</td>
+          <td class="num">1,64</td><td class="num">1,54%</td><td class="num">R$ 14,93</td>
+          <td class="num">178</td><td class="num">20</td>
+          <td class="num" style="color:var(--amber)">R$ 8,63</td><td class="num">10</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="2"><strong>TOTAL VENDAS</strong></td><td>—</td>
+          <td class="num"><strong>R$ 881,66</strong></td><td class="num"><strong>71.824</strong></td><td class="num"><strong>26.672</strong></td>
+          <td class="num">—</td><td class="num">—</td><td class="num">—</td>
+          <td class="num"><strong>1.108</strong></td><td class="num"><strong>73</strong></td>
+          <td class="num"><strong>R$ 12,07</strong></td><td class="num"><strong>53</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notas">
+    <div class="notas-label">📋 Notas do Gestor</div>
+    <p>Marabá com CPL de R$ 13,38 — acima da meta. O ad set IG (maior gasto) está gerando R$ 13,21/lead. Estados performando melhor em custo (R$ 8,63) com frequência mais baixa (1,64). Atenção: a campanha de Marabá está concentrando 80% do orçamento de vendas com CPL fora da meta.</p>
+  </div>
+</div>
+
+<!-- ══ S3 — VENDAS CRIATIVOS ══ -->
+<div class="slide" id="s3">
+  <div class="slide-header">
+    <div class="slide-tag">03 · Vendas — Criativos</div>
+    <div class="slide-title">🛒 Criativos Ativos — Campanhas de Venda</div>
+    <div class="slide-desc">Thumbnails dos anúncios rodando em Maio 2026</div>
+  </div>
+
+  <div class="section-div"><div class="section-div-label vendas">Campanha — Marabá</div><div class="section-div-line"></div></div>
+  <div class="creative-grid creative-grid-4" style="margin-bottom:16px;">
+    <div class="creative-card">
+      <div class="creative-thumb"><img src="https://scontent.fgyn2-1.fna.fbcdn.net/v/t15.5256-10/671645314_933614439590443_5835818095587845242_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=kQ_wvhlgYNwQ7kNvwEcqpFF&_nc_oc=AdrufPQTonmiWg3gf7-4uP5fhb-sU0lEjHbI-90UU3_TxXhGfC7JYKy1l-7R5F3MmWs&_nc_zt=23&_nc_ht=scontent.fgyn2-1.fna&edm=ANIILHsEAAAA&_nc_gid=zEEUgNDq4Theck6Xnhhkzg&_nc_tpa=Q5bMBQFXtFZFz5jFzReMAOCxUfg1qp2Vh3rDJpZ1QXjFUdgOoipKUHKOwJxNYIwcYGyZ50wJwHvqL0JopQ&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af5fVAMcFTtNMX1LMhiwukihMZDvcs9NurHRnY3gSG1GTw&oe=6A08EDD7" onerror="this.parentNode.innerHTML='<div class=no-img>📹 Vídeo</div>'"><div class="fmt-badge">VIDEO</div></div>
+      <div class="cr-name">vd3 — SPK no Pará</div>
+      <div class="cr-metric"><span class="ml">Ad Sets</span><span class="mv">ST + IG</span></div>
+    </div>
+    <div class="creative-card">
+      <div class="creative-thumb"><img src="https://scontent.fgyn2-1.fna.fbcdn.net/v/t15.5256-10/673089154_973353371769386_1060237211639105122_n.jpg?_nc_cat=106&ccb=1-7&_nc_ohc=VsaieM4b9VQQ7kNvwFyJkpd&_nc_oc=Adrq8DKJu4CCJVBJvUkAa5Atnh2frQfCqxGuwbe-FdDIsiUJeWPRFIf893UWqJaWfrg&_nc_zt=23&_nc_ht=scontent.fgyn2-1.fna&edm=ANIILHsEAAAA&_nc_gid=zEEUgNDq4Theck6Xnhhkzg&_nc_tpa=Q5bMBQGQXVJolx9IjXfw2IJSqyiNXiX_pNqrjMLseWZPvG8IJdHMjez6vce7hR2iVd_wfC8xHqI9jwPwlA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af5ovu6bdbGT6XOUaWyL-pS_ucmtCyx8R_AvpU5SIGnpgQ&oe=6A08FE79" onerror="this.parentNode.innerHTML='<div class=no-img>📹 Vídeo</div>'"><div class="fmt-badge">VIDEO</div></div>
+      <div class="cr-name">vd4 — SPK no Pará 2</div>
+      <div class="cr-metric"><span class="ml">Ad Sets</span><span class="mv">ST + IG</span></div>
+    </div>
+    <div class="creative-card">
+      <div class="creative-thumb"><img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/7144946792296791602?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKPWbpPunhRq1d6lOTIf8Kg2GLIsETOdfqdrJxzg4wyk6wJFjoMsasGsCCuBEhtEYLz5qPA1_UUrPZ4YPzqNXPxAGY6RHGmjRHPlnaMC7E_VoLz7kBodyToHgab9MSxhZXLQxtTdsWKPsE4KTbChha5&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=zEEUgNDq4Theck6Xnhhkzg&_nc_oc=AdqPh16QnXAw06FuQNnSdsZ4qcOzEJWKsu6IzRwjgRzh_mIBG562WLNQcCzYNo-9pe8&ccb=13-1&oh=06_Q3-_AccslMzUfrRav-BXwyvD8nd1zoOqot8n-WuwOn6MBCLD&oe=6A04E53E&_nc_sid=58080a" onerror="this.parentNode.innerHTML='<div class=no-img>🖼 Imagem</div>'"><div class="fmt-badge">IMAGEM</div></div>
+      <div class="cr-name">ad1 — Chegamos em Marabá</div>
+      <div class="cr-metric"><span class="ml">Ad Set</span><span class="mv">IG</span></div>
+    </div>
+    <div class="creative-card">
+      <div class="creative-thumb"><img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/5735633138435135674?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKHe28uzsK30SrIwMQ9qp_oZj4zwetkMbCoP7H7uuAExH73r4OJgtPlNPIb1EA_3KTTf_lgrYFZfDZTmuIBuP0ZH8CLpNzzQKW7iilpg8EQJwii70bZDhgdjt6s64qL26QXBiYC6t2GHc9_1b0iIhWL&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=zEEUgNDq4Theck6Xnhhkzg&_nc_oc=Ado1bFj7K2cOIoDFpdv1cp65ywE94sn_f1yw2cuCMHk6cFcUv3SPoLl5BwmnWHVPyfc&ccb=13-1&oh=06_Q3-_ATWa4j9TbpN5X89QYW8Rc_DXjV-6YC3Lrpm6lkrGFg4a&oe=6A04E0F7&_nc_sid=58080a" onerror="this.parentNode.innerHTML='<div class=no-img>🖼 Imagem</div>'"><div class="fmt-badge">IMAGEM</div></div>
+      <div class="cr-name">st2 — Estoque Perto de Você</div>
+      <div class="cr-metric"><span class="ml">Ad Sets</span><span class="mv">ST + IG</span></div>
+    </div>
+  </div>
+
+  <div class="section-div"><div class="section-div-label vendas">Campanha — Estados</div><div class="section-div-line"></div></div>
+  <div class="creative-grid creative-grid-4">
+    <div class="creative-card">
+      <div class="creative-thumb"><img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/5367784166095300027?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIY87qfyiPiDGJZL9Y8VPo4AqGHT1W7N0XN30OYXrSEuX2m5kqZuaH2s4d9u7AWG8Ynp2LL73ORgewwGGl2V55Sfzr9kkqFjXdtepdDwXAm8-AsoN-cIAU1iwXvbLXMHS81Hs7qb386cXThA3gOuhd-&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=sH9h8J6O_-csN0BM0omW8Q&_nc_oc=AdohqekhHq_kK6bx6F-UFxWFv6Dl3j7E-w2kTmAUAtxyaSzmlxKIP3nVFl8h8xj7m0g&ccb=13-1&oh=06_Q3-_AVr-Fu9iejrQZhIhpE7fgva5QfW1cpebRmqRSac8nQHm&oe=6A0517D4&_nc_sid=58080a" onerror="this.parentNode.innerHTML='<div class=no-img>🖼</div>'"><div class="fmt-badge">IMAGEM</div></div>
+      <div class="cr-name">ad1 — Peça Amarok</div>
+      <div class="cr-metric"><span class="ml">Leads</span><span class="mv">—</span></div>
+    </div>
+    <div class="creative-card">
+      <div class="creative-thumb"><img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/16713008655166609473?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIenLg2U3JouDoUvAJzHkJaK10wsq4LUohmxJxfKuxDE09O1BdfgHPsiRB-vwWy2n3reRxPpOeQZm166rJY38SzmZtxPrlhAirnPla8Wn6WEfKkpYGZvEsB-BTxDXZ4QHZGcIjYDczUCXMuJ-ABXvuK&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=sH9h8J6O_-csN0BM0omW8Q&_nc_oc=Adprdi3SexbdWbATosYh2ir4j11XPe-LNqmfG7pMVj1E3ClyZJoUk8_IXqcTb0B_1Ag&ccb=13-1&oh=06_Q3-_AXrC5393-triDUTpuldZRlwIDizoslsKIyeLnnqmjLR5&oe=6A04E588&_nc_sid=58080a" onerror="this.parentNode.innerHTML='<div class=no-img>🖼</div>'"><div class="fmt-badge">IMAGEM</div></div>
+      <div class="cr-name">ad2 — Peça Cruize 200 Reais</div>
+      <div class="cr-metric"><span class="ml">Leads</span><span class="mv">—</span></div>
+    </div>
+    <div class="creative-card">
+      <div class="creative-thumb"><img src="https://scontent.fgyn2-1.fna.fbcdn.net/v/t45.1600-4/628343348_921680910418849_4900601387733602056_n.png?_nc_cat=102&ccb=1-7&_nc_ohc=-SENxA7m-GcQ7kNvwGu_a9q&_nc_oc=AdpsuUiWlwgQIwe4TUXVazjdam04cp0XTkKFtc0iljT7hm-n46AnyDy2ORsqdNDFM-E&_nc_zt=1&_nc_ht=scontent.fgyn2-1.fna&edm=ANIILHsEAAAA&_nc_gid=sH9h8J6O_-csN0BM0omW8Q&_nc_tpa=Q5bMBQGocR5scyQcsNji7w1_nONKSjnKRXazVVZIt7FfKHLjqsHVJXwp5xuzFjS_pPPWTKPre0JAdiPV8A&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_Af4woXdN38w3Blts7HGiklvBh10BYx-kqovHwD_ICh37bg&oe=6A08D98C" onerror="this.parentNode.innerHTML='<div class=no-img>🖼</div>'"><div class="fmt-badge">IMAGEM</div></div>
+      <div class="cr-name">Novo Anúncio de Leads</div>
+      <div class="cr-metric"><span class="ml">Leads</span><span class="mv">—</span></div>
+    </div>
+    <div class="creative-card" style="border:2px dashed var(--border);background:var(--light);justify-content:center;align-items:center;min-height:160px;">
+      <div style="text-align:center;color:var(--gray);font-size:12px;padding:16px;">
+        <div style="font-size:24px;margin-bottom:6px;">+</div>
+        Testar novo criativo<br>para reduzir CPL
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S4 — RH OVERVIEW ══ -->
+<div class="slide" id="s4">
+  <div class="slide-header">
+    <div class="slide-tag blue">04 · RH</div>
+    <div class="slide-title">👥 Performance de RH — Visão Geral</div>
+    <div class="slide-desc">2 campanhas: Vagas Abertas (MSG) + Formulário Representante · 01–11 mai 2026</div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi blue"><div class="k-label">Gasto Total RH</div><div class="k-val">R$ 852,20</div><div class="k-sub">Vagas R$715 + Form R$137</div></div>
+    <div class="kpi blue"><div class="k-label">Conexões — Vagas MSG</div><div class="k-val">233</div><div class="k-sub">R$ 3,07 / conexão</div><div class="k-delta up">✓ Saudável</div></div>
+    <div class="kpi blue"><div class="k-label">Leads — Representante</div><div class="k-val">72</div><div class="k-sub">R$ 1,90 / lead · Meta R$ 2</div><div class="k-delta up">✓ Abaixo da meta</div></div>
+    <div class="kpi blue"><div class="k-label">Conv. Iniciadas (Vagas)</div><div class="k-val">185</div><div class="k-sub">79,4% das conexões</div></div>
+  </div>
+
+  <div class="section-div"><div class="section-div-label rh">Vagas Abertas — Resumo por Vaga</div><div class="section-div-line"></div></div>
+  <div class="tbl-wrap">
+    <div class="tbl-fade"></div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Vaga / Ad Set</th><th>Localidade</th><th>Status</th>
+          <th class="num">Gasto</th><th class="num">Freq.</th><th class="num">CTR</th>
+          <th class="num">CPM</th><th class="num">Conexões</th><th class="num">R$/Conex.</th>
+          <th class="num">Conv. Inic.</th><th class="num">1ª Resp.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Ass. Administrativo</strong></td><td>Goiânia · 5km</td>
+          <td><span class="badge green">Ativo</span></td>
+          <td class="num">R$ 194,49</td><td class="num">2,91</td><td class="num">0,58%</td>
+          <td class="num">R$ 5,00</td><td class="num"><strong>80</strong></td>
+          <td class="num">R$ 2,43</td><td class="num">54</td><td class="num">44</td>
+        </tr>
+        <tr>
+          <td><strong>Comprador Seg. Peças</strong></td><td>Goiânia · 5km</td>
+          <td><span class="badge green">Ativo</span></td>
+          <td class="num">R$ 202,47</td><td class="num">2,52</td><td class="num">0,68%</td>
+          <td class="num">R$ 6,37</td><td class="num"><strong>49</strong></td>
+          <td class="num">R$ 4,13</td><td class="num">36</td><td class="num">33</td>
+        </tr>
+        <tr>
+          <td><strong>Estoquista</strong></td><td>Estado do Pará</td>
+          <td><span class="badge green">Ativo</span></td>
+          <td class="num">R$ 194,22</td><td class="num" style="color:var(--red);font-weight:700">3,40 ⚠</td><td class="num">0,76%</td>
+          <td class="num">R$ 5,05</td><td class="num"><strong>47</strong></td>
+          <td class="num">R$ 4,13</td><td class="num">44</td><td class="num">42</td>
+        </tr>
+        <tr>
+          <td><strong>Estoquista MULHER</strong></td><td>Goiânia · 2km</td>
+          <td><span class="badge amber">Pausado</span></td>
+          <td class="num">R$ 64,24</td><td class="num">2,01</td><td class="num" style="color:var(--green);font-weight:700">1,40%</td>
+          <td class="num">R$ 7,24</td><td class="num"><strong>42</strong></td>
+          <td class="num" style="color:var(--green);font-weight:700">R$ 1,53</td><td class="num">38</td><td class="num">38</td>
+        </tr>
+        <tr>
+          <td><strong>Estoquista HOMEM</strong></td><td>Goiânia · 2km</td>
+          <td><span class="badge red">Pausado</span></td>
+          <td class="num">R$ 59,84</td><td class="num">2,60</td><td class="num">1,13%</td>
+          <td class="num">R$ 11,90</td><td class="num"><strong>15</strong></td>
+          <td class="num">R$ 3,99</td><td class="num">13</td><td class="num">13</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="3"><strong>TOTAL Vagas Abertas</strong></td>
+          <td class="num"><strong>R$ 715,26</strong></td><td class="num"><strong>3,21</strong></td><td class="num"><strong>0,74%</strong></td>
+          <td class="num"><strong>R$ 5,81</strong></td><td class="num"><strong>233</strong></td>
+          <td class="num"><strong>R$ 3,07</strong></td><td class="num"><strong>185</strong></td><td class="num"><strong>170</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ S5 — VAGA: ASS. ADMINISTRATIVO ══ -->
+<div class="slide" id="s5">
+  <div class="slide-header">
+    <div class="slide-tag blue">05 · Vaga</div>
+    <div class="slide-title">👥 Assistente Administrativo — Goiânia 5km</div>
+    <div class="slide-desc">Ad Set: 01 - [IG] [Local 5km] [Ass. Administrativo] · Status: Ativo</div>
+  </div>
+
+  <div class="vaga-layout">
+    <div>
+      <div class="kpi-row kpi-row-3" style="margin-bottom:12px;">
+        <div class="kpi blue"><div class="k-label">Gasto</div><div class="k-val">R$ 194,49</div></div>
+        <div class="kpi blue"><div class="k-label">Conexões MSG</div><div class="k-val">80</div><div class="k-sub">Maior volume da campanha</div></div>
+        <div class="kpi blue"><div class="k-label">Custo/Conexão</div><div class="k-val">R$ 2,43</div><div class="k-delta up">✓ 2º melhor</div></div>
+      </div>
+
+      <div class="tbl-wrap" style="margin-bottom:12px;">
+        <table class="tbl">
+          <thead><tr><th>Métrica</th><th class="num">Valor</th><th>Referência</th></tr></thead>
+          <tbody>
+            <tr><td>Impressões</td><td class="num">38.932</td><td><span class="badge orange">Alto volume</span></td></tr>
+            <tr><td>Alcance</td><td class="num">13.377 pessoas</td><td>—</td></tr>
+            <tr><td>Frequência</td><td class="num">2,91</td><td><span class="badge amber">Atenção</span></td></tr>
+            <tr><td>CTR</td><td class="num">0,58%</td><td><span class="badge amber">Baixo</span></td></tr>
+            <tr><td>CPM</td><td class="num">R$ 5,00</td><td><span class="badge green">Melhor CPM</span></td></tr>
+            <tr><td>Cliques</td><td class="num">224</td><td>—</td></tr>
+            <tr><td>Conexões MSG</td><td class="num"><strong>80</strong></td><td><span class="badge green">Maior volume</span></td></tr>
+            <tr><td>Conv. Iniciadas (7d)</td><td class="num">54</td><td>67,5% das conexões</td></tr>
+            <tr><td>1ª Resposta</td><td class="num">44</td><td>81,5% das conv.</td></tr>
+            <tr><td>Profundidade 2</td><td class="num">23</td><td>52,3% das 1ª resp.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="insight-box warn">
+        <h4>⚠ Frequência chegando a 2,91 — preparar criativo novo</h4>
+        <p>CTR baixo (0,58%) pode indicar fadiga de anúncio. Ao ultrapassar freq. 3,5, trocar o criativo para evitar aumento de CPM.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Melhor CPM da campanha: R$ 5,00</h4>
+        <p>Público de Goiânia 5km bem calibrado, mostrando eficiência de entrega.</p>
+      </div>
+    </div>
+
+    <div class="vaga-creatives">
+      <div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Criativo Ativo</div>
+      <div class="vaga-cr-card">
+        <div class="vaga-cr-thumb">
+          <img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/1056811966031923228?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKOVyniirLOa5vj4uFp6YggBe0O8JbjGkiuoAp4FayJidC5PujbOYs6wWpKV88AyJ1FkXpUrt7Pp_X97OpPznsubHRFMVn8A4pMIkGrcZrNw_KCkzO0xLIkCkGiD7XKXtirmMKi-Io7k4nXjkMRDf7D&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=89GgM_Z6ZbMqGOEoY07hUQ&_nc_oc=AdrDSvS_tcQ4V89_x6wPLZi1ytby5d8Cg7zvL6h3MXo96BA95OL7zjSThMKRS0jIzM4&ccb=13-1&oh=06_Q3-_AeEwqPRYBrn3Z2ihpGX9pphirkwXlpdEaGk7Qf-MsUze&oe=6A04F7FB&_nc_sid=58080a" onerror="this.style.display='none'">
+        </div>
+        <div class="vaga-cr-info">
+          <div class="cr-name">Ad10 — Auxiliar Adm.</div>
+          <div class="cr-status"><span class="badge green">Ativo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S6 — VAGA: COMPRADOR ══ -->
+<div class="slide" id="s6">
+  <div class="slide-header">
+    <div class="slide-tag blue">06 · Vaga</div>
+    <div class="slide-title">👥 Comprador — Segmento de Peças · Goiânia 5km</div>
+    <div class="slide-desc">Ad Set: 01 - [IG] [Local 5km] [Comprador Segmento de Peças] · Status: Ativo</div>
+  </div>
+
+  <div class="vaga-layout">
+    <div>
+      <div class="kpi-row kpi-row-3" style="margin-bottom:12px;">
+        <div class="kpi blue"><div class="k-label">Gasto</div><div class="k-val">R$ 202,47</div><div class="k-sub">Maior gasto individual</div></div>
+        <div class="kpi blue"><div class="k-label">Conexões MSG</div><div class="k-val">49</div></div>
+        <div class="kpi blue"><div class="k-label">Custo/Conexão</div><div class="k-val">R$ 4,13</div><div class="k-delta ok">⚠ Mais caro</div></div>
+      </div>
+
+      <div class="tbl-wrap" style="margin-bottom:12px;">
+        <table class="tbl">
+          <thead><tr><th>Métrica</th><th class="num">Valor</th><th>Referência</th></tr></thead>
+          <tbody>
+            <tr><td>Impressões</td><td class="num">31.782</td><td>—</td></tr>
+            <tr><td>Alcance</td><td class="num">12.624 pessoas</td><td>—</td></tr>
+            <tr><td>Frequência</td><td class="num">2,52</td><td><span class="badge green">Saudável</span></td></tr>
+            <tr><td>CTR</td><td class="num">0,68%</td><td><span class="badge amber">Médio</span></td></tr>
+            <tr><td>CPM</td><td class="num">R$ 6,37</td><td><span class="badge green">Ok</span></td></tr>
+            <tr><td>Cliques</td><td class="num">217</td><td>—</td></tr>
+            <tr><td>Conexões MSG</td><td class="num"><strong>49</strong></td><td>—</td></tr>
+            <tr><td>Conv. Iniciadas (7d)</td><td class="num">36</td><td>73,5% das conexões</td></tr>
+            <tr><td>1ª Resposta</td><td class="num">33</td><td>91,7% das conv.</td></tr>
+            <tr><td>Profundidade 2</td><td class="num">15</td><td>45,5% das 1ª resp.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="insight-box warn">
+        <h4>⚠ Custo/conexão mais alto (R$ 4,13) com maior gasto</h4>
+        <p>Público de comprador especializado é naturalmente mais restrito. Avaliar se o volume de 49 candidatos está satisfazendo o RH, ou se a vaga já foi preenchida.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Alta taxa de 1ª resposta: 91,7%</h4>
+        <p>Candidatos que iniciam conversa têm alta intenção — indica fit com o perfil da vaga.</p>
+      </div>
+    </div>
+
+    <div class="vaga-creatives">
+      <div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Criativo Ativo</div>
+      <div class="vaga-cr-card">
+        <div class="vaga-cr-thumb">
+          <img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/17845112700193756019?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJ7EosnKCGxRRZfO6YTBqkof262kBzG1D-e-lzjYgZDqhjdvesOLyI2J9aiylxzfdpy6uFzIqOLPuzCIBzGrFdWO_SjWtRWfJN4MYObVtKk2lzjwmsS09gLgd9LIw0fINFMkt1fONHR4gW9Wqdu0Iu8&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=89GgM_Z6ZbMqGOEoY07hUQ&_nc_oc=Adp-JlewumyotmsOYH4KsADVQeTrINvQr5TXLe-mufzhRy986NEFgV4Ssss0pyLl678&ccb=13-1&oh=06_Q3-_AVZuWFqPMD0WBkY38aWQl1oWUtwxAw2QL7allKXd565P&oe=6A04F5C3&_nc_sid=58080a" onerror="this.style.display='none'">
+        </div>
+        <div class="vaga-cr-info">
+          <div class="cr-name">Ad07 — Comprador Seg. Peças</div>
+          <div class="cr-status"><span class="badge green">Ativo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S7 — VAGA: ESTOQUISTA PARÁ ══ -->
+<div class="slide" id="s7">
+  <div class="slide-header">
+    <div class="slide-tag blue">07 · Vaga</div>
+    <div class="slide-title">👥 Estoquista — Estado do Pará</div>
+    <div class="slide-desc">Ad Set: 01 - [IG] [Pará] [Estoquista] · Status: Ativo · ⚠ Frequência alta</div>
+  </div>
+
+  <div class="vaga-layout">
+    <div>
+      <div class="kpi-row kpi-row-3" style="margin-bottom:12px;">
+        <div class="kpi blue"><div class="k-label">Gasto</div><div class="k-val">R$ 194,22</div></div>
+        <div class="kpi blue"><div class="k-label">Conexões MSG</div><div class="k-val">47</div></div>
+        <div class="kpi blue"><div class="k-label">Frequência</div><div class="k-val" style="color:var(--red)">3,40</div><div class="k-delta dn">⚠ Saturando</div></div>
+      </div>
+
+      <div class="tbl-wrap" style="margin-bottom:12px;">
+        <table class="tbl">
+          <thead><tr><th>Métrica</th><th class="num">Valor</th><th>Referência</th></tr></thead>
+          <tbody>
+            <tr><td>Impressões</td><td class="num">38.464</td><td>—</td></tr>
+            <tr><td>Alcance</td><td class="num">11.304 pessoas</td><td>—</td></tr>
+            <tr><td>Frequência</td><td class="num" style="color:var(--red);font-weight:700">3,40 ⚠</td><td><span class="badge red">Saturando</span></td></tr>
+            <tr><td>CTR</td><td class="num">0,76%</td><td>—</td></tr>
+            <tr><td>CPM</td><td class="num">R$ 5,05</td><td><span class="badge green">Bom</span></td></tr>
+            <tr><td>Cliques</td><td class="num">294</td><td>—</td></tr>
+            <tr><td>Conexões MSG</td><td class="num"><strong>47</strong></td><td>—</td></tr>
+            <tr><td>Conv. Iniciadas (7d)</td><td class="num">44</td><td>93,6% das conexões</td></tr>
+            <tr><td>1ª Resposta</td><td class="num">42</td><td>95,5% das conv.</td></tr>
+            <tr><td>Profundidade 2</td><td class="num">5</td><td><span class="badge red">10,6% — baixo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="insight-box bad">
+        <h4>🔴 Frequência 3,40 — trocar criativo urgente</h4>
+        <p>Público do Pará está saturando. CPM vai aumentar em breve. Trocar imagem ou copy esta semana. Ou expandir targeting dentro do estado.</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠ Profundidade 2 muito baixa: apenas 5 candidatos</h4>
+        <p>Alta taxa de conexão (93,6%) mas quase ninguém avança para 2ª mensagem. Gargalo no atendimento do RH ou mensagem automática pouco engajante.</p>
+      </div>
+    </div>
+
+    <div class="vaga-creatives">
+      <div style="font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Criativo Ativo</div>
+      <div class="vaga-cr-card">
+        <div class="vaga-cr-thumb">
+          <img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/7365640401339636398?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKSU40vO-8NMEXu6wO-Ey5IWV0c6lNA24EkhVJzb3wil1xwn8C2SNrYCi6MCEL4F-nECnxK1nQFKqnsf_vYmZPTY4iDeeBkRQGm0st4Vn9h1K9aWTgewPryXGEVl5VCDkuh2esLCbaltwQMtdqlVeJY&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=89GgM_Z6ZbMqGOEoY07hUQ&_nc_oc=AdqgW3m846ikjIkrcXUmJz0zyGEThheoxyxNa_-sQ7UYwZ_aQYdtoHpusOba6FJla3A&ccb=13-1&oh=06_Q3-_AchUcQDZ6g9OVZ7dbt5y-iCyUj43sr5MfE9GSf1ZcM7I&oe=6A04E23E&_nc_sid=58080a" onerror="this.style.display='none'">
+        </div>
+        <div class="vaga-cr-info">
+          <div class="cr-name">AD — Auxiliar de Estoque</div>
+          <div class="cr-status"><span class="badge green">Ativo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S8 — VAGA: ESTOQUISTA GOIÂNIA ══ -->
+<div class="slide" id="s8">
+  <div class="slide-header">
+    <div class="slide-tag blue">08 · Vaga</div>
+    <div class="slide-title">👥 Estoquista — Goiânia (HOMEM + MULHER)</div>
+    <div class="slide-desc">2 Ad Sets · Local 2km · Ambos pausados no período · Mulher com melhor custo/conexão da campanha</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-div"><div class="section-div-label rh">Estoquista MULHER</div><div class="section-div-line"></div></div>
+      <div class="kpi-row kpi-row-2" style="margin-bottom:10px;">
+        <div class="kpi blue"><div class="k-label">Conexões</div><div class="k-val">42</div><div class="k-sub">R$ 1,53/conexão 🏆</div></div>
+        <div class="kpi blue"><div class="k-label">CTR</div><div class="k-val">1,40%</div><div class="k-delta up">Melhor CTR</div></div>
+      </div>
+      <div class="tbl-wrap" style="margin-bottom:10px;">
+        <table class="tbl">
+          <tbody>
+            <tr><td>Gasto</td><td class="num">R$ 64,24</td></tr>
+            <tr><td>Impressões</td><td class="num">8.867</td></tr>
+            <tr><td>Alcance</td><td class="num">4.402</td></tr>
+            <tr><td>Frequência</td><td class="num">2,01</td></tr>
+            <tr><td>CPM</td><td class="num">R$ 7,24</td></tr>
+            <tr><td>Cliques</td><td class="num">124</td></tr>
+            <tr><td>Conexões MSG</td><td class="num"><strong>42</strong></td></tr>
+            <tr><td>Conv. Iniciadas</td><td class="num">38 (90,5%)</td></tr>
+            <tr><td>1ª Resposta</td><td class="num">38 (100%)</td></tr>
+            <tr><td>Status</td><td class="num"><span class="badge amber">Pausado</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Reativar — R$ 1,53/conexão</h4>
+        <p>Melhor eficiência da campanha. Freq. 2,01 — ainda longe da saturação.</p>
+      </div>
+      <div class="vaga-cr-card" style="margin-top:10px;">
+        <div class="vaga-cr-thumb">
+          <img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/10107270439920886189?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLJFIAGvmtPS1-Gu_4QNDVzDtthbOP7S_s49ZgTH2IpoNbsayby44K75ZOn9w8lFwiM5Mmpy33bpNvXVZ_Y4D8u8jI6bbHGFMBnud-CSZcYjqJIiLe9OORDJ5b0aQzHlCXtu08QB7mXTZB3CB0PbPDe&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=89GgM_Z6ZbMqGOEoY07hUQ&_nc_oc=AdpsJbIDySh3HEldn11b-2In0n1pmKImhKLEBmueKAIUL8QKHv7Gbj-uBDVlzAo7Udk&ccb=13-1&oh=06_Q3-_AUiFdp7LsTEW1bJuwm3OJRRL5S19KU4vtblJWDx6IGE2&oe=6A04EBBF&_nc_sid=58080a" onerror="this.style.display='none'">
+        </div>
+        <div class="vaga-cr-info"><div class="cr-name">AD — ESTOQUISTA MULHER</div><div class="cr-status"><span class="badge amber">Pausado</span></div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-div"><div class="section-div-label rh">Estoquista HOMEM</div><div class="section-div-line"></div></div>
+      <div class="kpi-row kpi-row-2" style="margin-bottom:10px;">
+        <div class="kpi"><div class="k-label">Conexões</div><div class="k-val">15</div><div class="k-sub">R$ 3,99/conexão</div></div>
+        <div class="kpi"><div class="k-label">CPM</div><div class="k-val">R$ 11,90</div><div class="k-delta dn">Mais caro</div></div>
+      </div>
+      <div class="tbl-wrap" style="margin-bottom:10px;">
+        <table class="tbl">
+          <tbody>
+            <tr><td>Gasto</td><td class="num">R$ 59,84</td></tr>
+            <tr><td>Impressões</td><td class="num">5.030</td></tr>
+            <tr><td>Alcance</td><td class="num">1.937</td></tr>
+            <tr><td>Frequência</td><td class="num">2,60</td></tr>
+            <tr><td>CPM</td><td class="num" style="color:var(--red)">R$ 11,90</td></tr>
+            <tr><td>Cliques</td><td class="num">57</td></tr>
+            <tr><td>Conexões MSG</td><td class="num"><strong>15</strong></td></tr>
+            <tr><td>Conv. Iniciadas</td><td class="num">13 (86,7%)</td></tr>
+            <tr><td>1ª Resposta</td><td class="num">13 (100%)</td></tr>
+            <tr><td>Status</td><td class="num"><span class="badge red">Pausado hoje</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-box bad">
+        <h4>🔴 CPM 2,4× mais alto que o feminino</h4>
+        <p>Menor alcance (1.937) e CPM de R$ 11,90 indicam público mais disputado. Pausado hoje via API.</p>
+      </div>
+      <div class="vaga-cr-card" style="margin-top:10px;">
+        <div class="vaga-cr-thumb">
+          <img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/7643891404707769122?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIzyAHVrsq3KxuMejTFC5IVHji2YHIkgYyHCBQJtuRwynoe1OinbgK-TsUQQIBE0_7fx6eX69ZS09iEAsjMWH79HcPtkOQbXaenIXXt36dkT2AN9ySK9SCDJ_pU6M621nTonEiRZ0RA-MPhDUy2RNjj&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=89GgM_Z6ZbMqGOEoY07hUQ&_nc_oc=AdpDC6LOwV9IAfyKYk82Z9ILtr8RpWtI7FiMtfabS4VERsOO8kWUpRYUqCzN7d7E4Hw&ccb=13-1&oh=06_Q3-_ARnJf_oSZuufVK1g8WmMlQDb8_WKCcPHFpdAru7M-Qf3&oe=6A04F4DD&_nc_sid=58080a" onerror="this.style.display='none'">
+        </div>
+        <div class="vaga-cr-info"><div class="cr-name">AD — Estoque - Homem</div><div class="cr-status"><span class="badge red">Pausado hoje</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S9 — VAGA: REPRESENTANTE ══ -->
+<div class="slide" id="s9">
+  <div class="slide-header">
+    <div class="slide-tag blue">09 · Vaga</div>
+    <div class="slide-title">👥 Representante Comercial — Formulário</div>
+    <div class="slide-desc">Campanha: [MP] [RH] [FORM] [CBO] · 2 Ad Sets por região · CPL abaixo da meta ✅</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-div"><div class="section-div-label rh">Norte e Nordeste</div><div class="section-div-line"></div></div>
+      <div class="kpi-row kpi-row-2" style="margin-bottom:10px;">
+        <div class="kpi blue"><div class="k-label">Leads</div><div class="k-val">59</div><div class="k-sub">R$ 1,83/lead ✅</div></div>
+        <div class="kpi blue"><div class="k-label">CTR</div><div class="k-val">3,25%</div><div class="k-delta up">Excelente</div></div>
+      </div>
+      <div class="tbl-wrap" style="margin-bottom:10px;">
+        <table class="tbl">
+          <tbody>
+            <tr><td>Gasto</td><td class="num">R$ 107,76</td></tr>
+            <tr><td>Impressões</td><td class="num">8.548</td></tr>
+            <tr><td>Alcance</td><td class="num">5.221</td></tr>
+            <tr><td>Frequência</td><td class="num">1,64</td></tr>
+            <tr><td>CPM</td><td class="num">R$ 12,61</td></tr>
+            <tr><td>Cliques</td><td class="num">278</td></tr>
+            <tr><td>Leads (Form)</td><td class="num"><strong>59</strong></td></tr>
+            <tr><td>CPL</td><td class="num" style="color:var(--green);font-weight:700">R$ 1,83 ✅</td></tr>
+            <tr><td>Mensagens</td><td class="num">37</td></tr>
+            <tr><td>Status</td><td class="num"><span class="badge green">Ativo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ CTR 3,25% — criativo altamente relevante</h4>
+        <p>Excelente engajamento. CPL de R$ 1,83 — bem abaixo da meta de R$ 2. Escalar com cautela.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-div"><div class="section-div-label rh">Centro-Oeste</div><div class="section-div-line"></div></div>
+      <div class="kpi-row kpi-row-2" style="margin-bottom:10px;">
+        <div class="kpi blue"><div class="k-label">Leads</div><div class="k-val">13</div><div class="k-sub">R$ 2,24/lead</div></div>
+        <div class="kpi blue"><div class="k-label">CTR</div><div class="k-val">3,40%</div><div class="k-delta up">Maior CTR</div></div>
+      </div>
+      <div class="tbl-wrap" style="margin-bottom:10px;">
+        <table class="tbl">
+          <tbody>
+            <tr><td>Gasto</td><td class="num">R$ 29,18</td></tr>
+            <tr><td>Impressões</td><td class="num">1.913</td></tr>
+            <tr><td>Alcance</td><td class="num">1.234</td></tr>
+            <tr><td>Frequência</td><td class="num">1,55</td></tr>
+            <tr><td>CPM</td><td class="num">R$ 15,25</td></tr>
+            <tr><td>Cliques</td><td class="num">65</td></tr>
+            <tr><td>Leads (Form)</td><td class="num"><strong>13</strong></td></tr>
+            <tr><td>CPL</td><td class="num" style="color:var(--amber);font-weight:700">R$ 2,24</td></tr>
+            <tr><td>Mensagens</td><td class="num">7</td></tr>
+            <tr><td>Status</td><td class="num"><span class="badge green">Ativo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠ CPL R$ 2,24 — levemente acima da meta</h4>
+        <p>CPM mais alto (R$ 15,25). Volume menor mas CTR excelente (3,40%). Aguardar mais dados antes de ajustar.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;display:flex;gap:12px;align-items:flex-start;">
+    <div class="vaga-cr-card" style="width:200px;flex-shrink:0;">
+      <div class="vaga-cr-thumb">
+        <img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/216429614720813642?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQK2NFMpRbXqlodg6HCDRbDZqIRckZPmsy8Ux9UgQmcNrHp5h-l2THOqT1pWVcRSn4aAcFJxitO1j3PkAWW_Qt26I6n9628in5hMj4_JlFjxgqa80yDL6ipJWbNdP2RG0Ym2EKCHz3dXRIbsT2uOb6Ao&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=ymHWwVyS05DjphoaNbX-3A&_nc_oc=AdpUKKkiEp7KPudh9JEaHCY2Qxsuqi57bQ0TYKs1FAAIoQbDdPoRJpBKTPPvpZGiCgY&ccb=13-1&oh=06_Q3-_AQjKeZSi7ywnUk1aIAojwTSYLybEXNb9dwxS_uMuAbSL&oe=6A04F7E2&_nc_sid=58080a" onerror="this.style.display='none'">
+      </div>
+      <div class="vaga-cr-info"><div class="cr-name">Ad01 — Imagem Representante (N/NE)</div><div class="cr-status"><span class="badge green">Ativo</span></div></div>
+    </div>
+    <div class="vaga-cr-card" style="width:200px;flex-shrink:0;">
+      <div class="vaga-cr-thumb">
+        <img src="https://external.fgyn2-1.fna.fbcdn.net/emg1/v/t13/11234046543159095626?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQLpB0iXo0HLojf1FiIkCKou47WQIIxWMXTs4kMkSCeor2Sv8bAFu6FIo_WJh3CHKMl7-PaE34OQCdcfYoVHJfTdkbozcEz30zHs_DQCFjwZQ6Q-tZ-r_I9wXz9Y0gY3fELS3c7iIxNFEEwu9kTR1Syq&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=ANIILHsEAAAA&_nc_gid=ymHWwVyS05DjphoaNbX-3A&_nc_oc=AdqHiOQZtqsPqWBoUfF5xR_2yiVQKwqgBYY8cl69H0mFUauXADQm5pu3raIeGSyMHWw&ccb=13-1&oh=06_Q3-_AUGKoXkXFn5rhg7azMoKZeqCi2KHCYbQ-zUDpZceCOzW&oe=6A04EC00&_nc_sid=58080a" onerror="this.style.display='none'">
+      </div>
+      <div class="vaga-cr-info"><div class="cr-name">Ad01 — Imagem Representante (CO)</div><div class="cr-status"><span class="badge green">Ativo</span></div></div>
+    </div>
+    <div class="insight-box good" style="flex:1;margin-bottom:0;">
+      <h4>✅ Campanha de Representante — destaque do mês</h4>
+      <p>CTR acima de 3% em ambas as regiões — criativo de imagem performando muito bem. 72 leads totais com CPL médio de R$ 1,90, abaixo da meta de R$ 2,00. Oportunidade: aumentar orçamento no ad set Norte/Nordeste que tem maior volume.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S10 — RECOMENDAÇÕES ══ -->
+<div class="slide" id="s10">
+  <div class="slide-header">
+    <div class="slide-tag">10 · Recomendações</div>
+    <div class="slide-title">Próximos Passos — SPK Maio 2026</div>
+    <div class="slide-desc">Ações prioritárias para a próxima semana</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-div"><div class="section-div-label vendas">🛒 Vendas</div><div class="section-div-line"></div></div>
+      <div class="insight-box bad">
+        <h4>🔴 Reduzir CPL de Marabá (R$ 13,38 vs meta R$ 8)</h4>
+        <p>O ad set IG concentra 67% do gasto com CPL 65% acima da meta. Testar novo criativo, ajustar copy ou redistribuir orçamento para Estados (R$ 8,63).</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠ Rebalancear orçamento Marabá vs Estados</h4>
+        <p>Estados tem CPL mais próximo da meta (R$ 8,63) e frequência saudável (1,64). Considerar aumentar % do orçamento aqui.</p>
+      </div>
+      <div class="insight-box">
+        <h4>📊 Testar criativo novo — Marabá</h4>
+        <p>Há 4 criativos rodando. Pausar os 2 com menor engajamento e testar um novo ângulo de copy focando no diferencial SPK vs concorrência local no Pará.</p>
+      </div>
+
+      <div class="section-div" style="margin-top:10px;"><div class="section-div-label rh">👥 RH — Vagas</div><div class="section-div-line"></div></div>
+      <div class="insight-box bad">
+        <h4>🔴 Trocar criativo — Estoquista Pará (freq 3,40)</h4>
+        <p>Ação urgente esta semana. Frequência acima de 3,5 vai elevar CPM e derrubar CTR. Subir novo criativo no ad set do Pará.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Reativar Estoquista MULHER — Goiânia</h4>
+        <p>Melhor custo/conexão da campanha: R$ 1,53. Frequência 2,01 — longe da saturação. Ampliar raio de 2km para 5km para ganhar escala.</p>
+      </div>
+    </div>
+    <div>
+      <div class="section-div"><div class="section-div-label rh">👥 RH — Representante</div><div class="section-div-line"></div></div>
+      <div class="insight-box good">
+        <h4>✅ Aumentar orçamento — Norte/Nordeste</h4>
+        <p>59 leads a R$ 1,83 — escalar com +20% de orçamento neste ad set. CTR 3,25% confirma criativo sólido.</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠ Gargalo de Profundidade 2 — alinhar com RH</h4>
+        <p>Das 170 pessoas que responderam nas Vagas, apenas 47 (27,6%) chegaram à 2ª mensagem. Verificar tempo de resposta do RH no WhatsApp — candidatos esfriando por falta de retorno rápido.</p>
+      </div>
+      <div class="insight-box">
+        <h4>📊 Consolidar Estoquista HOMEM vs MULHER</h4>
+        <p>CPM do HOMEM (R$ 11,90) é 2,4× maior que o MULHER (R$ 7,24). Avaliar se segmentar por gênero é necessário ou se um ad set neutro com maior alcance performa melhor.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ CPM Global RH: R$ 5,81 — excelente</h4>
+        <p>Custo por mil impressões muito abaixo da média do mercado para recrutamento. Estrutura de segmentação funcionando bem.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="notas">
+    <div class="notas-label">📋 Resumo Executivo</div>
+    <p><strong style="color:#FF6B00">RH está excelente:</strong> Representante a R$ 1,90/lead (meta R$ 2) e Vagas a R$ 3,07/conexão. Priorizar: reativar Estoquista Mulher + trocar criativo no Pará. <strong style="color:#FF6B00">Vendas precisa de ajuste:</strong> CPL de Marabá está 67% acima da meta. Redistribuir orçamento e testar novos criativos. Projeção mensal: R$ 3.461 — dentro do limite de R$ 3.500.</p>
+  </div>
+</div>
+
+</div><!-- /slides -->
+
+<nav id="nav">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</nav>
+
+<script>
+const slideLabels = [
+  "Capa",
+  "Visão Geral",
+  "Vendas — Ad Sets",
+  "Vendas — Criativos",
+  "RH — Visão Geral",
+  "Vaga · Ass. Administrativo",
+  "Vaga · Comprador Peças",
+  "Vaga · Estoquista Pará",
+  "Vaga · Estoquista Goiânia",
+  "Vaga · Representante",
+  "Recomendações"
+];
+
+const slides = document.querySelectorAll('.slide');
+const track  = document.getElementById('nav-track');
+const label  = document.getElementById('slide-label');
+const bar    = document.getElementById('progress-bar');
+let current  = 0;
+
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => goTo(i);
+  track.appendChild(d);
+});
+
+function goTo(n) {
+  slides[current].classList.remove('active');
+  track.children[current].classList.remove('active');
+  current = Math.max(0, Math.min(n, slides.length-1));
+  slides[current].classList.add('active');
+  track.children[current].classList.add('active');
+  label.textContent = slideLabels[current] || '';
+  bar.style.width = ((current/(slides.length-1))*100) + '%';
+  slides[current].scrollTop = 0;
+}
+
+document.getElementById('btn-prev').onclick = () => goTo(current-1);
+document.getElementById('btn-next').onclick = () => goTo(current+1);
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') goTo(current+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')   goTo(current-1);
+});
+
+let tx=0;
+document.addEventListener('touchstart', e => tx=e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if(Math.abs(dx)>40) goTo(current+(dx>0?1:-1));
+});
+
+goTo(0);
+</script>
+</body>
+</html>
