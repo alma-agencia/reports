@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funil de Atendimento — Dr. Igor Neri | Maio 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  /* CAPA */
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; align-items: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; height: 40px; background: var(--border); }
+
+  /* CABEÇALHO */
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  /* KPI */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi .k-delta.nt { color: var(--amber); }
+
+  /* BADGE */
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  /* TABELA */
+  .tbl-wrap { width: 100%; overflow-x: auto; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--dark); vertical-align: middle; }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* FUNIL */
+  .funnel { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 12px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 38px; background: var(--light);
+    border-radius: 6px; overflow: hidden; position: relative;
+    border: 1px solid var(--border);
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 6px; display: flex;
+    align-items: center; padding-left: 12px; transition: width 1.2s ease;
+  }
+  .funnel-bar span { font-size: 12px; font-weight: 700; color: white; white-space: nowrap; }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 180px; flex-shrink: 0; }
+  .funnel-val { font-size: 13px; color: var(--gray); white-space: nowrap; width: 52px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+
+  /* INSIGHT */
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px; width: 100%;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  /* NOTAS */
+  .notas {
+    width: 100%; margin-top: 16px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  /* PIPELINE CARD */
+  .pipeline-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; margin-top: 20px; }
+  .pipeline-card {
+    border: 1px solid var(--border); border-radius: 10px; padding: 18px;
+    background: white; position: relative; overflow: hidden;
+  }
+  .pipeline-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .pipeline-card.hot::before { background: var(--green); }
+  .pipeline-card.warm::before { background: var(--amber); }
+  .pipeline-card.lost::before { background: var(--red); }
+  .pipeline-card .pc-num { font-size: 32px; font-weight: 900; color: var(--dark); line-height: 1; }
+  .pipeline-card .pc-label { font-size: 12px; font-weight: 700; color: var(--dark); margin: 6px 0 4px; }
+  .pipeline-card .pc-desc { font-size: 12px; color: var(--gray); line-height: 1.5; }
+  .pipeline-card .pc-tag {
+    display: inline-block; margin-top: 10px;
+    font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 100px;
+  }
+  .pipeline-card.hot .pc-tag { background: #dcfce7; color: var(--green); }
+  .pipeline-card.warm .pc-tag { background: #fef3c7; color: var(--amber); }
+  .pipeline-card.lost .pc-tag { background: #fee2e2; color: var(--red); }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+
+  /* DESTAQUE */
+  .highlight-num {
+    font-size: 56px; font-weight: 900; color: var(--orange); line-height: 1;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .slide { padding: 20px 16px 72px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; }
+    .cover-meta-item .val { font-size: 20px; }
+    .slide-title { font-size: 18px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .kpi .k-val { font-size: 17px; }
+    .funnel-label { width: 120px; font-size: 11px; }
+    .pipeline-grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .tbl { font-size: 12px; }
+    .tbl th, .tbl td { padding: 7px 8px; }
+    .highlight-num { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="slides">
+
+  <!-- SLIDE 0: CAPA -->
+  <div class="slide active">
+    <div class="cover-wrap">
+      <div class="cover-badge">Dr. Igor Neri · Maio 2026</div>
+      <h1 class="cover-title">Funil de<br>Atendimento</h1>
+      <p class="cover-sub">01/05 a 26/05 · Resultados parciais</p>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">488</div>
+          <div class="lbl">Leads no WPP</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">19</div>
+          <div class="lbl">Agendamentos</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">3,9%</div>
+          <div class="lbl">Conversão</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1: FUNIL VISUAL -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Funil de Conversão</div>
+      <h2 class="slide-title">Do lead ao agendamento</h2>
+      <p class="slide-desc">488 leads entraram no WPP. Veja onde cada um está.</p>
+    </div>
+
+    <div class="kpi-row kpi-row-3" style="margin-bottom:24px;">
+      <div class="kpi">
+        <div class="k-label">Total de Leads</div>
+        <div class="k-val">488</div>
+        <div class="k-sub">01/05 a 26/05</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Agendamentos Confirmados</div>
+        <div class="k-val">19</div>
+        <div class="k-delta up">✓ novos + follow-up</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CVR WPP → Agenda</div>
+        <div class="k-val">3,9%</div>
+        <div class="k-delta up">↗ melhora a partir de 13/05</div>
+      </div>
+    </div>
+
+    <div class="funnel" id="funnel">
+      <div class="funnel-step">
+        <div class="funnel-label">Leads no WPP</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0%; background: #1a1a1a;" data-w="100">
+            <span>488 leads</span>
+          </div>
+        </div>
+        <div class="funnel-val">488</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Conversas iniciadas</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0%; background: #374151;" data-w="52.9">
+            <span>258 leads</span>
+          </div>
+        </div>
+        <div class="funnel-val">258</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Engajados / em negociação</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0%; background: var(--amber);" data-w="17.2">
+            <span>84 leads</span>
+          </div>
+        </div>
+        <div class="funnel-val">84</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Agendamentos confirmados</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0%; background: var(--green);" data-w="3.9">
+            <span>19 agend.</span>
+          </div>
+        </div>
+        <div class="funnel-val">19</div>
+      </div>
+    </div>
+
+    <div class="notas" style="margin-top:20px;">
+      <div class="notas-label">📋 Nota do gestor</div>
+      <p>Os 84 leads "engajados" (follow-up ativo + comprovante pendente + organizando financeiro) representam <strong style="color:#fff;">pipeline quente</strong> — ainda podem converter nos próximos dias. Não estão perdidos.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: BREAKDOWN DETALHADO -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Análise Detalhada</div>
+      <h2 class="slide-title">Onde foram os 488 leads</h2>
+      <p class="slide-desc">Classificação completa por situação de atendimento.</p>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Situação</th>
+            <th class="num">Leads</th>
+            <th class="num">% do Total</th>
+            <th>Status</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>✅ Agendamentos confirmados</strong></td>
+            <td class="num"><strong>19</strong></td>
+            <td class="num"><strong>3,9%</strong></td>
+            <td><span class="badge green">Convertido</span></td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>Foram enviar comprovante · sumiram</td>
+            <td class="num">15</td>
+            <td class="num">3,1%</td>
+            <td><span class="badge orange">Pipeline</span></td>
+            <td>Follow-up ativo</td>
+          </tr>
+          <tr>
+            <td>Organizando financeiro / data futura</td>
+            <td class="num">16</td>
+            <td class="num">3,3%</td>
+            <td><span class="badge orange">Pipeline</span></td>
+            <td>Acompanhar data</td>
+          </tr>
+          <tr>
+            <td>Pararam de responder (follow-up ativo)</td>
+            <td class="num">53</td>
+            <td class="num">10,9%</td>
+            <td><span class="badge amber">Follow-up</span></td>
+            <td>Sequência ativa</td>
+          </tr>
+          <tr>
+            <td>Sem condições financeiras no momento</td>
+            <td class="num">42</td>
+            <td class="num">8,6%</td>
+            <td><span class="badge red">Perdido</span></td>
+            <td>Base futura</td>
+          </tr>
+          <tr>
+            <td>Fora de perfil / convênio / erros</td>
+            <td class="num">113</td>
+            <td class="num">23,2%</td>
+            <td><span class="badge red">Não qualificado</span></td>
+            <td>Filtrar na segmentação</td>
+          </tr>
+          <tr>
+            <td>Não responderam a 1ª mensagem</td>
+            <td class="num">230</td>
+            <td class="num">47,1%</td>
+            <td><span class="badge red">Sem contato</span></td>
+            <td>Revisão de abordagem</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">📋 Nota do gestor</div>
+      <p>47% dos leads não respondeu nem a 1ª mensagem — isso indica que o <strong style="color:#fff;">horário ou abordagem da 1ª msg</strong> pode ser otimizado. Testar variações de abertura pode reduzir significativamente esse número.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: PIPELINE QUENTE -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Pipeline Ativo</div>
+      <h2 class="slide-title">84 leads ainda podem converter</h2>
+      <p class="slide-desc">Mês ainda não acabou — estes leads estão quentes.</p>
+    </div>
+
+    <div class="pipeline-grid">
+      <div class="pipeline-card hot">
+        <div class="pc-num">15</div>
+        <div class="pc-label">Comprovante pendente</div>
+        <div class="pc-desc">Demonstraram intenção real de agendamento. Foram buscar o comprovante e não responderam mais, mesmo após follow-up.</div>
+        <div class="pc-tag">🔥 Alta prioridade</div>
+      </div>
+      <div class="pipeline-card hot">
+        <div class="pc-num">16</div>
+        <div class="pc-label">Organizando financeiro</div>
+        <div class="pc-desc">Querem agendar, mas estão juntando o valor ou programando data específica para confirmar.</div>
+        <div class="pc-tag">🔥 Alta prioridade</div>
+      </div>
+      <div class="pipeline-card warm">
+        <div class="pc-num">53</div>
+        <div class="pc-label">Follow-up em andamento</div>
+        <div class="pc-desc">Pararam de responder em algum ponto da conversa. Estão em acompanhamento ativo de follow-up pela SDR.</div>
+        <div class="pc-tag">⏳ Em andamento</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; gap: 14px; width: 100%;">
+      <div class="insight-box good" style="flex:1; margin-bottom:0;">
+        <h4>✅ Virada positiva a partir de 13/05</h4>
+        <p>Aumento perceptível no volume de conversas em andamento, leads com intenção real de agendamento e abertura para follow-up após dia 13. Os últimos 13 dias do mês foram consideravelmente melhores.</p>
+      </div>
+      <div class="insight-box warn" style="flex:1; margin-bottom:0;">
+        <h4>⚠️ Ainda restam 5 dias de maio</h4>
+        <p>Com 84 leads em pipeline ativo, há real possibilidade de novos agendamentos até 31/05. Os 15 de comprovante pendente e os 16 de data futura são os de maior probabilidade de conversão imediata.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: INSIGHTS + PRÓXIMOS PASSOS -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Diagnóstico</div>
+      <h2 class="slide-title">O que os dados mostram</h2>
+      <p class="slide-desc">Análise do gestor sobre o mês e os próximos movimentos.</p>
+    </div>
+
+    <div class="two-col" style="margin-bottom: 16px;">
+      <div>
+        <div class="insight-box good">
+          <h4>✅ 19 agendamentos num mês difícil</h4>
+          <p>Maio é historicamente um mês de menor conversão. Manter 19 agendamentos confirmados com ainda 5 dias restantes é um resultado sólido para o período.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>✅ Melhora real a partir de 13/05</h4>
+          <p>A segunda quinzena performou melhor em todos os indicadores: mais conversas, mais intenção, mais follow-ups avançando. O ajuste nos criativos e público está gerando leads mais qualificados.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>✅ Pipeline com 84 leads ativos</h4>
+          <p>Diferente de "leads perdidos", esses contatos têm intenção demonstrada. Follow-up disciplinado nos próximos dias pode converter parte significativa desse grupo.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box bad">
+          <h4>🔴 47% não respondeu a 1ª mensagem</h4>
+          <p>Alto índice de ghost no primeiro contato. Sugere revisão no horário do disparo, na abordagem de abertura ou no tempo de resposta entre o clique no anúncio e o primeiro contato.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>🔴 23% fora de perfil ou clique errado</h4>
+          <p>113 leads chegaram por convênio, erro ou sem fit. Indica oportunidade de refinar a segmentação de público nos anúncios para reduzir desperdício de budget.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>⚠️ 42 sem condições financeiras</h4>
+          <p>8,6% do total. Podem retornar em momento de maior renda. Vale manter em base de nutrição para reativação futura.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">📋 Próximos movimentos</div>
+      <p><strong style="color:#fff;">Curto prazo (esta semana):</strong> Priorizar follow-up nos 15 de comprovante pendente e nos 16 que marcaram data — são os mais próximos de fechar. Para o grupo de 53 em follow-up, continuar a sequência ativa.<br><br>
+      <strong style="color:#fff;">Médio prazo (junho):</strong> Testar variação na abordagem da 1ª mensagem para reduzir o índice de 47% sem resposta. Refinar segmentação de público para diminuir volume de leads fora de perfil.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- NAVEGAÇÃO -->
+<div id="nav">
+  <button class="nav-btn" id="prev" onclick="go(-1)">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">CAPA</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="next" onclick="go(1)">&#8594;</button>
+</div>
+
+<script>
+  const labels = [
+    "CAPA",
+    "FUNIL DE CONVERSÃO",
+    "ANÁLISE DETALHADA",
+    "PIPELINE ATIVO",
+    "DIAGNÓSTICO"
+  ];
+  const slides = document.querySelectorAll('.slide');
+  const track = document.getElementById('nav-track');
+  const lbl = document.getElementById('slide-label');
+  const bar = document.getElementById('progress-bar');
+  let cur = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => go(i - cur);
+    track.appendChild(d);
+  });
+
+  function animateFunnel() {
+    document.querySelectorAll('.funnel-bar').forEach(b => {
+      const w = b.getAttribute('data-w');
+      if (w) setTimeout(() => b.style.width = w + '%', 100);
+    });
+  }
+
+  function go(dir) {
+    const next = Math.max(0, Math.min(slides.length - 1, cur + dir));
+    if (next === cur) return;
+    slides[cur].classList.remove('active');
+    slides[next].classList.add('active');
+    document.querySelectorAll('.dot')[cur].classList.remove('active');
+    document.querySelectorAll('.dot')[next].classList.add('active');
+    cur = next;
+    lbl.textContent = labels[cur];
+    bar.style.width = ((cur / (slides.length - 1)) * 100) + '%';
+    if (cur === 1) animateFunnel();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+  });
+
+  bar.style.width = '0%';
+  lbl.textContent = labels[0];
+</script>
+</body>
+</html>
