@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPK — Campanhas Ativas Jun/2026</title>
+<style>
+  :root {
+    --orange: #FF6B00; --orange-light: #FF8C3A; --orange-pale: #FFF0E6;
+    --dark: #1a1a1a; --gray: #6b7280; --light: #f9fafb; --white: #ffffff;
+    --border: #e5e7eb; --green: #16a34a; --red: #dc2626; --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 44px 60px 76px; opacity: 0; pointer-events: none;
+    transition: opacity .4s ease; overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+  #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--orange); transition: width .4s ease; z-index: 200; }
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 58px;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    background: rgba(255,255,255,0.97); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border); z-index: 100;
+  }
+  .nav-btn {
+    width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border);
+    background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 15px; transition: all .2s; flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all .3s; }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  /* COVER */
+  .cover-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; text-align: center; }
+  .cover-badge { background: var(--orange-pale); color: var(--orange); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 24px; }
+  .cover-title { font-size: 48px; font-weight: 800; color: var(--dark); line-height: 1.1; margin-bottom: 10px; }
+  .cover-sub { font-size: 17px; color: var(--gray); margin-bottom: 36px; }
+  .cover-meta { display: flex; gap: 28px; justify-content: center; align-items: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 30px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .cover-divider { width: 1px; height: 40px; background: var(--border); }
+
+  /* SLIDE HEADER */
+  .slide-header { width: 100%; margin-bottom: 22px; flex-shrink: 0; }
+  .slide-tag { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 5px; }
+  .slide-title { font-size: 26px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 13px; color: var(--gray); margin-top: 5px; }
+
+  /* KPI CARDS */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; margin-bottom: 18px; flex-shrink: 0; }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row-5 { grid-template-columns: repeat(5, 1fr); }
+  .kpi { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; position: relative; overflow: hidden; }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--orange); }
+  .kpi.red::before { background: var(--red); }
+  .kpi.green::before { background: var(--green); }
+  .kpi.amber::before { background: var(--amber); }
+  .kpi .k-label { font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--gray); margin-bottom: 4px; }
+  .kpi .k-val { font-size: 21px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 3px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 3px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  /* TABLE */
+  .tbl-wrap { width: 100%; overflow-x: auto; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .tbl th { background: var(--dark); color: white; padding: 9px 11px; text-align: left; font-weight: 600; font-size: 11px; letter-spacing: .3px; }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child  { border-radius: 0 6px 6px 0; }
+  .tbl td { padding: 8px 11px; border-bottom: 1px solid var(--border); color: var(--dark); vertical-align: middle; }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* CREATIVE GRID */
+  .creative-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; width: 100%; }
+  .creative-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .creative-card { border: 1px solid var(--border); border-radius: 10px; padding: 12px; background: white; display: flex; flex-direction: column; }
+  .creative-card.best { border-color: var(--green); border-width: 2px; }
+  .creative-card.worst { border-color: var(--red); }
+  .creative-thumb {
+    width: 100%; aspect-ratio: 4/5; border-radius: 6px; overflow: hidden;
+    background: var(--light); margin-bottom: 10px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .creative-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb-badge {
+    position: absolute; bottom: 6px; left: 6px;
+    background: rgba(0,0,0,0.7); color: white;
+    font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 100px;
+  }
+  .thumb-rank {
+    position: absolute; top: 6px; right: 6px;
+    background: var(--orange); color: white;
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px;
+  }
+  .thumb-rank.best { background: var(--green); }
+  .thumb-rank.worst { background: var(--red); }
+  .creative-card .c-name { font-size: 12px; font-weight: 700; color: var(--dark); margin-bottom: 8px; line-height: 1.3; min-height: 28px; }
+  .creative-card .c-metric { display: flex; justify-content: space-between; font-size: 11.5px; padding: 3px 0; border-bottom: 1px solid var(--border); }
+  .creative-card .c-metric:last-of-type { border-bottom: none; }
+  .creative-card .c-metric .ml { color: var(--gray); }
+  .creative-card .c-metric .mv { font-weight: 700; color: var(--dark); }
+  .cpl-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .cpl-bar-fill { height: 100%; border-radius: 2px; }
+
+  /* INSIGHT BOX */
+  .insight-box { background: white; border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-bottom: 10px; }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
+  .insight-box p { font-size: 12.5px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  /* NOTAS */
+  .notas { width: 100%; margin-top: 16px; background: #1a1a1a; border-radius: 10px; padding: 14px 18px; flex-shrink: 0; }
+  .notas-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #FF6B00; margin-bottom: 7px; }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 20px; width: 100%; }
+
+  /* CAMPAIGN SECTION HEADER */
+  .camp-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px; padding: 12px 16px;
+    background: var(--light); border-radius: 8px; border: 1px solid var(--border);
+    width: 100%; flex-shrink: 0;
+  }
+  .camp-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .camp-name { font-size: 13px; font-weight: 700; color: var(--dark); flex: 1; }
+  .camp-budget { font-size: 12px; color: var(--orange); font-weight: 600; }
+
+  @media (max-width: 768px) {
+    .slide { padding: 18px 14px 70px; }
+    .kpi-row { grid-template-columns: repeat(2,1fr); gap: 8px; }
+    .kpi-row-5 { grid-template-columns: repeat(2,1fr); }
+    .creative-grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .creative-grid-3 { grid-template-columns: repeat(2,1fr); }
+    .cover-title { font-size: 28px; }
+    .slide-title { font-size: 18px; }
+    .two-col, .two-col-4060 { grid-template-columns: 1fr; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="slides">
+
+<!-- ═══════════════════ SLIDE 0 — CAPA ═══════════════════ -->
+<div class="slide active" id="s0">
+  <div class="cover-wrap">
+    <div class="cover-badge">SPK Distribuição · Campanhas Ativas</div>
+    <div class="cover-title">Status de<br>Campanhas</div>
+    <div class="cover-sub">Panorama geral · Últimos 30 dias · Junho 2026</div>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><div class="val">R$2,88K</div><div class="lbl">Investido</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">195</div><div class="lbl">Leads</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">R$14,78</div><div class="lbl">CPL Médio</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">2</div><div class="lbl">Campanhas Ativas</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 1 — VISÃO GERAL ═══════════════════ -->
+<div class="slide" id="s1">
+  <div class="slide-header">
+    <div class="slide-tag">Visão Geral · 30 dias</div>
+    <div class="slide-title">Consolidado das Campanhas Ativas</div>
+    <div class="slide-desc">Investimento total + principais métricas · Meta CPL: R$ 8,00</div>
+  </div>
+
+  <div class="kpi-row kpi-row-5">
+    <div class="kpi"><div class="k-label">Gasto Total</div><div class="k-val">R$2.882</div><div class="k-sub">Últimos 30 dias</div></div>
+    <div class="kpi"><div class="k-label">Leads Gerados</div><div class="k-val">195</div><div class="k-sub">Formulários enviados</div></div>
+    <div class="kpi red"><div class="k-label">CPL Médio</div><div class="k-val">R$14,78</div><div class="k-sub">Meta: R$8,00</div><div class="k-delta dn">↑ +84% acima da meta</div></div>
+    <div class="kpi"><div class="k-label">Impressões</div><div class="k-val">213K</div><div class="k-sub">Total acumulado</div></div>
+    <div class="kpi"><div class="k-label">CTR Médio</div><div class="k-val">1,50%</div><div class="k-sub">Benchmark: 1,5%+</div></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Campanha</th>
+          <th>Objetivo</th>
+          <th class="num">Orçamento/dia</th>
+          <th class="num">Gasto 30d</th>
+          <th class="num">Impressões</th>
+          <th class="num">CTR</th>
+          <th class="num">Freq.</th>
+          <th class="num">Leads</th>
+          <th class="num">CPL</th>
+          <th>Status CPL</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>[Marabá] Lançamentos</strong></td>
+          <td>Formulário</td>
+          <td class="num">R$130</td>
+          <td class="num">R$2.257</td>
+          <td class="num">171.269</td>
+          <td class="num">1,40%</td>
+          <td class="num"><strong style="color:var(--amber)">4,24</strong></td>
+          <td class="num"><strong>141</strong></td>
+          <td class="num"><strong>R$16,01</strong></td>
+          <td><span class="badge red">Acima meta</span></td>
+        </tr>
+        <tr>
+          <td><strong>[Estados] Lançamentos e Promos</strong></td>
+          <td>Formulário</td>
+          <td class="num">R$50</td>
+          <td class="num">R$625</td>
+          <td class="num">42.059</td>
+          <td class="num">1,67%</td>
+          <td class="num">2,09</td>
+          <td class="num"><strong>54</strong></td>
+          <td class="num"><strong>R$11,58</strong></td>
+          <td><span class="badge amber">Acima meta</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notas" style="margin-top:18px">
+    <div class="notas-label">⚠ Atenção</div>
+    <p>Ambas as campanhas estão com CPL acima da meta de R$8,00. A campanha Marabá tem frequência de <strong style="color:#FF6B00">4,24</strong> — audiência saturando. Recomendado: novos criativos + ampliação de público para baixar CPL.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 2 — CAMPANHA MARABÁ ═══════════════════ -->
+<div class="slide" id="s2">
+  <div class="slide-header">
+    <div class="slide-tag">Campanha 1 · Marabá — Lançamentos</div>
+    <div class="slide-title">Performance por Anúncio — Marabá</div>
+    <div class="slide-desc">8 anúncios ativos · Últimos 30 dias · Orçamento: R$130/dia</div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi"><div class="k-label">Gasto</div><div class="k-val">R$2.257</div><div class="k-sub">de R$3.900 disponíveis</div></div>
+    <div class="kpi red"><div class="k-label">CPL</div><div class="k-val">R$16,01</div><div class="k-sub">Meta: R$8,00</div><div class="k-delta dn">↑ 2x acima da meta</div></div>
+    <div class="kpi amber"><div class="k-label">Frequência</div><div class="k-val">4,24</div><div class="k-sub">⚠ Alta — audiência saturando</div></div>
+    <div class="kpi"><div class="k-label">Leads</div><div class="k-val">141</div><div class="k-sub">CTR 1,40% · CPM R$13,18</div></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Anúncio</th>
+          <th>Adset</th>
+          <th class="num">Gasto</th>
+          <th class="num">Impressões</th>
+          <th class="num">CTR</th>
+          <th class="num">Leads</th>
+          <th class="num">CPL</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chegamos em Marabá! — Vídeo ST</td>
+          <td>01-ST Empresários</td>
+          <td class="num">R$93,29</td>
+          <td class="num">7.181</td>
+          <td class="num">1,24%</td>
+          <td class="num"><strong>10</strong></td>
+          <td class="num"><strong style="color:var(--green)">R$9,33</strong></td>
+          <td><span class="badge green">⭐ Melhor</span></td>
+        </tr>
+        <tr>
+          <td>Chegamos em Marabá! — Vídeo V2</td>
+          <td>01-IG Interesses</td>
+          <td class="num">R$485,55</td>
+          <td class="num">36.909</td>
+          <td class="num">1,43%</td>
+          <td class="num"><strong>37</strong></td>
+          <td class="num">R$13,12</td>
+          <td><span class="badge amber">OK</span></td>
+        </tr>
+        <tr>
+          <td>Chegamos em Marabá! — Imagem V2</td>
+          <td>01-IG Interesses</td>
+          <td class="num">R$41,99</td>
+          <td class="num">2.677</td>
+          <td class="num">1,34%</td>
+          <td class="num">3</td>
+          <td class="num">R$14,00</td>
+          <td><span class="badge amber">OK</span></td>
+        </tr>
+        <tr>
+          <td>Chegamos em Marabá! — Imagem V1</td>
+          <td>01-IG Interesses</td>
+          <td class="num">R$418,96</td>
+          <td class="num">37.656</td>
+          <td class="num">1,42%</td>
+          <td class="num">26</td>
+          <td class="num">R$16,11</td>
+          <td><span class="badge red">Alto</span></td>
+        </tr>
+        <tr>
+          <td>Chegamos em Marabá! — Vídeo V1</td>
+          <td>01-IG Interesses</td>
+          <td class="num">R$741,71</td>
+          <td class="num">47.776</td>
+          <td class="num">1,44%</td>
+          <td class="num">41</td>
+          <td class="num">R$18,09</td>
+          <td><span class="badge red">Alto</span></td>
+        </tr>
+        <tr>
+          <td>Post da Página V1</td>
+          <td>01-IG Interesses</td>
+          <td class="num">R$462,35</td>
+          <td class="num">38.190</td>
+          <td class="num">1,34%</td>
+          <td class="num">24</td>
+          <td class="num"><strong style="color:var(--red)">R$19,26</strong></td>
+          <td><span class="badge red">⚠ Pior</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 3 — CRIATIVOS MARABÁ ═══════════════════ -->
+<div class="slide" id="s3">
+  <div class="slide-header">
+    <div class="slide-tag">Campanha 1 · Criativos</div>
+    <div class="slide-title">Criativos Ativos — Marabá</div>
+    <div class="slide-desc">Thumbnails dos anúncios em veiculação · ordenados por CPL</div>
+  </div>
+
+  <div class="creative-grid">
+
+    <!-- MELHOR -->
+    <div class="creative-card best">
+      <div class="creative-thumb">
+        <img src="https://scontent.fgyn18-1.fna.fbcdn.net/v/t15.5256-10/671645314_933614439590443_5835818095587845242_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=fcK-Qace0wwQ7kNvwH0ejAF&_nc_oc=Ado3oofk2fm3gZGkPzpGvzUI0D2T1i0a1Oib80N-cpkXXq05Dk_KzpyWKU319jcSN8w&_nc_zt=23&_nc_ht=scontent.fgyn18-1.fna&edm=AAwGEdEEAAAA&_nc_gid=optIQM95DWGKuQpI79GuOQ&_nc_tpa=Q5bMBQGLtmoyufcXBaoZCnN3BeVt2mC8Ahd8-knKt1b_GCaocbjp10oQIIMjhPTxp-ifxpDv28b5kOJ_cA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af-EAvs1N713e2wbxBHXrsH1S8f9FpaW2IxyrKx_F_PY6Q&oe=6A2CF6D7" alt="Chegamos em Marabá ST" onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\'thumb-placeholder\'>📷 Vídeo</div>'">
+        <span class="thumb-badge">🎬 Vídeo</span>
+        <span class="thumb-rank best">⭐ #1</span>
+      </div>
+      <div class="c-name">Chegamos em Marabá — Vídeo ST</div>
+      <div class="c-metric"><span class="ml">Gasto</span><span class="mv">R$93,29</span></div>
+      <div class="c-metric"><span class="ml">Leads</span><span class="mv">10</span></div>
+      <div class="c-metric"><span class="ml">CTR</span><span class="mv">1,24%</span></div>
+      <div class="c-metric"><span class="ml">CPL</span><span class="mv" style="color:var(--green)">R$9,33</span></div>
+      <div class="cpl-bar"><div class="cpl-bar-fill" style="width:52%;background:var(--green)"></div></div>
+    </div>
+
+    <!-- #2 -->
+    <div class="creative-card">
+      <div class="creative-thumb">
+        <img src="https://scontent.fgyn18-1.fna.fbcdn.net/v/t15.5256-10/671645314_933614439590443_5835818095587845242_n.jpg?_nc_cat=104&ccb=1-7&_nc_ohc=fcK-Qace0wwQ7kNvwH0ejAF&_nc_oc=Ado3oofk2fm3gZGkPzpGvzUI0D2T1i0a1Oib80N-cpkXXq05Dk_KzpyWKU319jcSN8w&_nc_zt=23&_nc_ht=scontent.fgyn18-1.fna&edm=AAwGEdEEAAAA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_Af-EAvs1N713e2wbxBHXrsH1S8f9FpaW2IxyrKx_F_PY6Q&oe=6A2CF6D7" alt="Chegamos V2" onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\'thumb-placeholder\'>📷 Vídeo</div>'">
+        <span class="thumb-badge">🎬 Vídeo</span>
+        <span class="thumb-rank" style="background:#444">#2</span>
+      </div>
+      <div class="c-name">Chegamos em Marabá — Vídeo V2</div>
+      <div class="c-metric"><span class="ml">Gasto</span><span class="mv">R$485,55</span></div>
+      <div class="c-metric"><span class="ml">Leads</span><span class="mv">37</span></div>
+      <div class="c-metric"><span class="ml">CTR</span><span class="mv">1,43%</span></div>
+      <div class="c-metric"><span class="ml">CPL</span><span class="mv" style="color:var(--amber)">R$13,12</span></div>
+      <div class="cpl-bar"><div class="cpl-bar-fill" style="width:72%;background:var(--amber)"></div></div>
+    </div>
+
+    <!-- #3 -->
+    <div class="creative-card">
+      <div class="creative-thumb">
+        <img src="https://external.fgyn18-1.fna.fbcdn.net/emg1/v/t13/5735633138435135674?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQKHe28uzsK30SrIwMQ9qp_oZj4zwetkMbCoP7H7uuAExH73r4OJgtPlNPIb1EA_3KTTf_lgrYFZfDZTmuIBuP0ZH8CLpNzzQKW7iilpg8EQJwii70bZDhgdjt6s64qL26QXBiYC6t2GHc9_1b0iIhWL&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AAwGEdEEAAAA&_nc_gid=tIaGLa5jwF55MFNmz_rqmA&_nc_oc=AdoUe4M_JXydz-iUABcy5BshLD-50f-d9K_yHL9v8Chqv3PEqdqywp5J82v6FZeNhVQ&ccb=13-1&oh=06_Q3_AAWTYwAgdBrZgujqDTaTFP4AbvWzJ5gVEg2VMwe1056iD&oe=6A28E9F7&_nc_sid=58080a" alt="Imagem V2" onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\'thumb-placeholder\'>🖼 Imagem</div>'">
+        <span class="thumb-badge">🖼 Imagem</span>
+        <span class="thumb-rank" style="background:#444">#3</span>
+      </div>
+      <div class="c-name">Chegamos em Marabá — Imagem V2</div>
+      <div class="c-metric"><span class="ml">Gasto</span><span class="mv">R$41,99</span></div>
+      <div class="c-metric"><span class="ml">Leads</span><span class="mv">3</span></div>
+      <div class="c-metric"><span class="ml">CTR</span><span class="mv">1,34%</span></div>
+      <div class="c-metric"><span class="ml">CPL</span><span class="mv" style="color:var(--amber)">R$14,00</span></div>
+      <div class="cpl-bar"><div class="cpl-bar-fill" style="width:78%;background:var(--amber)"></div></div>
+    </div>
+
+    <!-- PIOR -->
+    <div class="creative-card worst">
+      <div class="creative-thumb">
+        <img src="https://external.fgyn18-1.fna.fbcdn.net/emg1/v/t13/10642440429995001623?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQICXPiiHdLUIJJ24q5ByOKvGAo6I7jxi88C4oXuRoHWrXvKViR9kC_1ZUhYTDClQaUnvxmVRGB6VOlrlkvjqTfbreRlgqK3mVcMyj6WYv55WOwV0kxzJhtE5SnNp9t2XbDF9bqfxs_Iffsuya-tXETU&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AAwGEdEEAAAA&ccb=13-1&oh=06_Q3_AAfsJahPxMIn7nC1LAFGVqIGEkFe3HfJi35benzxTpa-v&oe=6A28E360&_nc_sid=58080a" alt="Post Página V1" onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\'thumb-placeholder\'>🖼 Imagem</div>'">
+        <span class="thumb-badge">🖼 Post</span>
+        <span class="thumb-rank worst">⚠ Pior</span>
+      </div>
+      <div class="c-name">Post da Página V1</div>
+      <div class="c-metric"><span class="ml">Gasto</span><span class="mv">R$462,35</span></div>
+      <div class="c-metric"><span class="ml">Leads</span><span class="mv">24</span></div>
+      <div class="c-metric"><span class="ml">CTR</span><span class="mv">1,34%</span></div>
+      <div class="c-metric"><span class="ml">CPL</span><span class="mv" style="color:var(--red)">R$19,26</span></div>
+      <div class="cpl-bar"><div class="cpl-bar-fill" style="width:100%;background:var(--red)"></div></div>
+    </div>
+
+  </div>
+
+  <div class="notas">
+    <div class="notas-label">📋 Ação recomendada</div>
+    <p>Pausar <strong style="color:#FF6B00">Post da Página V1</strong> (CPL R$19,26 — gasto R$462 com retorno baixo). Manter verbas no <strong style="color:#FF6B00">Vídeo ST</strong> (único abaixo de R$10). Urgente: novos criativos para desafogar a frequência de 4,24.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 4 — CAMPANHA ESTADOS ═══════════════════ -->
+<div class="slide" id="s4">
+  <div class="slide-header">
+    <div class="slide-tag">Campanha 2 · Estados — Lançamentos e Promos</div>
+    <div class="slide-title">Performance e Criativos — Estados</div>
+    <div class="slide-desc">3 anúncios · Últimos 30 dias · Orçamento: R$50/dia</div>
+  </div>
+
+  <div class="kpi-row kpi-row-3">
+    <div class="kpi amber"><div class="k-label">CPL</div><div class="k-val">R$11,58</div><div class="k-sub">Meta: R$8,00</div><div class="k-delta dn">↑ +44% acima da meta</div></div>
+    <div class="kpi"><div class="k-label">Leads</div><div class="k-val">54</div><div class="k-sub">Formulários enviados</div></div>
+    <div class="kpi green"><div class="k-label">Frequência</div><div class="k-val">2,09</div><div class="k-sub">✅ Saudável — audiência fresca</div></div>
+  </div>
+
+  <div class="creative-grid creative-grid-3" style="margin-bottom:16px">
+
+    <!-- MELHOR -->
+    <div class="creative-card best">
+      <div class="creative-thumb">
+        <img src="https://external.fgyn18-1.fna.fbcdn.net/emg1/v/t13/16713008655166609473?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIenLg2U3JouDoUvAJzHkJaK10wsq4LUohmxJxfKuxDE09O1BdfgHPsiRB-vwWy2n3reRxPpOeQZm166rJY38SzmZtxPrlhAirnPla8Wn6WEfKkpYGZvEsB-BTxDXZ4QHZGcIjYDczUCXMuJ-ABXvuK&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AAwGEdEEAAAA&ccb=13-1&oh=06_Q3_AAcXO0wAYUKmpHZtrkPQra5-wTzgm8gsidCmzlnHDLfGt&oe=6A28EE88&_nc_sid=58080a" alt="Resfriador Óleo" onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\'thumb-placeholder\'>🖼 Imagem</div>'">
+        <span class="thumb-badge">🖼 Imagem</span>
+        <span class="thumb-rank best">⭐ #1</span>
+      </div>
+      <div class="c-name">🚨 Promoção Relâmpago — Resfriador de Óleo Motor Cruze</div>
+      <div class="c-metric"><span class="ml">Gasto</span><span class="mv">R$453,32</span></div>
+      <div class="c-metric"><span class="ml">Leads</span><span class="mv">40</span></div>
+      <div class="c-metric"><span class="ml">CTR</span><span class="mv">1,75%</span></div>
+      <div class="c-metric"><span class="ml">CPL</span><span class="mv" style="color:var(--amber)">R$11,33</span></div>
+      <div class="cpl-bar"><div class="cpl-bar-fill" style="width:63%;background:var(--orange)"></div></div>
+    </div>
+
+    <!-- #2 -->
+    <div class="creative-card">
+      <div class="creative-thumb">
+        <img src="https://external.fgyn18-1.fna.fbcdn.net/emg1/v/t13/5367784166095300027?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIY87qfyiPiDGJZL9Y8VPo4AqGHT1W7N0XN30OYXrSEuX2m5kqZuaH2s4d9u7AWG8Ynp2LL73ORgewwGGl2V55Sfzr9kkqFjXdtepdDwXAm8-AsoN-cIAU1iwXvbLXMHS81Hs7qb386cXThA3gOuhd-&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&edm=AAwGEdEEAAAA&ccb=13-1&oh=06_Q3_AAT1iCjd93RxsERy8xkVPtD7n3yjsXGaI1K3Vm94kFRxC&oe=6A28E894&_nc_sid=58080a" alt="Super Oferta Amarok" onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\'thumb-placeholder\'>🖼 Imagem</div>'">
+        <span class="thumb-badge">🖼 Imagem</span>
+        <span class="thumb-rank" style="background:#444">#2</span>
+      </div>
+      <div class="c-name">🔥 Super Oferta — Tampas de Cabeçote Amarok 3.0 V6</div>
+      <div class="c-metric"><span class="ml">Gasto</span><span class="mv">R$172,17</span></div>
+      <div class="c-metric"><span class="ml">Leads</span><span class="mv">14</span></div>
+      <div class="c-metric"><span class="ml">CTR</span><span class="mv">1,52%</span></div>
+      <div class="c-metric"><span class="ml">CPL</span><span class="mv" style="color:var(--amber)">R$12,30</span></div>
+      <div class="cpl-bar"><div class="cpl-bar-fill" style="width:68%;background:var(--amber)"></div></div>
+    </div>
+
+    <!-- Catálogo Dinâmico -->
+    <div class="creative-card">
+      <div class="creative-thumb">
+        <img src="https://scontent.fgyn18-1.fna.fbcdn.net/v/t45.1600-4/628343348_921680910418849_4900601387733602056_n.png?_nc_cat=102&ccb=1-7&_nc_ohc=lwOLNZGeFEsQ7kNvwF0QjVw&_nc_oc=Ado0p6P-n1dDb-kEXp0zFw77kusSHHEeev7EcEwSLzfuyUCHoK9oYynM4fyYve4DqBg&_nc_zt=1&_nc_ht=scontent.fgyn18-1.fna&edm=AAwGEdEEAAAA&stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_Af8zw-JGV-WE-i_gOa62tGzSq5EaBVcgFpXZQIzlsjk3Og&oe=6A2CE28C" alt="Catálogo Dinâmico" onerror="this.style.display='none';this.parentNode.innerHTML+='<div class=\'thumb-placeholder\'>📦 Catálogo</div>'">
+        <span class="thumb-badge">📦 Catálogo</span>
+      </div>
+      <div class="c-name">Catálogo Dinâmico — {{product.name}}</div>
+      <div class="c-metric"><span class="ml">Gasto</span><span class="mv">— sem dados</span></div>
+      <div class="c-metric"><span class="ml">Leads</span><span class="mv">—</span></div>
+      <div class="c-metric"><span class="ml">Adset</span><span class="mv" style="color:var(--amber)">PAUSADO</span></div>
+      <div class="c-metric"><span class="ml">CPL</span><span class="mv">—</span></div>
+      <div class="cpl-bar"><div class="cpl-bar-fill" style="width:0%;background:var(--border)"></div></div>
+    </div>
+
+  </div>
+
+  <div class="notas">
+    <div class="notas-label">📋 Observação</div>
+    <p>Campanha Estados tem frequência saudável (2,09) e CTR ligeiramente superior a Marabá. Anúncio de produto específico (Resfriador / Amarok) tem bom desempenho — padrão de <strong style="color:#FF6B00">oferta temática de peça</strong> funciona para este público. Recomendado escalar com mais produtos nesse formato.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ SLIDE 5 — INSIGHTS E AÇÕES ═══════════════════ -->
+<div class="slide" id="s5">
+  <div class="slide-header">
+    <div class="slide-tag">Insights &amp; Próximos Passos</div>
+    <div class="slide-title">O que otimizar agora</div>
+    <div class="slide-desc">Prioridades para reduzir CPL e escalar resultados</div>
+  </div>
+
+  <div class="two-col" style="margin-bottom:14px">
+    <div>
+      <div class="insight-box bad">
+        <h4>⚠ Frequência crítica — Marabá (4,24)</h4>
+        <p>Audiência saturada. O mesmo público viu o anúncio em média 4x. CPL subiu como consequência. Ação imediata: novos criativos ou expansão de público.</p>
+      </div>
+      <div class="insight-box bad">
+        <h4>🔴 "Post da Página V1" — pausar imediatamente</h4>
+        <p>CPL de R$19,26 com R$462 investidos. O pior criativo da conta. Realocando esse orçamento para o Vídeo ST (R$9,33 CPL) seria possível gerar +49 leads adicionais.</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>📉 CPL acima da meta em todas as campanhas</h4>
+        <p>Meta: R$8,00. Atual: R$14,78 médio. Lacuna de 84%. Nenhum criativo está abaixo da meta exceto o Vídeo ST (R$9,33) que está com volume pequeno.</p>
+      </div>
+    </div>
+    <div>
+      <div class="insight-box good">
+        <h4>✅ Padrão "Promoção de Produto Específico" funciona</h4>
+        <p>Criativos com peça específica (Resfriador Cruze, Amarok) têm CTR 1,52–1,75% — acima da média. Modelo a replicar com outros produtos.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Frequência da campanha Estados está saudável (2,09)</h4>
+        <p>Espaço para aumentar orçamento sem penalização de CPM. Orçamento acabou de subir para R$50/dia — acompanhar nos próximos 3 dias.</p>
+      </div>
+      <div class="insight-box">
+        <h4>💡 Próximas criações recomendadas</h4>
+        <p>1. Novo criativo com ângulo "Tabela de Preços para Lojistas" · 2. Carrossel de produtos com preço de atacado · 3. Vídeo 15s mostrando variedade do estoque (18k SKUs)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="notas">
+    <div class="notas-label">🎯 Prioridade de ação (esta semana)</div>
+    <p>
+      <strong style="color:#FF6B00">1.</strong> Pausar "Post da Página V1" ·
+      <strong style="color:#FF6B00">2.</strong> Produzir 2 novos criativos para Marabá (frequência crítica) ·
+      <strong style="color:#FF6B00">3.</strong> Escalar Vídeo ST com mais orçamento ·
+      <strong style="color:#FF6B00">4.</strong> Lançar campanha "Tabela de Preços" com público lojista (planejamento Jun/26)
+    </p>
+  </div>
+</div>
+
+</div><!-- /slides -->
+
+<!-- NAVEGAÇÃO -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">CAPA</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</div>
+
+<script>
+const slideLabels = ['Capa','Visão Geral','Marabá — Performance','Marabá — Criativos','Estados — Criativos','Insights &amp; Ações'];
+const slides = document.querySelectorAll('.slide');
+const track = document.getElementById('nav-track');
+const label = document.getElementById('slide-label');
+const bar = document.getElementById('progress-bar');
+let cur = 0;
+
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => go(i);
+  track.appendChild(d);
+});
+
+function go(n) {
+  slides[cur].classList.remove('active');
+  track.children[cur].classList.remove('active');
+  cur = Math.max(0, Math.min(n, slides.length-1));
+  slides[cur].classList.add('active');
+  track.children[cur].classList.add('active');
+  label.innerHTML = slideLabels[cur];
+  bar.style.width = ((cur/(slides.length-1))*100)+'%';
+}
+
+document.getElementById('btn-next').onclick = () => go(cur+1);
+document.getElementById('btn-prev').onclick = () => go(cur-1);
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(cur-1);
+});
+
+let tx=0;
+document.addEventListener('touchstart', e => tx=e.touches[0].clientX);
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if(Math.abs(dx)>50) go(dx<0?cur+1:cur-1);
+});
+
+bar.style.width = '0%';
+</script>
+</body>
+</html>
