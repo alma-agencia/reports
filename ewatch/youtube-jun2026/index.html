@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eWatch Boutique — Estratégia YouTube · Análise Junho 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00; --orange-light: #FF8C3A; --orange-pale: #FFF0E6;
+    --dark: #1a1a1a; --gray: #6b7280; --light: #f9fafb;
+    --white: #ffffff; --border: #e5e7eb;
+    --green: #16a34a; --red: #dc2626; --amber: #d97706; --blue: #2563eb; --blue-light: #eff6ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px; opacity: 0; pointer-events: none;
+    transition: opacity .4s ease; overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+  #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--orange); transition: width .4s ease; z-index: 200; }
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+    background: rgba(255,255,255,0.97); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border); z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s; box-shadow: 0 1px 4px rgba(0,0,0,.06); flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all .3s; }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  .cover-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; text-align: center; }
+  .cover-badge { background: var(--orange-pale); color: var(--orange); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px; }
+  .cover-title { font-size: 52px; font-weight: 800; color: var(--dark); line-height: 1.1; text-align: center; margin-bottom: 12px; }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0; }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; position: relative; overflow: hidden; }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--orange); }
+  .kpi.green::before { background: var(--green); }
+  .kpi.red::before { background: var(--red); }
+  .kpi.blue::before { background: var(--blue); }
+  .kpi .k-label { font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--gray); margin-bottom: 5px; }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi .k-delta.warn { color: var(--amber); }
+
+  .tbl-wrap { width: 100%; overflow-x: auto; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th { background: var(--dark); color: white; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--dark); vertical-align: middle; }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; }
+  .tbl .highlight td { background: #fff7ed; font-weight: 600; }
+
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+  .badge.blue   { background: var(--blue-light); color: var(--blue); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
+
+  .insight-box { background: white; border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 10px; }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+  .insight-box.blue { border-left-color: var(--blue); }
+
+  .notas { width: 100%; margin-top: 18px; flex-shrink: 0; background: #1a1a1a; border-radius: 10px; padding: 16px 20px; }
+  .notas-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #FF6B00; margin-bottom: 8px; }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; }
+
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card .pop.green { color: var(--green); background: #dcfce7; }
+  .region-card .pop.amber { color: var(--amber); background: #fef3c7; }
+  .region-card .pop.blue  { color: var(--blue); background: var(--blue-light); }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat { font-size: 11px; font-weight: 600; color: var(--dark); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+
+  .text-box { width: 100%; background: var(--light); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; }
+  .text-box p { font-size: 14px; color: var(--dark); line-height: 1.8; }
+
+  .compare-row { display: flex; gap: 16px; align-items: stretch; width: 100%; margin-bottom: 12px; }
+  .compare-col { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .compare-col.before { border-top: 3px solid var(--amber); }
+  .compare-col.after  { border-top: 3px solid var(--green); }
+  .compare-col .c-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .compare-col.before .c-label { color: var(--amber); }
+  .compare-col.after  .c-label { color: var(--green); }
+  .compare-col p { font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 6px; }
+  .compare-col p strong { color: var(--dark); }
+
+  .bar-wrap { width: 100%; background: var(--border); border-radius: 4px; height: 8px; margin-top: 4px; }
+  .bar-fill { height: 8px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="slides">
+
+  <!-- ══ SLIDE 0 — CAPA ══ -->
+  <div class="slide active">
+    <div class="cover-wrap">
+      <div class="cover-badge">Agência Prospect · Relatório YouTube</div>
+      <div class="cover-title">eWatch Boutique<br>Estratégia YouTube</div>
+      <div class="cover-sub">Análise de Implantação — Primeiros Resultados<br>Referência: Maio → Junho 2026</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">22/05</div>
+          <div class="lbl">Início da Estratégia</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">3</div>
+          <div class="lbl">Frentes Ativas</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">+170%</div>
+          <div class="lbl">Inscritos Líquidos</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">−11pp</div>
+          <div class="lbl">Tráfego Pago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 1 — OBJETIVOS E ESTRATÉGIA ══ -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Contexto</div>
+      <div class="slide-title">Objetivo da Estratégia</div>
+      <div class="slide-desc">O que queremos alcançar e como medimos o sucesso</div>
+    </div>
+    <div class="two-col" style="margin-bottom:20px;">
+      <div>
+        <div class="insight-box blue" style="margin-bottom:10px;">
+          <h4>🎯 Objetivo Principal</h4>
+          <p>Treinar o algoritmo do YouTube para distribuição orgânica — fazer o canal crescer de forma sustentável, reduzindo progressivamente a dependência de mídia paga.</p>
+        </div>
+        <div class="insight-box blue">
+          <h4>📈 Objetivo Secundário</h4>
+          <p>Crescimento real da base de inscritos com audiência qualificada — pessoas que assistem, retornam e engajam com o conteúdo de relojoaria.</p>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;">As 3 Frentes da Estratégia</div>
+        <div class="region-grid" style="grid-template-columns:1fr;">
+          <div class="region-card">
+            <h4>① Campanha de Inscritos <span class="pop green">ATIVA</span></h4>
+            <p>Público frio segmentado por canais de relojoaria e interesse real no nicho. Objetivo: inscritos qualificados com custo controlado.</p>
+          </div>
+          <div class="region-card">
+            <h4>② Campanha de Remarketing <span class="pop green">ATIVA</span></h4>
+            <p>Re-engajamento de quem já assistiu ao canal. Sinal mais poderoso para o algoritmo — viewer que retorna indica relevância real.</p>
+          </div>
+          <div class="region-card">
+            <h4>③ Campanha Discovery <span class="pop amber">PENDENTE</span></h4>
+            <p>Encontrar views mais quentes com audiência em fase de pesquisa. Será ativada após consolidação das frentes 1 e 2.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notas">
+      <div class="notas-label">⚠ Complemento — Campanhas de Views (temporárias)</div>
+      <p>Ativadas há ~10 dias com data de início/fim e orçamento baixo. Meta: 10.000 views por vídeo para cada lançamento recente do canal. Estas campanhas têm objetivo operacional (volume de views no lançamento), separado do objetivo estratégico de treinamento do algoritmo.</p>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 2 — O QUE ESPERAMOS ══ -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Expectativas</div>
+      <div class="slide-title">O Que Esperamos Ver — Fase a Fase</div>
+      <div class="slide-desc">É cedo — mas já sabemos o que deve mudar e quando</div>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Janela</th>
+            <th>O que monitorar</th>
+            <th>Sinal positivo</th>
+            <th>Prazo esperado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Semana 1–2</strong></td>
+            <td>Inscritos líquidos por semana</td>
+            <td>Crescimento > período anterior</td>
+            <td>Imediato</td>
+          </tr>
+          <tr>
+            <td><strong>Semana 3–4</strong></td>
+            <td>% tráfego orgânico</td>
+            <td>Redução do % pago (de 91% → &lt;85%)</td>
+            <td>30 dias</td>
+          </tr>
+          <tr>
+            <td><strong>Mês 2</strong></td>
+            <td>Retenção média do canal</td>
+            <td>Crescimento de 1–3pp vs. linha de base</td>
+            <td>60 dias</td>
+          </tr>
+          <tr>
+            <td><strong>Mês 2–3</strong></td>
+            <td>Views por tela inicial / recomendados</td>
+            <td>Crescimento mês a mês (algoritmo aprendendo)</td>
+            <td>60–90 dias</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>Mês 3+</strong></td>
+            <td>Views orgânicas sem mídia</td>
+            <td>Canal distribui sozinho novos vídeos</td>
+            <td>90 dias</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight-box warn">
+      <h4>⚠ Contexto importante</h4>
+      <p>Nos primeiros 30–60 dias, uma queda em views absolutas é esperada e normal — reflete a redução de views frias pagas. O que importa nesta fase é a qualidade da audiência que chega, não o volume. Retenção crescente + inscritos líquidos positivos = estratégia funcionando.</p>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 3 — COMPARATIVO KPIs ══ -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Comparativo</div>
+      <div class="slide-title">Antes vs. Depois — KPIs Principais</div>
+      <div class="slide-desc">01/05–07/05 (linha de base) vs. 23/05–30/05 (1ª semana pós-estratégia)</div>
+    </div>
+    <div class="kpi-row" style="margin-bottom:16px;">
+      <div class="kpi green">
+        <div class="k-label">Inscritos Líquidos</div>
+        <div class="k-val">+8.267</div>
+        <div class="k-sub">23/05–30/05</div>
+        <div class="k-delta up">↑ +170% vs. +3.062 anterior</div>
+      </div>
+      <div class="kpi red">
+        <div class="k-label">Retenção Média</div>
+        <div class="k-val">6,7%</div>
+        <div class="k-sub">23/05–30/05</div>
+        <div class="k-delta dn">↓ vs. 11,4% anterior — impacto das views</div>
+      </div>
+      <div class="kpi green">
+        <div class="k-label">Tráfego Pago</div>
+        <div class="k-val">80,6%</div>
+        <div class="k-sub">23/05–30/05</div>
+        <div class="k-delta up">↓ −11pp vs. 91,9% anterior</div>
+      </div>
+      <div class="kpi green">
+        <div class="k-label">Inscritos Assistindo</div>
+        <div class="k-val">9,5%</div>
+        <div class="k-sub">23/05–30/05</div>
+        <div class="k-delta up">↑ +172% vs. 3,5% anterior</div>
+      </div>
+    </div>
+    <div class="kpi-row kpi-row-3">
+      <div class="kpi">
+        <div class="k-label">Views Totais</div>
+        <div class="k-val">54.077</div>
+        <div class="k-sub">23/05–30/05</div>
+        <div class="k-delta dn">↓ vs. 87.651 anterior (esperado)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Duração Média</div>
+        <div class="k-val">1m39s</div>
+        <div class="k-sub">23/05–30/05</div>
+        <div class="k-delta dn">↓ vs. 3m27s — impacto das views curtas</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Feed de Inscritos</div>
+        <div class="k-val">3,8%</div>
+        <div class="k-sub">23/05–30/05</div>
+        <div class="k-delta up">↑ vs. 1,6% anterior</div>
+      </div>
+    </div>
+    <div class="notas">
+      <div class="notas-label">📌 Leitura dos dados</div>
+      <p>O sinal mais importante desta semana é o crescimento de inscritos líquidos (+170%) e a redução do tráfego pago (−11pp). A queda na retenção e duração média é esperada: as campanhas de views temporárias trouxeram volume de visualizações curtas — isso deve se normalizar quando elas encerrarem.</p>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 4 — FONTE DE TRÁFEGO ══ -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Tráfego</div>
+      <div class="slide-title">Fonte de Tráfego — Comparativo</div>
+      <div class="slide-desc">Evolução do mix pago vs. orgânico entre os dois períodos</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-col before">
+        <div class="c-label">Antes — 01/05 a 07/05</div>
+        <p><strong>Anúncios (pago)</strong> — 80.564 views — 91,9%</p>
+        <div class="bar-wrap"><div class="bar-fill" style="width:91.9%;background:var(--amber);"></div></div>
+        <p style="margin-top:10px;"><strong>Links externos</strong> — 3.577 — 4,1%</p>
+        <p><strong>Feed de inscritos</strong> — 1.372 — 1,6%</p>
+        <p><strong>Pesquisa YouTube</strong> — 716 — 0,8%</p>
+        <p><strong>Vídeos relacionados</strong> — 648 — 0,7%</p>
+        <p><strong>Tela inicial/Recom.</strong> — n/a</p>
+      </div>
+      <div class="compare-col after">
+        <div class="c-label">Depois — 23/05 a 30/05</div>
+        <p><strong>Anúncios (pago)</strong> — 43.602 views — 80,6%</p>
+        <div class="bar-wrap"><div class="bar-fill" style="width:80.6%;background:var(--green);"></div></div>
+        <p style="margin-top:10px;"><strong>Links externos</strong> — 4.121 — 7,6% ↑</p>
+        <p><strong>Feed de inscritos</strong> — 2.042 — 3,8% ↑</p>
+        <p><strong>Shorts</strong> — 1.288 — 2,4% ↑</p>
+        <p><strong>Vídeos relacionados</strong> — 825 — 1,5% ↑</p>
+        <p><strong>Pesquisa YouTube</strong> — 752 — 1,4% ↑</p>
+      </div>
+    </div>
+    <div class="insight-box good" style="margin-top:16px;">
+      <h4>✅ Sinal positivo — todas as fontes orgânicas cresceram</h4>
+      <p>Feed de inscritos +138% | Links externos +85% | Vídeos relacionados +127% | Pesquisa +5%. A redução do volume pago e o crescimento simultâneo de todas as fontes orgânicas indica que o algoritmo está começando a responder à nova qualidade de audiência.</p>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 5 — AUDIÊNCIA ══ -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Audiência</div>
+      <div class="slide-title">Qualidade da Audiência</div>
+      <div class="slide-desc">Inscritos vs. não-inscritos assistindo — o principal indicador de retenção do algoritmo</div>
+    </div>
+    <div class="two-col" style="margin-bottom:20px;">
+      <div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;">Antes — 01/05 a 07/05</div>
+        <div class="kpi" style="margin-bottom:12px;">
+          <div class="k-label">Não inscritos</div>
+          <div class="k-val">84.555 views</div>
+          <div class="k-sub">96,5% do total</div>
+          <div class="bar-wrap" style="margin-top:8px;"><div class="bar-fill" style="width:96.5%;background:var(--red);"></div></div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Inscritos</div>
+          <div class="k-val">3.096 views</div>
+          <div class="k-sub">3,5% do total</div>
+          <div class="bar-wrap" style="margin-top:8px;"><div class="bar-fill" style="width:3.5%;background:var(--green);"></div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;">Depois — 23/05 a 30/05</div>
+        <div class="kpi" style="margin-bottom:12px;">
+          <div class="k-label">Não inscritos</div>
+          <div class="k-val">48.938 views</div>
+          <div class="k-sub">90,5% do total</div>
+          <div class="bar-wrap" style="margin-top:8px;"><div class="bar-fill" style="width:90.5%;background:var(--amber);"></div></div>
+        </div>
+        <div class="kpi green">
+          <div class="k-label">Inscritos</div>
+          <div class="k-val">5.139 views</div>
+          <div class="k-sub">9,5% do total — <strong>↑ +172%</strong></div>
+          <div class="bar-wrap" style="margin-top:8px;"><div class="bar-fill" style="width:9.5%;background:var(--green);"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="insight-box good">
+      <h4>✅ O sinal mais importante desta fase</h4>
+      <p>Views de inscritos saltaram de 3,5% para 9,5% do total — um aumento de 172%. Isso significa que a base de inscritos que estamos construindo está de fato voltando ao canal para assistir. É exatamente o comportamento que o algoritmo do YouTube usa para decidir se vai recomendar o canal organicamente.</p>
+    </div>
+    <div class="notas">
+      <div class="notas-label">🎯 Meta desta fase</div>
+      <p>Elevar progressivamente o % de inscritos assistindo. Referência de canais de nicho saudável: 15–25% das views vindo da própria base inscrita. Estamos saindo de 3,5% → 9,5%. Meta para o mês 2: superar 12%.</p>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 6 — DIAGNÓSTICO ══ -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Diagnóstico</div>
+      <div class="slide-title">Leitura dos Primeiros 17 Dias</div>
+      <div class="slide-desc">O que os dados confirmam, o que preocupa e o que observar</div>
+    </div>
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>✅ Sinais Positivos <span class="pop green">Confirmados</span></h4>
+        <p><strong>Inscritos líquidos +170%</strong> — a campanha de inscritos está trazendo resultado imediato e real.</p>
+        <p style="margin-top:8px;"><strong>Tráfego pago caiu 11pp</strong> — o mix está melhorando mesmo com pouco tempo de estratégia.</p>
+        <p style="margin-top:8px;"><strong>Views de inscritos triplicaram</strong> — a nova base está voltando ao canal.</p>
+        <div class="strat">→ Manter as campanhas de inscritos e RMK sem alterações</div>
+      </div>
+      <div class="region-card">
+        <h4>⚠ Pontos de Atenção <span class="pop amber">Monitorar</span></h4>
+        <p><strong>Retenção caiu de 11,4% → 6,7%</strong> — impacto direto das campanhas de views temporárias. Deve se recuperar após o encerramento delas.</p>
+        <p style="margin-top:8px;"><strong>Duração média caiu para 1m39s</strong> — mesma causa. Views rápidas das campanhas de engajamento puxam a média para baixo.</p>
+        <div class="strat">→ Reanalisar retenção após encerramento das views</div>
+      </div>
+      <div class="region-card">
+        <h4>🔵 Próximas Análises <span class="pop blue">Planejadas</span></h4>
+        <p><strong>Semana 5–6:</strong> verificar se as listas de RMK atingiram 1.000 usuários para escalar a campanha de remarketing.</p>
+        <p style="margin-top:8px;"><strong>Mês 2:</strong> comparativo de retenção média antes/depois com campanhas de views encerradas.</p>
+        <p style="margin-top:8px;"><strong>Após análise:</strong> ativar campanha Discovery.</p>
+        <div class="strat">→ Nenhuma otimização antes do relatório do mês 2</div>
+      </div>
+    </div>
+    <div class="notas" style="margin-top:16px;">
+      <div class="notas-label">📋 Regra de decisão</div>
+      <p>Não otimizar nenhuma campanha com menos de R$10 gastos ou antes de 7 dias de dados estáveis. O algoritmo precisa de tempo para sair da fase de aprendizado. A próxima rodada de otimizações acontece na análise do mês 2 — com pelo menos 45 dias de dados da nova estratégia.</p>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 7 — PRÓXIMOS PASSOS ══ -->
+  <div class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">07 · Próximos Passos</div>
+      <div class="slide-title">Roadmap — Próximas 8 Semanas</div>
+      <div class="slide-desc">O que fazer, quando fazer e o que não tocar</div>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Semana</th>
+            <th>Ação</th>
+            <th>Responsável</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Sem. 1–2 (atual)</strong></td>
+            <td>Manter campanhas inscritos + RMK sem alterações</td>
+            <td>Prospect</td>
+            <td><span class="badge green">Em andamento</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sem. 3</strong></td>
+            <td>Verificar se listas de RMK atingiram 1.000 usuários</td>
+            <td>Prospect</td>
+            <td><span class="badge amber">Aguardando</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sem. 3–4</strong></td>
+            <td>Encerramento natural das campanhas de Views (data fim)</td>
+            <td>Automático</td>
+            <td><span class="badge orange">Programado</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sem. 4</strong></td>
+            <td>Primeira leitura de retenção sem ruído das views</td>
+            <td>Prospect</td>
+            <td><span class="badge amber">Aguardando</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sem. 5–6</strong></td>
+            <td>Análise mês 2 — comparativo completo + relatório</td>
+            <td>Prospect</td>
+            <td><span class="badge amber">Planejado</span></td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>Após análise mês 2</strong></td>
+            <td>Ativar campanha Discovery + primeiras otimizações</td>
+            <td>Prospect</td>
+            <td><span class="badge orange">Pendente análise</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight-box bad">
+      <h4>🚫 O que não fazer agora</h4>
+      <p>Não pausar, não escalar e não alterar segmentação das campanhas de inscritos e RMK antes da análise do mês 2. Não usar views absolutas como critério de decisão. Não ativar Discovery antes do relatório de fechamento desta fase.</p>
+    </div>
+  </div>
+
+</div><!-- /slides -->
+
+<div id="nav">
+  <button class="nav-btn" id="prev-btn">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label"></div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="next-btn">&#8594;</button>
+</div>
+
+<script>
+const slideLabels = [
+  'Capa',
+  '01 · Contexto',
+  '02 · Expectativas',
+  '03 · Comparativo',
+  '04 · Tráfego',
+  '05 · Audiência',
+  '06 · Diagnóstico',
+  '07 · Próximos Passos',
+];
+
+const slides = document.querySelectorAll('.slide');
+const track  = document.getElementById('nav-track');
+const label  = document.getElementById('slide-label');
+const bar    = document.getElementById('progress-bar');
+let cur = 0;
+
+function buildDots() {
+  track.innerHTML = '';
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === cur ? ' active' : '');
+    d.onclick = () => go(i);
+    track.appendChild(d);
+  });
+}
+
+function go(n) {
+  slides[cur].classList.remove('active');
+  cur = Math.max(0, Math.min(n, slides.length - 1));
+  slides[cur].classList.add('active');
+  label.textContent = slideLabels[cur] || '';
+  bar.style.width = ((cur / (slides.length - 1)) * 100) + '%';
+  buildDots();
+}
+
+document.getElementById('prev-btn').onclick = () => go(cur - 1);
+document.getElementById('next-btn').onclick = () => go(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(cur - 1);
+});
+
+go(0);
+</script>
+</body>
+</html>
