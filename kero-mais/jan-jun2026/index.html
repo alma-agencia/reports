@@ -551,85 +551,116 @@
     </div>
   </div>
 
-  <!-- SLIDE 4 — TOP 5 CRIATIVOS -->
+  <!-- SLIDE 4 — CRIATIVO -->
   <div class="slide" id="s4">
     <div class="slide-header">
-      <div class="slide-tag">04 · Criativos</div>
-      <div class="slide-title">Top 5 Criativos por CTR (VD K+)</div>
-      <div class="slide-desc">⚠️ Limitação: 1 criativo por conjunto — sem teste A/B em nenhuma campanha VD K+. CTR reflete o par criativo + público.</div>
+      <div class="slide-tag">04 · Criativo</div>
+      <div class="slide-title">1 Único Criativo — Reel da Teodora</div>
+      <div class="slide-desc">O mesmo vídeo foi usado em todas as campanhas VD K+ (jan–jun 2026) — performance varia exclusivamente pelo público/região</div>
     </div>
 
-    <div class="creative-grid">
-      <div class="creative-card">
-        <div class="rank"># 01</div>
-        <div class="creative-thumb">
-          <img class="creative-thumb-img" src="" alt="Thumbnail Reel Teodora" onerror="this.style.display='none'">
-          <div class="thumb-badge">Reel</div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:24px;width:100%;align-items:start;">
+      <!-- Card único do criativo -->
+      <div>
+        <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;background:white;">
+          <div style="position:relative;aspect-ratio:9/16;background:#1a1a1a;display:flex;align-items:center;justify-content:center;">
+            <img class="creative-thumb-img" src="" alt="Reel Teodora" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'">
+            <div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.7);color:white;font-size:10px;font-weight:600;padding:2px 10px;border-radius:100px;">Reel</div>
+          </div>
+          <div style="padding:12px;">
+            <div style="font-size:10px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Criativo único</div>
+            <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:8px;">Reel — Teodora<br>apresentando os pães</div>
+            <div style="font-size:11px;color:var(--gray);border-top:1px solid var(--border);padding-top:8px;">Usado em 100% das campanhas VD K+</div>
+          </div>
         </div>
-        <div class="name">Rota Goiás Velho — Fev/26</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv" style="color:var(--green)">4,31%</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">88</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$147,87</span></div>
-        <div class="metric"><span class="ml">CPConv</span><span class="mv" style="color:var(--green)">R$1,68</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:100%"></div></div>
+        <div style="margin-top:10px;background:var(--orange-pale);border-radius:8px;padding:10px 12px;">
+          <div style="font-size:10px;font-weight:700;color:var(--orange);margin-bottom:4px;">⚠️ GAP CRÍTICO</div>
+          <div style="font-size:11px;color:var(--dark);line-height:1.5;">Sem variação criativa — impossível saber se o hook, o formato ou a Teodora são o que converte.</div>
+        </div>
       </div>
-      <div class="creative-card">
-        <div class="rank"># 02</div>
-        <div class="creative-thumb">
-          <img class="creative-thumb-img" src="" alt="Thumbnail Reel Teodora" onerror="this.style.display='none'">
-          <div class="thumb-badge">Reel</div>
+
+      <!-- Tabela de performance por público -->
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:10px;">Performance do mesmo criativo em diferentes públicos — ordenado por CTR</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Público / Região</th>
+                <th>Data</th>
+                <th class="num">CTR</th>
+                <th class="num">Conversas</th>
+                <th class="num">Gasto</th>
+                <th class="num">CPConv</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color:var(--orange)">01</strong></td>
+                <td>Rota Goiás Velho</td>
+                <td>Fev/26</td>
+                <td class="num" style="color:var(--green);font-weight:700">4,31%</td>
+                <td class="num">88</td>
+                <td class="num">R$147,87</td>
+                <td class="num" style="color:var(--green);font-weight:700">R$1,68</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--orange)">02</strong></td>
+                <td>Bahia</td>
+                <td>Jan/26</td>
+                <td class="num" style="color:var(--green);font-weight:700">3,69%</td>
+                <td class="num">32</td>
+                <td class="num">R$45,79</td>
+                <td class="num" style="color:var(--green);font-weight:700">R$1,43</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--orange)">03</strong></td>
+                <td>Rota Goiás Velho</td>
+                <td>Mar/26</td>
+                <td class="num">3,07%</td>
+                <td class="num">380</td>
+                <td class="num">R$973,68</td>
+                <td class="num">R$2,56</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--orange)">04</strong></td>
+                <td>Rota Goiás Velho</td>
+                <td>Jun/26</td>
+                <td class="num">3,04%</td>
+                <td class="num">31</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+              </tr>
+              <tr>
+                <td><strong style="color:var(--orange)">05</strong></td>
+                <td>Rota Goiás Velho</td>
+                <td>Jun/26</td>
+                <td class="num">2,84%</td>
+                <td class="num">14</td>
+                <td class="num">—</td>
+                <td class="num">—</td>
+              </tr>
+              <tr style="border-top: 2px solid var(--border);">
+                <td colspan="3"><strong>Hidrolandia</strong> (pior público)</td>
+                <td class="num" style="color:var(--red)">0,72–1,23%</td>
+                <td class="num">102</td>
+                <td class="num">R$1.578</td>
+                <td class="num" style="color:var(--red)">R$15,48</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="name">Bahia — Jan/26</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv" style="color:var(--green)">3,69%</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">32</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$45,79</span></div>
-        <div class="metric"><span class="ml">CPConv</span><span class="mv" style="color:var(--green)">R$1,43</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:85%"></div></div>
-      </div>
-      <div class="creative-card">
-        <div class="rank"># 03</div>
-        <div class="creative-thumb">
-          <img class="creative-thumb-img" src="" alt="Thumbnail Reel Teodora" onerror="this.style.display='none'">
-          <div class="thumb-badge">Reel</div>
+        <div style="margin-top:12px;background:var(--light);border-radius:8px;padding:12px 16px;border:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:700;color:var(--dark);margin-bottom:6px;">💡 Conclusão</div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.6;">O mesmo Reel gerou CTR de <strong style="color:var(--green)">4,31%</strong> em Rota Goiás Velho e apenas <strong style="color:var(--red)">0,72%</strong> em Hidrolandia — diferença de 6x. O criativo funciona, o problema é o público. Em julho, criar pelo menos 2 variações para descobrir se dá pra melhorar ainda mais nos públicos que já funcionam.</div>
         </div>
-        <div class="name">Rota Goiás Velho — Mar/26</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">3,07%</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">380</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$973,68</span></div>
-        <div class="metric"><span class="ml">CPConv</span><span class="mv">R$2,56</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:71%"></div></div>
-      </div>
-      <div class="creative-card">
-        <div class="rank"># 04</div>
-        <div class="creative-thumb">
-          <img class="creative-thumb-img" src="" alt="Thumbnail Reel Teodora" onerror="this.style.display='none'">
-          <div class="thumb-badge">Reel</div>
-        </div>
-        <div class="name">Rota Goiás Velho — Jun/26</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">3,04%</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">31</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">Em andamento</span></div>
-        <div class="metric"><span class="ml">Período</span><span class="mv">12/06</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:70%"></div></div>
-      </div>
-      <div class="creative-card">
-        <div class="rank"># 05</div>
-        <div class="creative-thumb">
-          <img class="creative-thumb-img" src="" alt="Thumbnail Reel Teodora" onerror="this.style.display='none'">
-          <div class="thumb-badge">Reel</div>
-        </div>
-        <div class="name">Rota Goiás Velho — Jun/26</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">2,84%</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">14</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">Em andamento</span></div>
-        <div class="metric"><span class="ml">Período</span><span class="mv">09/06</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:65%"></div></div>
       </div>
     </div>
 
     <div class="notas" style="margin-top: 14px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>4 dos 5 top criativos rodaram na Rota Goiás Velho — o mesmo criativo aplicado na Bahia também performou bem (CTR 3,69%), confirmando que o hook funciona para padarias/lanchonetes B2B. O grande gap: a conta tem 1 criativo por conjunto, impossibilitando teste A/B real. Em julho, obrigatório testar pelo menos 2 variações: Teodora na fábrica vs. Teodora na padaria cliente.</p>
+      <p>Confirmado via API do Meta: todos os anúncios VD K+ usam o mesmo vídeo. A variação de performance é 100% causada pelo público — não pelo criativo. Isso é tanto uma limitação (sem dados de A/B) quanto uma oportunidade: o criativo é sólido, basta direcionar para os públicos certos e testar variações em julho para descobrir o teto de performance.</p>
     </div>
   </div>
 
