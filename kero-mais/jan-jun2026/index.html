@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Kero Mais Pães — Jan–Jun 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  .tbl-hint {
+    display: none; font-size: 11px; color: var(--gray);
+    margin-bottom: 5px; text-align: center; letter-spacing: .3px;
+  }
+  .tbl-hint.show { display: block; }
+  .tbl-fade {
+    display: none; position: absolute; top: 0; right: 0;
+    width: 52px; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.97));
+    pointer-events: none; z-index: 2; border-radius: 0 6px 6px 0;
+  }
+  .tbl-fade.show { display: block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+
+  .alma-logo-wrap { position: absolute; top: 20px; right: 20px; z-index: 10; }
+  .alma-logo-img { height: 44px; width: auto; filter: invert(1); opacity: 0.82; }
+
+  .creative-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 12px; width: 100%;
+  }
+  .creative-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; background: white;
+  }
+  .creative-thumb {
+    width: 100%; aspect-ratio: 9/16;
+    border-radius: 6px; overflow: hidden;
+    background: var(--light); margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .creative-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .creative-thumb .thumb-placeholder {
+    font-size: 28px; color: var(--gray); text-align: center; padding: 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .creative-thumb .thumb-placeholder span { font-size: 11px; color: var(--gray); }
+  .creative-thumb .thumb-badge {
+    position: absolute; bottom: 6px; left: 6px;
+    background: rgba(0,0,0,0.65); color: white;
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 100px; letter-spacing: .5px;
+  }
+  .creative-card .rank {
+    font-size: 10px; font-weight: 700; color: var(--orange);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .creative-card .name {
+    font-size: 12px; font-weight: 700; color: var(--dark);
+    margin-bottom: 8px; line-height: 1.3; min-height: 30px;
+  }
+  .creative-card .metric {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--border);
+  }
+  .creative-card .metric:last-of-type { border-bottom: none; }
+  .creative-card .metric .ml { color: var(--gray); }
+  .creative-card .metric .mv { font-weight: 600; color: var(--dark); }
+  .d2-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .d2-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--orange-light), var(--orange)); }
+
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  /* Mapa de calor de regiões */
+  .region-heat { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .heat-row { display: flex; align-items: center; gap: 12px; }
+  .heat-label { font-size: 12px; font-weight: 600; color: var(--dark); width: 160px; flex-shrink: 0; }
+  .heat-bar-wrap { flex: 1; height: 28px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .heat-bar { height: 100%; display: flex; align-items: center; padding-left: 10px; border-radius: 4px; }
+  .heat-bar span { font-size: 11px; font-weight: 700; color: white; }
+  .heat-val { font-size: 12px; color: var(--gray); width: 100px; text-align: right; flex-shrink: 0; }
+
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 16px 72px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; }
+    .cover-meta-item .val { font-size: 20px; }
+    .slide-title { font-size: 18px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .tbl { font-size: 12px; min-width: 480px; }
+    .creative-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .two-col { grid-template-columns: 1fr; gap: 12px; }
+    .region-grid { grid-template-columns: 1fr; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- SLIDE 0 — CAPA -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Análise Meta Ads · Jan–Jun 2026</div>
+      <div class="cover-title">Kero Mais<br>Pães Congelados</div>
+      <div class="cover-sub">Performance Comercial — 6 meses de conta</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$6.643</div>
+          <div class="lbl">Investido</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">1.140</div>
+          <div class="lbl">Conversas VD K+</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$2,28</div>
+          <div class="lbl">Melhor CPConv</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1 — VISÃO GERAL -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">Performance Jan–Jun 2026</div>
+      <div class="slide-desc">Consolidado dos 6 meses — campanhas comerciais (VD K+) e recrutamento (VAGAS)</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento Total</div>
+        <div class="k-val">R$6.643</div>
+        <div class="k-sub">Jan a Jun 2026</div>
+        <div class="k-delta dn">VD K+: R$5.300 · VAGAS: R$1.340</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Conversas VD K+</div>
+        <div class="k-val">1.140</div>
+        <div class="k-sub">Campanhas comerciais</div>
+        <div class="k-delta up">CPConv médio R$4,65</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Melhor CPConv</div>
+        <div class="k-val">R$2,28</div>
+        <div class="k-sub">Rota Goiás Velho</div>
+        <div class="k-delta up">↓ 77% vs meta R$10</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Melhor CTR</div>
+        <div class="k-val">4,31%</div>
+        <div class="k-sub">Rota Goiás Velho fev/26</div>
+        <div class="k-delta up">↑ Benchmark B2B: 1,5–2,5%</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Tipo de Campanha</th>
+            <th class="num">Investimento</th>
+            <th class="num">Conversas</th>
+            <th class="num">CPConv Médio</th>
+            <th>Observação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>VD K+</strong> — Comercial (clientes)</td>
+            <td class="num">~R$5.300</td>
+            <td class="num"><strong>1.140</strong></td>
+            <td class="num">~R$4,65</td>
+            <td><span class="badge green">✅ Foco principal</span></td>
+          </tr>
+          <tr>
+            <td><strong>VAGAS</strong> — Recrutamento (vendedores)</td>
+            <td class="num">~R$1.340</td>
+            <td class="num">~3.200</td>
+            <td class="num">~R$0,42</td>
+            <td><span class="badge amber">⚠️ Custo de RH — separar budget</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 16px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>A conta mistura campanhas comerciais (VD K+) com campanhas de recrutamento (VAGAS). As VAGAS geram volume de conversas artificialmente alto mas não convertem em receita. O budget de julho deve focar 100% em VD K+ com Lead Ads. A conta ainda não tem pixel instalado — rastreamento via Lead Ads + acompanhamento manual de lead → fechamento.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — TOP 5 CAMPANHAS -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Campanhas</div>
+      <div class="slide-title">Top 5 Campanhas por Volume de Entrada</div>
+      <div class="slide-desc">VD K+ (comercial) — ordenado por conversas iniciadas no WhatsApp</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Campanha</th>
+            <th>Região</th>
+            <th class="num">Conversas</th>
+            <th class="num">CTR</th>
+            <th class="num">Gasto</th>
+            <th class="num">CPConv</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--orange)">01</strong></td>
+            <td><strong>[12/03] VD K+ — Rota Goiás Velho</strong></td>
+            <td>Rota Goiás Velho</td>
+            <td class="num"><strong>380</strong></td>
+            <td class="num">3,07%</td>
+            <td class="num">R$973,68</td>
+            <td class="num">R$2,56</td>
+            <td><span class="badge green">✅ Escalar</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--orange)">02</strong></td>
+            <td>[12/03] VD K+ — GO-BA</td>
+            <td>GO + Bahia</td>
+            <td class="num"><strong>212</strong></td>
+            <td class="num">1,67%</td>
+            <td class="num">R$1.280,58</td>
+            <td class="num">R$6,04</td>
+            <td><span class="badge amber">⚠️ Separar públicos</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--orange)">03</strong></td>
+            <td>[30/01] VD K+ — GO-BA</td>
+            <td>GO + Bahia</td>
+            <td class="num"><strong>121</strong></td>
+            <td class="num">2,33%</td>
+            <td class="num">R$567,49</td>
+            <td class="num">R$4,69</td>
+            <td><span class="badge amber">⚠️ Separar públicos</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--orange)">04</strong></td>
+            <td>[11/02] VD K+ — Rota Goiás Velho</td>
+            <td>Rota Goiás Velho</td>
+            <td class="num"><strong>88</strong></td>
+            <td class="num" style="color:var(--green);font-weight:700">4,31%</td>
+            <td class="num">R$147,87</td>
+            <td class="num" style="color:var(--green);font-weight:700">R$1,68</td>
+            <td><span class="badge green">✅ Melhor eficiência</span></td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--orange)">05</strong></td>
+            <td>[20/03] VD K+ — Nerópolis IA</td>
+            <td>Nerópolis</td>
+            <td class="num"><strong>83</strong></td>
+            <td class="num">1,53%</td>
+            <td class="num">R$695,75</td>
+            <td class="num" style="color:var(--red)">R$8,38</td>
+            <td><span class="badge red">❌ Pausar</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 16px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>As campanhas #1 e #4 (Rota Goiás Velho) somam 468 conversas com CPConv médio de R$2,06 — muito abaixo da meta de R$10. A campanha #4 tem o CTR mais alto da conta inteira (4,31%), sinalizando que o criativo ressona perfeitamente com esse público. GO-BA dilui performance ao misturar Goiânia com regiões menos eficientes — separar os públicos em julho pode dobrar o resultado.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 — TOP 5 PÚBLICOS -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Públicos</div>
+      <div class="slide-title">Top 5 Regiões — Volume Total de Conversas (VD K+)</div>
+      <div class="slide-desc">Consolidado de todas as rodadas por região — jan a jun 2026</div>
+    </div>
+
+    <div class="region-heat" style="margin-bottom: 20px;">
+      <div class="heat-row">
+        <div class="heat-label">🟢 Rota Goiás Velho</div>
+        <div class="heat-bar-wrap">
+          <div class="heat-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00)">
+            <span>513 conversas · 4 rodadas · CTR 3,32%</span>
+          </div>
+        </div>
+        <div class="heat-val">R$2,28/conv</div>
+      </div>
+      <div class="heat-row">
+        <div class="heat-label">🟡 GO-BA</div>
+        <div class="heat-bar-wrap">
+          <div class="heat-bar" style="width:70%;background:linear-gradient(90deg,#FBBC04,#F59E0B)">
+            <span>361 conversas · 4 rodadas · CTR 1,87%</span>
+          </div>
+        </div>
+        <div class="heat-val">R$5,19/conv</div>
+      </div>
+      <div class="heat-row">
+        <div class="heat-label">🔴 Hidrolandia</div>
+        <div class="heat-bar-wrap">
+          <div class="heat-bar" style="width:20%;background:linear-gradient(90deg,#F87171,#DC2626)">
+            <span>102 conversas · 5 rodadas · CTR 1,10%</span>
+          </div>
+        </div>
+        <div class="heat-val" style="color:var(--red)">R$15,48/conv</div>
+      </div>
+      <div class="heat-row">
+        <div class="heat-label">🔴 Nerópolis IA</div>
+        <div class="heat-bar-wrap">
+          <div class="heat-bar" style="width:18%;background:linear-gradient(90deg,#F87171,#DC2626)">
+            <span>93 conversas · 3 rodadas · CTR 1,70%</span>
+          </div>
+        </div>
+        <div class="heat-val" style="color:var(--red)">R$8,64/conv</div>
+      </div>
+      <div class="heat-row">
+        <div class="heat-label">🟢 Bahia</div>
+        <div class="heat-bar-wrap">
+          <div class="heat-bar" style="width:6%;background:linear-gradient(90deg,#4ADE80,#16A34A)">
+            <span>32 conversas · 1 rodada · CTR 3,69%</span>
+          </div>
+        </div>
+        <div class="heat-val">R$1,43/conv</div>
+      </div>
+    </div>
+
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>🟢 Rota Goiás Velho<span class="pop">#1 — Prioridade máxima</span></h4>
+        <p>Melhor região da conta em todas as métricas. CPConv R$2,28 médio em 4 rodadas — consistente e bem abaixo da meta. CTR médio de 3,32% (benchmark B2B típico: 1,5%).</p>
+        <div class="strat">→ Escalar em julho com Lead Ads. Testar 2+ criativos.</div>
+      </div>
+      <div class="region-card">
+        <h4>🟢 Bahia<span class="pop">#2 — A escalar</span></h4>
+        <p>Só rodou 1 vez com R$45 e entregou R$1,43/conversa — o menor CPConv da conta. CTR de 3,69%. Potencial enorme: nunca foi testada com budget real.</p>
+        <div class="strat">→ Testar com R$15–20/dia em julho. Alta prioridade.</div>
+      </div>
+      <div class="region-card">
+        <h4>🟡 GO-BA<span class="pop">#3 — Separar públicos</span></h4>
+        <p>Gera volume (361 conversas) mas dilui performance. Mistura Goiânia com outras cidades — impossível saber qual região puxa o resultado. CPConv R$5,19.</p>
+        <div class="strat">→ Separar Goiânia, Anápolis e outras cidades em conjuntos distintos.</div>
+      </div>
+      <div class="region-card" style="border-color: var(--red);">
+        <h4>🔴 Hidrolandia<span class="pop" style="background:#fee2e2;color:var(--red)">#4 — PARAR</span></h4>
+        <p>R$1.578 gastos em 5 rodadas. CPConv nunca baixou de R$7,75. Na última rodada chegou a R$25,43/conversa. Sem perspectiva de melhora.</p>
+        <div class="strat" style="color:var(--red)">→ Pausar definitivamente. R$1.578 de budget perdido.</div>
+      </div>
+      <div class="region-card" style="border-color: var(--red);">
+        <h4>🔴 Nerópolis IA<span class="pop" style="background:#fee2e2;color:var(--red)">#5 — PARAR</span></h4>
+        <p>R$803 em 3 rodadas. CPConv oscilou entre R$8 e R$31. Público provavelmente pequeno demais para a segmentação de proprietários de padaria.</p>
+        <div class="strat" style="color:var(--red)">→ Pausar. Redirecionar budget para Bahia e Rota Goiás Velho.</div>
+      </div>
+      <div class="region-card">
+        <h4>🔵 Rondonópolis<span class="pop">Não testado</span></h4>
+        <p>Apareceu apenas em campanhas de VAGAS (recrutamento), nunca em VD K+ comercial. Pode ser uma rota nova para julho.</p>
+        <div class="strat">→ Testar com budget pequeno (R$10/dia) em julho como novo público.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 — TOP 5 CRIATIVOS -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Criativos</div>
+      <div class="slide-title">Top 5 Criativos por CTR (VD K+)</div>
+      <div class="slide-desc">⚠️ Limitação: 1 criativo por conjunto — sem teste A/B em nenhuma campanha VD K+. CTR reflete o par criativo + público.</div>
+    </div>
+
+    <div class="creative-grid">
+      <div class="creative-card">
+        <div class="rank"># 01</div>
+        <div class="creative-thumb">
+          <div class="thumb-placeholder">🎬<span>Reel Teodora</span></div>
+          <div class="thumb-badge">Reel</div>
+        </div>
+        <div class="name">Rota Goiás Velho — Fev/26</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv" style="color:var(--green)">4,31%</span></div>
+        <div class="metric"><span class="ml">Conversas</span><span class="mv">88</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$147,87</span></div>
+        <div class="metric"><span class="ml">CPConv</span><span class="mv" style="color:var(--green)">R$1,68</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 02</div>
+        <div class="creative-thumb">
+          <div class="thumb-placeholder">🎬<span>Reel Teodora</span></div>
+          <div class="thumb-badge">Reel</div>
+        </div>
+        <div class="name">Bahia — Jan/26</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv" style="color:var(--green)">3,69%</span></div>
+        <div class="metric"><span class="ml">Conversas</span><span class="mv">32</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$45,79</span></div>
+        <div class="metric"><span class="ml">CPConv</span><span class="mv" style="color:var(--green)">R$1,43</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 03</div>
+        <div class="creative-thumb">
+          <div class="thumb-placeholder">🎬<span>Reel Teodora</span></div>
+          <div class="thumb-badge">Reel</div>
+        </div>
+        <div class="name">Rota Goiás Velho — Mar/26</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">3,07%</span></div>
+        <div class="metric"><span class="ml">Conversas</span><span class="mv">380</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$973,68</span></div>
+        <div class="metric"><span class="ml">CPConv</span><span class="mv">R$2,56</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:71%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 04</div>
+        <div class="creative-thumb">
+          <div class="thumb-placeholder">🎬<span>Reel Teodora</span></div>
+          <div class="thumb-badge">Reel</div>
+        </div>
+        <div class="name">Rota Goiás Velho — Jun/26</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">3,04%</span></div>
+        <div class="metric"><span class="ml">Conversas</span><span class="mv">31</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">Em andamento</span></div>
+        <div class="metric"><span class="ml">Período</span><span class="mv">12/06</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:70%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 05</div>
+        <div class="creative-thumb">
+          <div class="thumb-placeholder">🎬<span>Reel Teodora</span></div>
+          <div class="thumb-badge">Reel</div>
+        </div>
+        <div class="name">Rota Goiás Velho — Jun/26</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">2,84%</span></div>
+        <div class="metric"><span class="ml">Conversas</span><span class="mv">14</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">Em andamento</span></div>
+        <div class="metric"><span class="ml">Período</span><span class="mv">09/06</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:65%"></div></div>
+      </div>
+    </div>
+
+    <div class="notas" style="margin-top: 14px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>4 dos 5 top criativos rodaram na Rota Goiás Velho — o mesmo criativo aplicado na Bahia também performou bem (CTR 3,69%), confirmando que o hook funciona para padarias/lanchonetes B2B. O grande gap: a conta tem 1 criativo por conjunto, impossibilitando teste A/B real. Em julho, obrigatório testar pelo menos 2 variações: Teodora na fábrica vs. Teodora na padaria cliente.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — INSIGHTS E RECOMENDAÇÕES -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Insights + Próximos Passos</div>
+      <div class="slide-title">Diagnóstico e Recomendações — Julho 2026</div>
+      <div class="slide-desc">Ações priorizadas por impacto para o primeiro mês com Lead Ads</div>
+    </div>
+
+    <div class="two-col" style="margin-bottom: 16px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funciona</div>
+        <div class="insight-box good">
+          <h4>Rota Goiás Velho — mercado aquecido</h4>
+          <p>4 rodadas, CPConv médio R$2,28. Consistente e bem abaixo da meta de R$10. CTR médio 3,32% — 2x acima do benchmark B2B. Este é o público âncora da conta.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Bahia — oportunidade subexplorada</h4>
+          <p>1 rodada com R$45 e CPConv R$1,43 — o menor de toda a conta. CTR de 3,69%. Nunca recebeu budget real. Potencial de ser o segundo público âncora.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Criativo da Teodora ressona no B2B</h4>
+          <p>CTR acima de 3% em múltiplas rodadas indica que o formato Reel com apresentadora funciona para donos de padaria. A oportunidade é testar variações do mesmo formato.</p>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que ajustar</div>
+        <div class="insight-box bad">
+          <h4>Hidrolandia — R$1.578 sem retorno</h4>
+          <p>5 rodadas testadas, CPConv nunca abaixo de R$7,75, chegou a R$25,43. Parar imediatamente e redirecionar budget para Bahia e expansão da Rota Goiás Velho.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Nerópolis IA — público pequeno demais</h4>
+          <p>R$803 gastos em 3 rodadas sem resultado consistente. CPConv oscilando R$8–31. Possível que a cidade tenha poucos proprietários de estabelecimentos no perfil do ICP.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Sem teste A/B de criativos</h4>
+          <p>1 criativo por conjunto = impossível separar performance do criativo da performance do público. Julho deve iniciar com pelo menos 2 variações de criativo por conjunto.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>🎯 Lead Ads<span class="pop">Alta prioridade</span></h4>
+        <p>Migrar de WPP para formulário nativo (5 campos: nome, telefone, tipo de negócio, cidade/estado, como abastece hoje). Lead qualificado direto para o time comercial.</p>
+        <div class="strat">→ Criar formulário antes de subir qualquer campanha em julho</div>
+      </div>
+      <div class="region-card">
+        <h4>📍 Rota Goiás Velho + Bahia<span class="pop">Escalar</span></h4>
+        <p>Concentrar 60–70% do budget nesses dois públicos. Rota GO Velho está validada; Bahia precisa de escala para confirmar o potencial de R$1,43/conv.</p>
+        <div class="strat">→ Rota GO Velho: R$20/dia · Bahia: R$15/dia (julho)</div>
+      </div>
+      <div class="region-card">
+        <h4>🎨 Teste A/B de criativos<span class="pop">Estrutura</span></h4>
+        <p>2 criativos por conjunto obrigatório: Teodora na fábrica (prova de processo) vs. Teodora na padaria cliente (prova social) + 1 variação com argumento direto de venda.</p>
+        <div class="strat">→ Briefar 3 Reels antes de 30/06 para julho</div>
+      </div>
+      <div class="region-card">
+        <h4>🎂 Campanha Aniversário 10 Anos<span class="pop">Jul 07–09</span></h4>
+        <p>3 episódios de conteúdo institucional (07, 08 e 09/07). Usar como TOF de brand awareness — não esperar conversão direta. Complementar as campanhas de performance.</p>
+        <div class="strat">→ Objetivo: engajamento + alcance, budget separado R$5–10/dia</div>
+      </div>
+      <div class="region-card">
+        <h4>🔧 GO-BA — Separar públicos<span class="pop">Organização</span></h4>
+        <p>Criar conjuntos separados para Goiânia, Anápolis e demais cidades da cobertura GO-BA. Identificar qual cidade puxa o resultado — pode revelar novo público âncora.</p>
+        <div class="strat">→ Estruturar no início de julho antes da virada de orçamento</div>
+      </div>
+      <div class="region-card">
+        <h4>📊 Meta Julho<span class="pop">Planejamento</span></h4>
+        <p>CPL meta: R$10 · Budget: R$1.000 · Meta: 100 leads qualificados via formulário. Separar budget de VAGAS (RH) do budget comercial — não contabilizar junto.</p>
+        <div class="strat">→ Revisão de métricas a cada 3 dias após subir campanhas</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#slides -->
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)" aria-label="Slide anterior">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)" aria-label="Próximo slide">&#8594;</button>
+</div>
+
+<script>
+  const ALMA_LOGO_SRC = "data:image/jpeg;base64,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";
+
+  document.querySelectorAll('.slide:not(#s0)').forEach(slide => {
+    if (!slide.querySelector('.alma-logo-wrap')) {
+      const wrap = document.createElement('div');
+      wrap.className = 'alma-logo-wrap';
+      const img = document.createElement('img');
+      img.src = ALMA_LOGO_SRC;
+      img.alt = 'Alma.';
+      img.className = 'alma-logo-img';
+      wrap.appendChild(img);
+      slide.insertBefore(wrap, slide.firstChild);
+    }
+  });
+
+  const slideLabels = [
+    'Capa',
+    'Visão Geral',
+    'Top 5 Campanhas',
+    'Top 5 Públicos',
+    'Top 5 Criativos',
+    'Insights + Julho',
+  ];
+
+  const slides   = document.querySelectorAll('.slide');
+  const label    = document.getElementById('slide-label');
+  const track    = document.getElementById('nav-track');
+  const progress = document.getElementById('progress-bar');
+  let current    = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    track.querySelectorAll('.dot')[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    track.querySelectorAll('.dot')[current].classList.add('active');
+    label.textContent = slideLabels[current] || `Slide ${current + 1}`;
+    progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+    setTimeout(initTableScrollHints, 60);
+  }
+
+  function initTableScrollHints() {
+    const activeSlide = slides[current];
+    activeSlide.querySelectorAll('.tbl-wrap').forEach(wrap => {
+      let hint = wrap.previousElementSibling;
+      if (!hint || !hint.classList.contains('tbl-hint')) {
+        hint = document.createElement('div');
+        hint.className = 'tbl-hint';
+        hint.textContent = '↔ deslize para ver mais';
+        wrap.parentNode.insertBefore(hint, wrap);
+      }
+      let fade = wrap.querySelector('.tbl-fade');
+      if (!fade) {
+        fade = document.createElement('div');
+        fade.className = 'tbl-fade';
+        wrap.appendChild(fade);
+      }
+      function update() {
+        const hasOverflow = wrap.scrollWidth > wrap.clientWidth + 2;
+        const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
+        const show = hasOverflow && !atEnd;
+        hint.classList.toggle('show', show);
+        fade.classList.toggle('show', show);
+      }
+      if (wrap._scrollHandler) wrap.removeEventListener('scroll', wrap._scrollHandler);
+      wrap._scrollHandler = update;
+      wrap.addEventListener('scroll', update, { passive: true });
+      update();
+    });
+  }
+
+  setTimeout(initTableScrollHints, 100);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+</script>
+</body>
+</html>
