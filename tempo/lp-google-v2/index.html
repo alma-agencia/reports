@@ -281,20 +281,6 @@ p.sp  { color: var(--muted); max-width: 580px; }
 /* ═══════════════════════════════════════════
    01 — TABELA DE ECONOMIA
 ═══════════════════════════════════════════ */
-.economia-layout {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 48px;
-  align-items: start;
-}
-.economia-img img {
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  object-position: center top;
-  display: block;
-  border: 1px solid var(--line);
-}
 .tabela-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); }
 .tabela { width: 100%; border-collapse: collapse; font-size: .82rem; }
 .tabela thead tr { background: var(--ink); }
@@ -459,8 +445,8 @@ p.sp  { color: var(--muted); max-width: 580px; }
   background: var(--ink); border: 1px solid rgba(255,255,255,.04);
 }
 .parceiro-inner {
-  max-width: 1100px; margin: 0 auto; padding: 80px 32px;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  max-width: 1100px; margin: 0 auto; padding: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0; align-items: stretch;
 }
 .parceiro-badge {
   display: inline-flex; align-items: center; gap: 8px;
@@ -483,15 +469,23 @@ p.sp  { color: var(--muted); max-width: 580px; }
 .btn-parceiro:hover { background: var(--orange); color: var(--black); }
 .btn-parceiro::after { content: '→'; }
 
+/* Imagem ocupa toda a coluna direita */
+.parceiro-img-col { overflow: hidden; }
 .parceiro-img {
-  width: 100%;
-  height: 260px;
-  object-fit: cover;
-  object-position: center top;
-  display: block;
-  margin-bottom: 0;
-  border-bottom: 3px solid var(--orange);
+  width: 100%; height: 100%; min-height: 340px;
+  object-fit: cover; object-position: center top; display: block;
 }
+/* Steps 3 colunas abaixo */
+.parceiro-steps {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3,1fr);
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.parceiro-step {
+  padding: 36px 32px;
+  border-right: 1px solid rgba(255,255,255,.08);
+}
+.parceiro-step:last-child { border-right: none; }
 .parceiro-items { list-style: none; display: flex; flex-direction: column; gap: 0; }
 .parceiro-item {
   display: grid; grid-template-columns: 52px 1fr; gap: 20px;
@@ -600,9 +594,9 @@ footer .footer-links a:hover { color: var(--orange); }
 @media(max-width:900px){
   .steps-grid { grid-template-columns:1fr; }
   .depo-grid { grid-template-columns:1fr; }
-  .economia-layout { grid-template-columns:1fr; }
-  .economia-img img { height: 260px; }
-  .parceiro-inner { grid-template-columns:1fr; gap:48px; }
+  .parceiro-inner { grid-template-columns:1fr; }
+  .parceiro-img { min-height: 260px; }
+  .parceiro-steps { grid-template-columns:1fr; }
   .pp-steps { flex-direction:column; align-items:center; gap:20px; }
   .pp-arrow { transform:rotate(90deg); padding:0; }
   .section { padding:72px 0; }
@@ -762,8 +756,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h2 class="t-headline sh r d1">Veja a projeção de economia<br>para o seu nível de consumo.</h2>
       <p class="t-body sp r d2">Quanto maior a conta de luz, maior o benefício. Abaixo, estimativas com até 25% de redução — sem nenhum investimento necessário da sua parte.</p>
     </div>
-    <div class="economia-layout r d2">
-    <div class="tabela-wrap">
+    <div class="tabela-wrap r d2">
       <table class="tabela">
         <thead>
           <tr>
@@ -815,11 +808,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="tabela-legenda">
         Projeção estimada com base em até 25% de economia. A economia real é calculada após análise do consumo específico de cada cliente, sem custo e sem compromisso.
       </div>
-    </div><!-- fim tabela-wrap -->
-    <div class="economia-img">
-      <img src="homem-conta1.png" alt="Homem analisando a conta de luz e economizando com energia por assinatura">
     </div>
-    </div><!-- fim economia-layout -->
   </div>
 </section>
 
@@ -999,37 +988,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ════ 06 — PARCEIRO ════ -->
 <div class="parceiro-wrap r">
   <div class="parceiro-inner">
-    <div>
+    <div style="padding: 72px 48px 72px 32px;">
       <div class="parceiro-badge">Oportunidade de renda</div>
       <h2 class="parceiro-h2">Conhece alguém que paga<br>caro de energia? <em>Indique e ganhe.</em></h2>
       <p class="parceiro-sub">A Tempo Geração tem um programa de parceria comercial. Você indica empresas ou pessoas que podem se beneficiar da energia por assinatura e recebe comissão a cada contrato fechado — sem precisar vender, só indicar.</p>
       <a href="https://wa.me/5571996850664?text=Ol%C3%A1!%20Tenho%20interesse%20em%20ser%20um%20parceiro%20comercial%20da%20Tempo%20Gera%C3%A7%C3%A3o%20e%20gerar%20renda%20com%20indica%C3%A7%C3%B5es." class="btn-parceiro" target="_blank" rel="noopener">Quero ser parceiro</a>
     </div>
-    <div>
+    <div class="parceiro-img-col">
       <img class="parceiro-img" src="homem-indicacao.png" alt="Parceiro Tempo Geração gerando renda com indicações">
-      <ul class="parceiro-items">
-        <li class="parceiro-item">
-          <div class="parceiro-num">01</div>
-          <div>
-            <div class="parceiro-item-title">Você indica</div>
-            <div class="parceiro-item-desc">Apresente a Tempo Geração para empresas, síndicos, amigos ou qualquer pessoa com conta de luz acima de R$ 400/mês na Bahia.</div>
-          </div>
-        </li>
-        <li class="parceiro-item">
-          <div class="parceiro-num">02</div>
-          <div>
-            <div class="parceiro-item-title">A gente cuida do restante</div>
-            <div class="parceiro-item-desc">Nossa equipe entra em contato, apresenta a proposta e conduz todo o processo de adesão. Você não precisa vender nada.</div>
-          </div>
-        </li>
-        <li class="parceiro-item">
-          <div class="parceiro-num">03</div>
-          <div>
-            <div class="parceiro-item-title">Você recebe comissão</div>
-            <div class="parceiro-item-desc">A cada contrato fechado pela sua indicação, você recebe. Quanto mais indicações, maior a renda — sem limite de ganhos.</div>
-          </div>
-        </li>
-      </ul>
+    </div>
+  </div>
+  <div class="parceiro-steps">
+    <div class="parceiro-step">
+      <div class="parceiro-num">01</div>
+      <div class="parceiro-item-title">Você indica</div>
+      <div class="parceiro-item-desc">Apresente a Tempo Geração para empresas, síndicos, amigos ou qualquer pessoa com conta de luz acima de R$ 400/mês na Bahia.</div>
+    </div>
+    <div class="parceiro-step">
+      <div class="parceiro-num">02</div>
+      <div class="parceiro-item-title">A gente cuida do restante</div>
+      <div class="parceiro-item-desc">Nossa equipe entra em contato, apresenta a proposta e conduz todo o processo de adesão. Você não precisa vender nada.</div>
+    </div>
+    <div class="parceiro-step">
+      <div class="parceiro-num">03</div>
+      <div class="parceiro-item-title">Você recebe comissão</div>
+      <div class="parceiro-item-desc">A cada contrato fechado pela sua indicação, você recebe. Quanto mais indicações, maior a renda — sem limite de ganhos.</div>
     </div>
   </div>
 </div>
