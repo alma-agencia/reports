@@ -125,30 +125,16 @@ nav.hidden { opacity: 0; pointer-events: none; }
   margin-bottom: 28px; line-height: 1;
   opacity: 0; animation: fadeUp .9s cubic-bezier(.16,1,.3,1) .5s forwards;
 }
-/* Nível 1 — label pequeno */
-.hero h1 .line0 {
-  display: block;
-  font-size: clamp(.78rem, 1.3vw, .95rem);
-  font-weight: 500; letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--dim); margin-bottom: 0;
-  line-height: 1.4;
+/* H1 hero — tamanho único, 25% como destaque inline */
+.hero h1 {
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 800; letter-spacing: -.04em; line-height: 1.06;
+  margin-bottom: 28px;
+  opacity: 0; animation: fadeUp .9s cubic-bezier(.16,1,.3,1) .5s forwards;
 }
-/* Nível 2 — número dominante */
-.hero h1 .line1 {
-  display: block;
-  font-size: clamp(6rem, 15vw, 11rem);
-  font-weight: 900; letter-spacing: -.055em;
-  color: var(--orange); line-height: .82;
-  margin-bottom: 8px;
-}
-/* Nível 3 — chamada principal */
-.hero h1 .line2 {
-  display: block;
-  font-size: clamp(2rem, 4.5vw, 3.8rem);
-  font-weight: 700; letter-spacing: -.04em;
-  color: var(--ink); line-height: 1.06;
-}
+.hero h1 .line0 { display: block; color: var(--ink); }
+.hero h1 .line1 { display: inline; color: var(--orange); }
+.hero h1 .line2 { display: block; color: var(--ink); }
 .hero-sub {
   font-size: clamp(.9rem, 1.5vw, 1.05rem); font-weight: 300;
   color: var(--dim); max-width: 560px; line-height: 1.9; margin-bottom: 48px;
@@ -613,24 +599,7 @@ footer .footer-links a:hover { color: var(--orange); }
   .nav-inner { padding:0 20px; }
   .hero-inner { padding:20px 20px 24px; }
   .hero-eyebrow { margin-bottom:16px; }
-  .hero h1 { margin-bottom:16px; }
-  /* Linha 1: "Reduza até 25%" — inline na mesma linha */
-  .hero h1 .line0 {
-    display: inline;
-    font-size: clamp(1.4rem, 6vw, 1.8rem);
-    font-weight: 700; letter-spacing: -.025em;
-    color: var(--ink); text-transform: none;
-  }
-  .hero h1 .line1 {
-    display: inline;
-    font-size: clamp(1.6rem, 7vw, 2rem);
-    line-height: 1.1; margin-bottom: 0;
-  }
-  /* Linha 2: "da conta de luz..." */
-  .hero h1 .line2 {
-    font-size: clamp(1.4rem, 6vw, 1.8rem);
-    margin-top: 6px;
-  }
+  .hero h1 { margin-bottom:16px; font-size: clamp(1.75rem, 6.5vw, 2.4rem); }
   .hero-sub { font-size:.85rem; line-height:1.65; margin-bottom:24px; }
   .hero-meta { margin-top:20px; }
   .hero-meta .m-sep { display:none; }
@@ -673,8 +642,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="hero-content">
     <div class="hero-inner">
       <h1>
-        <span class="line0">Reduza até</span>
-        <span class="line1">25%</span>
+        <span class="line0">Reduza até <span class="line1">25%</span></span>
         <span class="line2">da conta de luz.<br>Sem obra. Sem painel.</span>
       </h1>
       <p class="hero-sub">Conta de energia alta e sem espaço para painel? Energia solar por assinatura — créditos direto na sua fatura. Zero investimento, zero instalação.</p>
