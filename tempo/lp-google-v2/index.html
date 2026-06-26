@@ -103,13 +103,13 @@ nav.hidden { opacity: 0; pointer-events: none; }
 }
 .hero-img-wrap { display: none; }
 .hero::before { display: none; }
-/* Logo mobile: acima do banner, oculta no desktop */
+/* Logo mobile: abaixo do banner, à esquerda, oculta no desktop */
 .hero-logo-mobile {
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px 24px 16px;
+  display: flex; align-items: center; justify-content: flex-start;
+  padding: 16px 20px 0;
   background: #fff;
 }
-.hero-logo-mobile img { height: 40px; width: auto; }
+.hero-logo-mobile img { height: 36px; width: auto; }
 /* Logo desktop: dentro do hero-inner, oculta no mobile */
 .hero-logo-desktop { display: block; }
 
@@ -647,12 +647,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- ════ HERO ════ -->
 <div class="hero-wrap" id="hero">
-  <!-- Logo mobile: aparece acima do banner apenas em mobile -->
-  <div class="hero-logo-mobile">
-    <img src="logo-tempo.svg" alt="Tempo Geração">
-  </div>
   <div class="hero-banner">
     <img src="banner2-familia.png" alt="Família economizando na conta de luz com a Tempo Geração" loading="eager">
+  </div>
+  <!-- Logo mobile: aparece abaixo do banner, à esquerda, apenas em mobile -->
+  <div class="hero-logo-mobile">
+    <img src="logo-tempo.svg" alt="Tempo Geração">
   </div>
   <div class="hero-content">
     <div class="hero-inner">
