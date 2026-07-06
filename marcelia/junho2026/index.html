@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Dra. Marcélia — Junho 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi.kpi-green::before { background: var(--green); }
+  .kpi.kpi-red::before { background: var(--red); }
+  .kpi.kpi-amber::before { background: var(--amber); }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi .k-delta.ok { color: var(--amber); }
+
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  .tbl-hint {
+    display: none; font-size: 11px; color: var(--gray);
+    margin-bottom: 5px; text-align: center; letter-spacing: .3px;
+  }
+  .tbl-hint.show { display: block; }
+  .tbl-fade {
+    display: none; position: absolute; top: 0; right: 0;
+    width: 52px; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.97));
+    pointer-events: none; z-index: 2; border-radius: 0 6px 6px 0;
+  }
+  .tbl-fade.show { display: block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-6040 { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; width: 100%; }
+
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  .funnel { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 38px; background: var(--border);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 4px; display: flex;
+    align-items: center; padding-left: 12px; transition: width 1.2s ease;
+    font-size: 12px; font-weight: 700; color: white;
+  }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 170px; }
+  .funnel-val { font-size: 13px; color: var(--dark); white-space: nowrap; width: 70px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+  .funnel-cvr { font-size: 10px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; }
+
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card .pop.g { color: var(--green); background: #dcfce7; }
+  .region-card .pop.r { color: var(--red); background: #fee2e2; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.6; margin-top: 6px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  .hero-number {
+    font-size: 72px; font-weight: 900; color: var(--orange);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .hero-label { font-size: 16px; color: var(--gray); margin-bottom: 24px; }
+
+  .alma-logo-wrap { position: absolute; top: 20px; right: 20px; z-index: 10; }
+  .alma-logo-img { height: 44px; width: auto; filter: invert(1); opacity: 0.82; }
+
+  .venda-box {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 2px solid var(--orange); border-radius: 12px; padding: 20px;
+    background: var(--orange-pale); text-align: center;
+  }
+  .venda-box .vb-val { font-size: 36px; font-weight: 900; color: var(--orange); line-height: 1; }
+  .venda-box .vb-lbl { font-size: 12px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 16px 72px; }
+    .cover-wrap { padding: 0 4px; }
+    .cover-badge { font-size: 10px; padding: 4px 12px; margin-bottom: 18px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; flex-wrap: nowrap; justify-content: center; align-items: center; }
+    .cover-meta-item .val { font-size: 20px; }
+    .cover-meta-item .lbl { font-size: 10px; }
+    .cover-divider { width: 1px; height: 32px; flex-shrink: 0; }
+    .slide-title { font-size: 18px; }
+    .slide-desc { font-size: 12px; }
+    .slide-header { margin-bottom: 16px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .kpi { padding: 12px 14px; }
+    .kpi .k-val { font-size: 17px; }
+    .kpi .k-label { font-size: 9px; }
+    .kpi .k-sub, .kpi .k-delta { font-size: 10px; }
+    .tbl-wrap { border-radius: 8px; }
+    .tbl { font-size: 12px; min-width: 520px; }
+    .tbl th { padding: 8px 10px; font-size: 11px; }
+    .tbl td { padding: 6px 10px; }
+    .two-col, .two-col-6040 { grid-template-columns: 1fr; gap: 12px; }
+    .region-grid { grid-template-columns: 1fr; gap: 10px; }
+    .funnel-label { width: 100px; font-size: 10px; }
+    .funnel-val { width: 48px; font-size: 11px; }
+    .funnel-cvr { width: 40px; font-size: 9px; }
+    .funnel-bar-wrap { height: 30px; }
+    .notas { padding: 12px 14px; }
+    .notas p { font-size: 12px; }
+    .alma-logo-img { height: 32px; }
+    .alma-logo-wrap { top: 14px; right: 14px; }
+    #nav { padding: 0 12px; }
+    .nav-btn { width: 36px; height: 36px; font-size: 13px; }
+    #slide-label { font-size: 10px; }
+    .hero-number { font-size: 48px; }
+    .hero-label { font-size: 14px; }
+    .venda-box .vb-val { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- SLIDE 0 — CAPA -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago</div>
+      <div class="cover-title">Dra. Marcélia</div>
+      <div class="cover-sub">Performance Meta Ads · Junho 2026</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$ 1.706</div>
+          <div class="lbl">Investido</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">86</div>
+          <div class="lbl">Conversas WPP</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$ 19,84</div>
+          <div class="lbl">Custo / Conversa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 1 — VISÃO GERAL -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">KPIs do Mês — Junho 2026</div>
+      <div class="slide-desc">Resultado consolidado de todas as campanhas ativas no período 01/06 – 30/06/2026</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$ 1.706,44</div>
+        <div class="k-sub">Meta: R$ 2.000</div>
+        <div class="k-delta ok">85% do orçamento — sobrou verba parada</div>
+      </div>
+      <div class="kpi kpi-red">
+        <div class="k-label">Conversas WPP</div>
+        <div class="k-val">86</div>
+        <div class="k-sub">Maio: 121 conversas</div>
+        <div class="k-delta dn">↓ -29% vs maio</div>
+      </div>
+      <div class="kpi kpi-red">
+        <div class="k-label">Custo / Conversa</div>
+        <div class="k-val">R$ 19,84</div>
+        <div class="k-sub">Meta: R$ 15,00</div>
+        <div class="k-delta dn">↑ Acima da meta (maio: R$14,87)</div>
+      </div>
+      <div class="kpi kpi-red">
+        <div class="k-label">Conexões Totais</div>
+        <div class="k-val">126</div>
+        <div class="k-sub">Custo: R$ 13,54 / conexão</div>
+        <div class="k-delta dn">↓ -24% vs maio (165)</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi kpi-amber">
+        <div class="k-label">CPM</div>
+        <div class="k-val">R$ 17,26</div>
+        <div class="k-sub">Maio: R$15,55</div>
+        <div class="k-delta dn">↑ +11%</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR Médio</div>
+        <div class="k-val">1,60%</div>
+        <div class="k-sub">Maio: 1,50%</div>
+        <div class="k-delta up">↑ leve melhora</div>
+      </div>
+      <div class="kpi kpi-amber">
+        <div class="k-label">Frequência</div>
+        <div class="k-val">3,31</div>
+        <div class="k-sub">Impressões / Alcance</div>
+        <div class="k-delta dn">⚠ Pior que maio (3,23)</div>
+      </div>
+      <div class="kpi kpi-red">
+        <div class="k-label">Alcance</div>
+        <div class="k-val">29,8K</div>
+        <div class="k-sub">Maio: 35,8K</div>
+        <div class="k-delta dn">↓ -17%</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Junho confirma o que a Cris já tinha sinalizado: leads e conversas caíram de forma consistente em praticamente todas as métricas de topo — alcance -17%, conexões totais -24%, conversas WPP -29%. O orçamento nem foi todo usado (R$1.706 de R$2.000). A causa não é falta de verba disponível: é queda de entrega/eficiência das campanhas, detalhada no slide 04 (Diagnóstico).</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 2 — PERFORMANCE POR CAMPANHA -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Campanhas</div>
+      <div class="slide-title">Performance por Campanha</div>
+      <div class="slide-desc">Resultado individual de cada campanha ativa em junho — ordenado por investimento</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th>Tipo</th>
+            <th class="num">Gasto</th>
+            <th class="num">Resultado</th>
+            <th class="num">Custo / Conv.</th>
+            <th class="num">CTR</th>
+            <th class="num">Freq.</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RMK — [06/01] ABO Vídeos Perfil</td>
+            <td><span class="badge orange">Remarketing</span></td>
+            <td class="num">R$ 855,24</td>
+            <td class="num">40 conversas</td>
+            <td class="num">R$ 21,38</td>
+            <td class="num">1,03%</td>
+            <td class="num">6,92</td>
+            <td><span class="badge red">Saturada</span></td>
+          </tr>
+          <tr>
+            <td>RMK — [08/04] Msg WPP</td>
+            <td><span class="badge orange">Remarketing</span></td>
+            <td class="num">R$ 457,17</td>
+            <td class="num">34 conversas</td>
+            <td class="num">R$ 13,45</td>
+            <td class="num">1,50%</td>
+            <td class="num">4,79</td>
+            <td><span class="badge amber">Atenção</span></td>
+          </tr>
+          <tr>
+            <td>[14/4] CBO Form→WPP Frio — Depoimentos</td>
+            <td><span class="badge amber">Frio</span></td>
+            <td class="num">R$ 224,77</td>
+            <td class="num">9 leads + 12 conv.</td>
+            <td class="num">R$ 24,97 (lead)</td>
+            <td class="num">1,38%</td>
+            <td class="num">1,47</td>
+            <td><span class="badge amber">Reduzida</span></td>
+          </tr>
+          <tr>
+            <td>Audiência — "Tem mais de 40" (24/3)</td>
+            <td><span class="badge green">Audiência</span></td>
+            <td class="num">R$ 169,26</td>
+            <td class="num">20.162 alcance</td>
+            <td class="num">R$ 0,21 / clique</td>
+            <td class="num">2,37%</td>
+            <td class="num">1,64</td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 16px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>A conta operou com apenas 4 campanhas em junho (eram 7 em abril, 6 em maio) — a estrutura encolheu. O ABO de Vídeos, que era o carro-chefe (R$6-8/conversa em março), chegou a frequência 6,92 e custo R$21,38/conversa: sinal claro de público saturado, precisando de renovação urgente de audiência ou criativo. A campanha de audiência "+40" segue sendo a única alimentando o funil de remarketing com público novo — insuficiente sozinha.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 3 — RESULTADOS DE VENDAS -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Vendas</div>
+      <div class="slide-title">Resultado de Vendas — Junho 2026</div>
+      <div class="slide-desc">Dado enviado pela atendente comercial (Cris Marangoni) — único canal reportado no mês: Instagram/Meta</div>
+    </div>
+
+    <div class="kpi-row kpi-row-3" style="margin-bottom: 24px;">
+      <div class="kpi kpi-green">
+        <div class="k-label">Total de Vendas</div>
+        <div class="k-val">2 vendas</div>
+        <div class="k-sub">Faturamento: R$ 3.810,00</div>
+        <div class="k-delta up">Ticket médio: R$ 1.905,00</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPA por Venda (Meta)</div>
+        <div class="k-val">R$ 853,22</div>
+        <div class="k-sub">R$ 1.706,44 ÷ 2 vendas</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">ROAS (Meta)</div>
+        <div class="k-val">2,23x</div>
+        <div class="k-sub">R$ 3.810 receita / R$ 1.706 investido</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-bottom: 20px;">
+      <div class="insight-box warn">
+        <h4>⚠ Vendas caíram vs maio (3 → 2)</h4>
+        <p>Maio fechou com 3 vendas via Meta (R$2.510). Junho fechou com 2 vendas (R$3.810) — volume menor, mas ticket médio maior (R$1.905 vs R$836,67), o que sustentou o ROAS acima de maio (2,23x vs 1,39x).</p>
+      </div>
+      <div class="insight-box bad">
+        <h4>🔴 CVR Conversa → Venda caiu</h4>
+        <p>2 vendas / 86 conversas WPP = <strong>2,3% de conversão</strong> (maio: 2,5%). Com menos conversas entrando no funil, cada uma pesa mais — reforça a urgência de recuperar volume de topo.</p>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>O ROAS melhorou por ticket médio maior, não por eficiência de mídia — o volume de vendas caiu junto com o volume de conversas. Não dá para tratar junho como mês bom: a base de geração de contatos encolheu, e isso é o que precisa ser revertido em julho antes de mais nada.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 4 — DIAGNÓSTICO: QUEDA DE LEADS -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Diagnóstico</div>
+      <div class="slide-title">Por que os Leads Caíram em Junho</div>
+      <div class="slide-desc">Resposta direta ao alerta da Cris Marangoni — causas identificadas nos dados da conta</div>
+    </div>
+
+    <div class="two-col" style="margin-bottom: 16px;">
+      <div>
+        <div class="insight-box bad">
+          <h4>1. Público de remarketing saturado</h4>
+          <p>A campanha ABO Vídeos (a melhor da conta desde março) chegou a <strong>frequência 6,92</strong> em junho — a mesma pessoa foi impactada quase 7 vezes. Custo por conversa subiu de R$13,04 (maio) para R$21,38. É o público mais quente da conta se esgotando por falta de renovação.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>2. Funil de topo mais estreito</h4>
+          <p>A conta rodou com apenas <strong>1 campanha de audiência</strong> alimentando o remarketing em junho (eram 3 em maio). Menos público novo entrando = menos gente para "esquentar" e converter depois em WhatsApp.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box warn">
+          <h4>3. Alcance e CPM pioraram</h4>
+          <p>Alcance caiu 17% (35,8K → 29,8K) e CPM subiu 11% (R$15,55 → R$17,26). Efeito direto da saturação: o leilão fica mais caro quando o público não é renovado.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>4. Queda de ritmo no fim do mês</h4>
+          <p>Nos últimos 5 dias de junho (26-30/06), o gasto diário caiu para R$20-58/dia, contra uma média de R$60-80/dia no restante do mês — indício de saldo apertado reduzindo a entrega justamente no período em que a queda foi sentida.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p><strong>Resumo para a Cris:</strong> a queda não é um problema de orçamento (sobrou verba) nem de qualidade de anúncio (CTR até melhorou) — é saturação do público de remarketing que sustentava os melhores resultados desde março, combinada com poucas campanhas novas alimentando o topo do funil. A correção é objetiva: renovar público/criativo do RMK principal e lançar novas campanhas de audiência em julho (plano no slide 07).</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 5 — FUNIL DE CONVERSÃO -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Funil</div>
+      <div class="slide-title">Funil de Conversão — Meta Ads</div>
+      <div class="slide-desc">Do alcance à venda — onde estão os gargalos em junho</div>
+    </div>
+
+    <div class="funnel" style="margin-bottom: 24px;">
+      <div class="funnel-step">
+        <div class="funnel-label">👁 Pessoas Alcançadas</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:100%; background: linear-gradient(90deg, #374151, #1a1a1a);">29.826</div>
+        </div>
+        <div class="funnel-val">29.826</div>
+        <div class="funnel-cvr"></div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">🖱 Clicaram no Anúncio</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:5.3%; background: linear-gradient(90deg, var(--orange-light), var(--orange));">1.584</div>
+        </div>
+        <div class="funnel-val">1.584</div>
+        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">5,3%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">💬 Iniciaram Conversa WPP</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.29%; min-width: 5%; background: linear-gradient(90deg, #fb923c, var(--orange));">86</div>
+        </div>
+        <div class="funnel-val">86</div>
+        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">5,4%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">🗂 Leads (Form Meta)</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.03%; min-width: 3%; background: linear-gradient(90deg, #fbbf24, var(--amber));">9</div>
+        </div>
+        <div class="funnel-val">9</div>
+        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">—</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">💰 Vendas (Meta)</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.007%; min-width: 1.5%; background: linear-gradient(90deg, #4ade80, var(--green));">2</div>
+        </div>
+        <div class="funnel-val">2</div>
+        <div class="funnel-cvr" style="color:var(--green); font-size:10px; font-weight:700;">2,3%</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="insight-box warn">
+          <h4>⚠ Gargalo: Alcance → Clique piorou levemente</h4>
+          <p>5,3% de clique (era 4,8% em maio) — melhora marginal, mas sobre uma base 17% menor de pessoas alcançadas. O ganho de eficiência não compensa a perda de volume.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>🔴 Clique → Conversa caiu</h4>
+          <p>5,4% dos cliques viraram conversa (era 7,0% em maio) — abaixo da média do nicho (3-5%, mas dentro). Consequência direta da saturação do público de remarketing detalhada no diagnóstico.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box bad">
+          <h4>🔴 Conversa → Venda também caiu</h4>
+          <p>2,3% das conversas viraram venda (era 2,5%). Com menos conversas entrando, o atendimento precisa converter ainda melhor para sustentar o faturamento.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Custo por conversa acima da meta</h4>
+          <p>R$19,84 por conversa vs meta de R$15. Ao contrário de maio, junho não bateu a meta de eficiência de mídia.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 6 — O QUE FUNCIONOU / AJUSTES -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Análise</div>
+      <div class="slide-title">O que Funcionou e o que Ajustar</div>
+      <div class="slide-desc">Diagnóstico honesto do mês — bases para a estratégia de julho</div>
+    </div>
+
+    <div class="two-col" style="margin-bottom: 16px;">
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--green); margin-bottom:12px;">✓ O QUE FUNCIONOU</div>
+        <div class="insight-box good">
+          <h4>RMK WPP 08/04 — R$ 13,45/conversa</h4>
+          <p>Ainda a melhor campanha em eficiência da conta, mesmo com frequência subindo (4,79). Segue sendo a base mais saudável do remarketing.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Audiência "Tem mais de 40" — CTR 2,37%</h4>
+          <p>Continua com CPM baixo (R$5,10) e ótimo CTR. É a única fonte de público novo da conta hoje — precisa de companhia.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>CTR geral subiu</h4>
+          <p>1,60% vs 1,50% em maio — os criativos ainda engajam, o problema é a repetição do público, não a qualidade do anúncio.</p>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--red); margin-bottom:12px;">⚡ O QUE AJUSTAR</div>
+        <div class="insight-box bad">
+          <h4>ABO Vídeos saturado — Frequência 6,92</h4>
+          <p>Principal campanha da conta precisa de público novo (nova janela temporal ou novos criativos de vídeo) com urgência.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Funil de topo raso — só 1 campanha de audiência</h4>
+          <p>Era 3 em maio. Sem público novo entrando, o remarketing não se sustenta. Prioridade #1 para julho.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>CPL da campanha fria segue alto</h4>
+          <p>R$24,97/lead vs meta R$15 — mesmo problema apontado em maio (criativo "Depoimentos" já sem novidade), ainda não resolvido.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Junho não foi um mês de anúncio ruim — foi um mês de audiência não renovada. A conta está rodando com metade das campanhas de topo de funil que tinha em maio, e isso aparece direto na queda de alcance, conversas e vendas. A correção é estrutural, não de otimização fina: julho precisa nascer com mais campanhas de audiência no ar desde o dia 1.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 7 — PRÓXIMOS PASSOS -->
+  <div class="slide" id="s7">
+    <div class="slide-header">
+      <div class="slide-tag">07 · Julho 2026</div>
+      <div class="slide-title">Próximos Passos</div>
+      <div class="slide-desc">Prioridades estratégicas para o mês de julho</div>
+    </div>
+
+    <div class="region-grid" style="margin-bottom: 20px;">
+      <div class="region-card">
+        <h4>👥 Expandir Base de Audiência <span class="pop r">URGENTE</span></h4>
+        <p>Lançar 2-3 novas campanhas de audiência com conteúdo recente do perfil (posts/Reels de junho) para alimentar o remarketing com público fresco.</p>
+        <div class="strat">→ Ação imediata, primeira semana de julho</div>
+      </div>
+      <div class="region-card">
+        <h4>🔄 Renovar RMK ABO Vídeos <span class="pop r">URGENTE</span></h4>
+        <p>Frequência 6,92 — trocar criativos e/ou ajustar janela de público (30/90/180d) para reduzir repetição de impacto.</p>
+        <div class="strat">→ Executar antes da 2ª semana</div>
+      </div>
+      <div class="region-card">
+        <h4>🎨 Testar Novo Criativo Frio</h4>
+        <p>"Depoimentos" segue caro (R$24,97/lead) desde maio. Testar ângulo novo ("antes e depois" ou "rotina da consulta").</p>
+        <div class="strat">→ 1 novo criativo para teste A/B</div>
+      </div>
+      <div class="region-card">
+        <h4>📈 Escalar RMK WPP 08/04</h4>
+        <p>Melhor campanha da conta (R$13,45/conversa). Avaliar aumento de orçamento em até 20% assim que o funil de topo for reforçado.</p>
+        <div class="strat">→ Após expansão de audiência</div>
+      </div>
+      <div class="region-card">
+        <h4>💬 Otimizar Atendimento WPP</h4>
+        <p>CVR conversa→venda caiu para 2,3%. Protocolo de resposta rápida + qualificação ativa segue pendente desde maio.</p>
+        <div class="strat">→ Ação da equipe de atendimento</div>
+      </div>
+      <div class="region-card">
+        <h4>🎯 Meta de Julho</h4>
+        <p><strong>Recuperar volume de conversas</strong> (meta: 120+) e manter custo/conversa abaixo de R$15. Vendas: retomar patamar de 3+ via Meta.</p>
+        <div class="strat">→ Revisão em 15 dias</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Junho foi um mês de contração do funil, não de piora de mídia. A prioridade de julho é reconstruir a base de audiência que alimenta o remarketing — sem isso, mesmo aumentando orçamento, a saturação volta a se repetir. O investimento em mídia segue eficiente onde há público fresco; o gargalo está na renovação de audiência e no atendimento comercial.</p>
+    </div>
+  </div>
+
+</div><!-- /slides -->
+
+
+<!-- NAVEGAÇÃO -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">CAPA</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)">&#8594;</button>
+</div>
+
+<script>
+  /* ── LOGO ALMA (injetado via JS) ── */
+  const logoUrl = 'https://almaagenciadigital.com.br/wp-content/uploads/2024/01/logo-alma-branca.png';
+  document.querySelectorAll('.slide').forEach(slide => {
+    const wrap = document.createElement('div');
+    wrap.className = 'alma-logo-wrap';
+    const img = document.createElement('img');
+    img.className = 'alma-logo-img';
+    img.src = logoUrl;
+    img.alt = 'Alma Agência';
+    img.onerror = () => wrap.remove();
+    wrap.appendChild(img);
+    slide.insertBefore(wrap, slide.firstChild);
+  });
+
+  const slideLabels = [
+    'Capa',
+    'Visão Geral',
+    'Campanhas',
+    'Vendas',
+    'Diagnóstico',
+    'Funil',
+    'Análise',
+    'Próximos Passos',
+  ];
+
+  const slides   = document.querySelectorAll('.slide');
+  const label    = document.getElementById('slide-label');
+  const track    = document.getElementById('nav-track');
+  const progress = document.getElementById('progress-bar');
+  let current    = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    track.querySelectorAll('.dot')[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    track.querySelectorAll('.dot')[current].classList.add('active');
+    label.textContent = slideLabels[current] || `Slide ${current + 1}`;
+    progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+    setTimeout(initTableScrollHints, 60);
+  }
+
+  function initTableScrollHints() {
+    const activeSlide = slides[current];
+    activeSlide.querySelectorAll('.tbl-wrap').forEach(wrap => {
+      let hint = wrap.previousElementSibling;
+      if (!hint || !hint.classList.contains('tbl-hint')) {
+        hint = document.createElement('div');
+        hint.className = 'tbl-hint';
+        hint.textContent = '↔ deslize para ver mais';
+        wrap.parentNode.insertBefore(hint, wrap);
+      }
+      let fade = wrap.querySelector('.tbl-fade');
+      if (!fade) {
+        fade = document.createElement('div');
+        fade.className = 'tbl-fade';
+        wrap.appendChild(fade);
+      }
+      function update() {
+        const hasOverflow = wrap.scrollWidth > wrap.clientWidth + 2;
+        const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
+        const show = hasOverflow && !atEnd;
+        hint.classList.toggle('show', show);
+        fade.classList.toggle('show', show);
+      }
+      if (wrap._scrollHandler) wrap.removeEventListener('scroll', wrap._scrollHandler);
+      wrap._scrollHandler = update;
+      wrap.addEventListener('scroll', update, { passive: true });
+      update();
+    });
+  }
+
+  setTimeout(initTableScrollHints, 100);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+</script>
+</body>
+</html>
