@@ -256,6 +256,18 @@ DATA.delta_impr  = ((DATA.semana_atual.impressoes - DATA.semana_anterior.impress
 
       <!-- ═══════════════ VIEWS ═══════════════ -->
       <section class="panel" id="panel-views">
+        <div class="kpi-row kpi-row-2">
+          <div class="kpi">
+            <div class="kpi-label">Total Investido em Views</div>
+            <div class="kpi-value" id="kv-views-total-inv">—</div>
+            <div class="kpi-sub">soma de todos os vídeos impulsionados</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Média de Investimento por Vídeo</div>
+            <div class="kpi-value" id="kv-views-media">—</div>
+            <div class="kpi-sub" id="kv-views-media-s">—</div>
+          </div>
+        </div>
         <div class="kpi-row kpi-row-4">
           <div class="kpi">
             <div class="kpi-label">Total Vídeos</div>
@@ -268,14 +280,14 @@ DATA.delta_impr  = ((DATA.semana_atual.impressoes - DATA.semana_anterior.impress
             <div class="kpi-sub">10.000 views alcançados</div>
           </div>
           <div class="kpi">
-            <div class="kpi-label">⏳ Em Curso</div>
+            <div class="kpi-label">⏳ Sem Meta</div>
             <div class="kpi-value" style="color:var(--amber)">2</div>
-            <div class="kpi-sub">pausados — não atingiram 10k views</div>
+            <div class="kpi-sub">pausados antes de 10k views</div>
           </div>
           <div class="kpi">
-            <div class="kpi-label">🛑 Pausou por Limite $</div>
+            <div class="kpi-label">🛑 Limite de Orçamento</div>
             <div class="kpi-value" style="color:var(--red)">2</div>
-            <div class="kpi-sub">R$250 atingido antes de 10k views</div>
+            <div class="kpi-sub">orçamento encerrado antes da meta</div>
           </div>
         </div>
 
@@ -404,6 +416,12 @@ ii.textContent = (di>0?'+':'')+di+'% vs semana ant.';
 ii.className = 'kpi-sub kpi-delta '+(di<0?'delta-down':'delta-up');
 
 // kv-meta e kv-viewstotal removidos do overview — não renderizar
+
+// KPIs da aba Views
+const mediaGasto = DATA.gasto_views_total / DATA.total_videos;
+document.getElementById('kv-views-total-inv').textContent = brl(DATA.gasto_views_total);
+document.getElementById('kv-views-media').textContent = brl(mediaGasto);
+document.getElementById('kv-views-media-s').textContent = DATA.total_videos + ' vídeos impulsionados';
 
 // Tabela campanhas ativas
 const ta = document.getElementById('tbl-ativas');
