@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Dr. Igor Neri — Junho 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00; --orange-light: #FF8C3A; --orange-pale: #FFF0E6;
+    --dark: #1a1a1a; --gray: #6b7280; --light: #f9fafb;
+    --white: #ffffff; --border: #e5e7eb;
+    --green: #16a34a; --red: #dc2626; --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px; opacity: 0; pointer-events: none;
+    transition: opacity .4s ease; overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+  #progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--orange); transition: width .4s ease; z-index: 200; }
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; background: rgba(255,255,255,.97);
+    backdrop-filter: blur(10px); border-top: 1px solid var(--border); z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--border);
+    background: white; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06); flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--orange); }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all .3s; }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+  /* CAPA */
+  .cover-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; text-align: center; }
+  .cover-badge { background: var(--orange-pale); color: var(--orange); font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px; }
+  .cover-title { font-size: 52px; font-weight: 800; color: var(--dark); line-height: 1.1; text-align: center; margin-bottom: 12px; }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; align-items: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+  .cover-divider { width: 1px; height: 40px; background: var(--border); }
+  /* CABEÇALHO */
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 6px; }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+  /* KPI */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0; }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; position: relative; overflow: hidden; }
+  .kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--orange); }
+  .kpi .k-label { font-size: 10px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--gray); margin-bottom: 5px; }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi .k-delta.nt { color: var(--amber); }
+  /* BADGE */
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+  .badge.green { background: #dcfce7; color: var(--green); }
+  .badge.red { background: #fee2e2; color: var(--red); }
+  .badge.amber { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+  /* TABELA */
+  .tbl-wrap { width: 100%; overflow-x: auto; margin-bottom: 16px; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th { background: var(--dark); color: white; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px; }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--dark); vertical-align: middle; }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+  /* FUNIL */
+  .funnel { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 12px; }
+  .funnel-bar-wrap { flex: 1; height: 38px; background: var(--light); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .funnel-bar { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 12px; transition: width 1.2s ease; }
+  .funnel-bar span { font-size: 12px; font-weight: 700; color: white; white-space: nowrap; }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 200px; flex-shrink: 0; }
+  .funnel-val { font-size: 13px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; font-weight: 700; }
+  /* INSIGHT */
+  .insight-box { background: white; border: 1px solid var(--border); border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-bottom: 10px; width: 100%; }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+  /* NOTAS */
+  .notas { width: 100%; margin-top: 16px; flex-shrink: 0; background: #1a1a1a; border-radius: 10px; padding: 16px 20px; }
+  .notas-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #FF6B00; margin-bottom: 8px; }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; }
+  /* DOIS COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+  .two-col-6040 { display: grid; grid-template-columns: 3fr 2fr; gap: 20px; width: 100%; }
+  /* REGION GRID */
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.6; margin-top: 4px; }
+  /* HERO */
+  .hero-number { font-size: 64px; font-weight: 900; color: var(--orange); line-height: 1; }
+  .hero-label { font-size: 15px; color: var(--gray); margin-bottom: 20px; }
+  /* COMPARE */
+  .compare-row { display: flex; gap: 16px; width: 100%; margin-bottom: 12px; }
+  .compare-col { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .compare-col.before { border-top: 3px solid var(--amber); }
+  .compare-col.after { border-top: 3px solid var(--green); }
+  .compare-col .c-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .compare-col.before .c-label { color: var(--amber); }
+  .compare-col.after .c-label { color: var(--green); }
+  .compare-col .c-metric { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .compare-col .c-metric:last-child { border-bottom: none; }
+  .compare-col .c-metric .cm-l { color: var(--gray); }
+  .compare-col .c-metric .cm-v { font-weight: 700; color: var(--dark); }
+  /* TEXT BOX */
+  .text-box { background: var(--light); border-radius: 10px; padding: 16px 18px; width: 100%; font-size: 13px; color: var(--dark); line-height: 1.7; }
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .slide { padding: 20px 16px 72px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; }
+    .cover-meta-item .val { font-size: 20px; }
+    .slide-title { font-size: 18px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .kpi .k-val { font-size: 17px; }
+    .funnel-label { width: 130px; font-size: 11px; }
+    .two-col, .two-col-6040, .region-grid, .compare-row { grid-template-columns: 1fr; flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="slides">
+
+<!-- SLIDE 0: CAPA -->
+<div class="slide active">
+  <div class="cover-wrap">
+    <div class="cover-badge">Dr. Igor Neri · Relatório Mensal</div>
+    <h1 class="cover-title">Junho 2026</h1>
+    <p class="cover-sub">Feira de Santana + Interior + Euclides da Cunha · 01 a 30/06 · Dados clínicos: Feira de Santana</p>
+    <div class="cover-meta">
+      <div class="cover-meta-item"><div class="val">R$11.631</div><div class="lbl">Investido</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">16</div><div class="lbl">Consultas Novas (Feira)</div></div>
+      <div class="cover-divider"></div>
+      <div class="cover-meta-item"><div class="val">2</div><div class="lbl">Iniciaram Tratamento (Feira)</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 1: KPIs DE MÍDIA -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-tag">Performance de Mídia</div>
+    <h2 class="slide-title">Visão geral — Junho 2026</h2>
+    <p class="slide-desc">Meta Ads · todas as praças (Feira + Interior + Euclides) · 01 a 30/06</p>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="k-label">Investimento Total</div>
+      <div class="k-val">R$11.631</div>
+      <div class="k-sub">orçamento mensal: R$12.000</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Alcance</div>
+      <div class="k-val">246.000</div>
+      <div class="k-sub">644.580 impressões</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Conversas WPP</div>
+      <div class="k-val">789</div>
+      <div class="k-sub">CPR médio R$14,74</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Leads com Intenção (D2)</div>
+      <div class="k-val">302</div>
+      <div class="k-sub">38% das conversas</div>
+    </div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="k-label">CPM Médio</div>
+      <div class="k-val">R$18,04</div>
+      <div class="k-sub">custo por mil impressões</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">CTR Médio</div>
+      <div class="k-val">1,37%</div>
+      <div class="k-sub">taxa de clique</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Leads Avançados (D5)</div>
+      <div class="k-val">346</div>
+      <div class="k-sub">conversas com 5+ mensagens</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Cliques no Anúncio</div>
+      <div class="k-val">8.841</div>
+      <div class="k-sub">6.290 cliques no link</div>
+    </div>
+  </div>
+  <div class="notas">
+    <div class="notas-label">📋 Nota do gestor</div>
+    <p>Junho fechou com <strong style="color:#fff;">789 conversas iniciadas</strong> a CPR de R$14,74 — no limite superior da meta (R$12–15) e <strong style="color:#fff;">31% pior que maio</strong> (R$11,22). O CPM subiu de R$13,16 para R$18,04 (+37%) enquanto o alcance caiu 37% (392k → 246k). Causa provável: duas contas de anúncio ativas ao mesmo tempo no mês (act_1231626225112613 nova + act_1094925155088471 antiga) disputando o mesmo público em leilão — já corrigido em 02/07 com a consolidação em conta única.</p>
+  </div>
+</div>
+
+<!-- SLIDE 2: CAMPANHAS -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-tag">Campanhas</div>
+    <h2 class="slide-title">Performance por campanha</h2>
+    <p class="slide-desc">Junho completo · top 10 por investimento · ambas as contas</p>
+  </div>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Campanha</th>
+          <th>Praça</th>
+          <th class="num">Gasto</th>
+          <th class="num">Conv.</th>
+          <th class="num">CPR</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Top Públicos e Criativos</td>
+          <td>Feira</td>
+          <td class="num">R$1.196,32</td>
+          <td class="num">81</td>
+          <td class="num">R$14,77</td>
+          <td><span class="badge amber">Na meta</span></td>
+        </tr>
+        <tr>
+          <td>RMK Fechamento</td>
+          <td>Feira</td>
+          <td class="num">R$953,90</td>
+          <td class="num">42</td>
+          <td class="num">R$22,71</td>
+          <td><span class="badge red">Crítico</span></td>
+        </tr>
+        <tr>
+          <td>Bairros de Luxo</td>
+          <td>Feira</td>
+          <td class="num">R$813,59</td>
+          <td class="num">46</td>
+          <td class="num">R$17,69</td>
+          <td><span class="badge orange">Acima meta</span></td>
+        </tr>
+        <tr>
+          <td>Vídeo HT</td>
+          <td>Feira</td>
+          <td class="num">R$679,15</td>
+          <td class="num">33</td>
+          <td class="num">R$20,58</td>
+          <td><span class="badge red">Crítico</span></td>
+        </tr>
+        <tr>
+          <td>Interior HT Refinado</td>
+          <td>Interior</td>
+          <td class="num">R$636,63</td>
+          <td class="num">42</td>
+          <td class="num">R$15,16</td>
+          <td><span class="badge orange">Acima meta</span></td>
+        </tr>
+        <tr>
+          <td>Público Testado — Bairros Luxo</td>
+          <td>Feira</td>
+          <td class="num">R$577,43</td>
+          <td class="num">37</td>
+          <td class="num">R$15,61</td>
+          <td><span class="badge orange">Acima meta</span></td>
+        </tr>
+        <tr>
+          <td>Novos Pacientes (Público Frio)</td>
+          <td>Feira</td>
+          <td class="num"><strong>R$568,40</strong></td>
+          <td class="num">64</td>
+          <td class="num"><strong>R$8,88</strong></td>
+          <td><span class="badge green">✅ Melhor CPR</span></td>
+        </tr>
+        <tr>
+          <td>RMK High Ticket Ampliado</td>
+          <td>Feira</td>
+          <td class="num">R$559,14</td>
+          <td class="num">28</td>
+          <td class="num">R$19,97</td>
+          <td><span class="badge orange">Acima meta</span></td>
+        </tr>
+        <tr>
+          <td>Público Frio — Teste 20/05</td>
+          <td>Interior</td>
+          <td class="num">R$559,04</td>
+          <td class="num">18</td>
+          <td class="num">R$31,06</td>
+          <td><span class="badge red">Crítico</span></td>
+        </tr>
+        <tr>
+          <td>Novos Pacientes FORM (adv)</td>
+          <td>Feira</td>
+          <td class="num">R$372,68</td>
+          <td class="num">28</td>
+          <td class="num">R$13,31</td>
+          <td><span class="badge amber">Na meta</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="notas">
+    <div class="notas-label">📋 Nota do gestor</div>
+    <p><strong style="color:#fff;">Novos Pacientes (Público Frio)</strong> segue como melhor CPR da conta (R$8,88, 64 conversas) — mesma campanha vencedora de maio. Mas 6 das 10 principais campanhas estão acima da meta de R$15, com destaque negativo para RMK Fechamento (R$22,71), Vídeo HT (R$20,58) e o teste de Interior 20/05 (R$31,06) — candidatas a pausa/reestruturação em julho.</p>
+  </div>
+</div>
+
+<!-- SLIDE 3: RESULTADO CLÍNICO -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-tag">Resultado Clínico</div>
+    <h2 class="slide-title">Atendimentos · Junho 2026 · Feira de Santana</h2>
+    <p class="slide-desc">Relatório de vendas enviado pelo consultório cobre apenas Feira de Santana este mês</p>
+  </div>
+  <div class="kpi-row kpi-row-3" style="margin-bottom:20px;">
+    <div class="kpi">
+      <div class="k-label">Total de Atendimentos</div>
+      <div class="k-val">69</div>
+      <div class="k-sub">Feira de Santana</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Consultas Novas</div>
+      <div class="k-val">16</div>
+      <div class="k-sub">14 não fecharam</div>
+    </div>
+    <div class="kpi">
+      <div class="k-label">Fecharam Tratamento</div>
+      <div class="k-val">2</div>
+      <div class="k-delta dn">↘ 12,5% de conversão</div>
+    </div>
+  </div>
+  <div class="compare-row">
+    <div class="compare-col" style="border-top:3px solid var(--gray);">
+      <div class="c-label" style="color:var(--gray);">📅 Maio 2026 (Feira) — referência</div>
+      <div class="c-metric"><span class="cm-l">Atendimentos totais</span><span class="cm-v">74</span></div>
+      <div class="c-metric"><span class="cm-l">Consultas novas</span><span class="cm-v">18</span></div>
+      <div class="c-metric"><span class="cm-l">Iniciaram tratamento</span><span class="cm-v">12</span></div>
+      <div class="c-metric"><span class="cm-l">Não fecharam</span><span class="cm-v">6</span></div>
+      <div class="c-metric"><span class="cm-l">Taxa de conversão</span><span class="cm-v">67%</span></div>
+    </div>
+    <div class="compare-col" style="border-top:3px solid var(--red);">
+      <div class="c-label" style="color:var(--red);">📅 Junho 2026 (Feira) — atual</div>
+      <div class="c-metric"><span class="cm-l">Atendimentos totais</span><span class="cm-v">69</span></div>
+      <div class="c-metric"><span class="cm-l">Consultas novas</span><span class="cm-v">16</span></div>
+      <div class="c-metric"><span class="cm-l">Fecharam tratamento</span><span class="cm-v">2</span></div>
+      <div class="c-metric"><span class="cm-l">Não fecharam</span><span class="cm-v">14</span></div>
+      <div class="c-metric"><span class="cm-l">Taxa de conversão</span><span class="cm-v">12,5%</span></div>
+    </div>
+  </div>
+  <div class="notas">
+    <div class="notas-label">📋 Nota do gestor</div>
+    <p>⚠️ Interior e Euclides não constam no relatório de vendas de junho recebido do consultório — apenas Feira de Santana foi reportada, então esses números não incluem as demais praças. Em Feira, o volume de consultas novas caiu pouco (18→16), mas a <strong style="color:#fff;">taxa de fechamento consulta→tratamento despencou de 67% para 12,5%</strong> — de 16 consultas, só 2 viraram tratamento. Como o CPR de conversa em Feira ficou estável (~R$13–15), o problema não está na geração de leads pela mídia — está no fechamento dentro do consultório.</p>
+  </div>
+</div>
+
+<!-- SLIDE 4: FUNIL FINANCEIRO -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-tag">Funil Financeiro</div>
+    <h2 class="slide-title">Do anúncio à receita — Feira de Santana</h2>
+    <p class="slide-desc">Junho 2026 · consulta R$800 · tratamento médio R$10.000 (valores informados pelo gestor)</p>
+  </div>
+  <div class="funnel" id="funnel">
+    <div class="funnel-step">
+      <div class="funnel-label">Pessoas alcançadas</div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:0%;background:#1a1a1a;" data-w="100"><span>186.575</span></div>
+      </div>
+      <div class="funnel-val">186.575</div>
+    </div>
+    <div class="funnel-step">
+      <div class="funnel-label">Cliques no anúncio</div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:0%;background:#374151;" data-w="2.2"><span>4.055</span></div>
+      </div>
+      <div class="funnel-val">4.055</div>
+    </div>
+    <div class="funnel-step">
+      <div class="funnel-label">Conversas iniciadas WPP</div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:0%;background:#6366f1;" data-w="0.29"><span>532</span></div>
+      </div>
+      <div class="funnel-val">532</div>
+    </div>
+    <div class="funnel-step">
+      <div class="funnel-label">Consultas novas agendadas</div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:0%;background:#3b82f6;" data-w="0.0086"><span>16</span></div>
+      </div>
+      <div class="funnel-val">16</div>
+    </div>
+    <div class="funnel-step">
+      <div class="funnel-label">Iniciaram tratamento</div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:0%;background:var(--green);" data-w="0.0011"><span>2</span></div>
+      </div>
+      <div class="funnel-val">2</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:14px;margin-top:20px;width:100%;">
+    <div class="kpi" style="flex:1;">
+      <div class="k-label">Custo por Consulta Nova</div>
+      <div class="k-val">R$448</div>
+      <div class="k-sub">R$7.169 ÷ 16 consultas (Feira)</div>
+    </div>
+    <div class="kpi" style="flex:1;">
+      <div class="k-label">Custo por Paciente em Tratamento</div>
+      <div class="k-val">R$3.585</div>
+      <div class="k-sub">R$7.169 ÷ 2 tratamentos (Feira)</div>
+    </div>
+    <div class="kpi" style="flex:1;">
+      <div class="k-label">Receita de Consultas</div>
+      <div class="k-val">R$12.800</div>
+      <div class="k-sub">16 × R$800</div>
+    </div>
+    <div class="kpi" style="flex:1;">
+      <div class="k-label">Receita de Tratamentos</div>
+      <div class="k-val">R$20.000</div>
+      <div class="k-sub">2 × R$10.000 (ticket médio)</div>
+    </div>
+  </div>
+  <div class="compare-row" style="margin-top:14px;">
+    <div class="compare-col after">
+      <div class="hero-number" style="font-size:44px;">R$32.800</div>
+      <div class="hero-label" style="margin-bottom:0;">Receita estimada Feira (jun) — investimento em mídia de R$7.169 → ROAS de 4,58x</div>
+    </div>
+    <div class="compare-col" style="border-top:3px solid var(--red);">
+      <div class="hero-number" style="font-size:44px;color:var(--red);">~R$90.000</div>
+      <div class="hero-label" style="margin-bottom:0;">Receita não capturada — se a taxa de fechamento de maio (67%) tivesse se mantido, ~11 das 16 consultas teriam virado tratamento (vs 2 reais), ~9 tratamentos a mais</div>
+    </div>
+  </div>
+  <div class="text-box">Valores de R$800/consulta e R$10.000/tratamento (ticket médio) informados pelo gestor nesta sessão — não constam no relatório de vendas enviado pelo consultório. Cálculo de receita não capturada é uma estimativa comparativa com a taxa de fechamento de maio, não um dado real.</div>
+</div>
+
+<!-- SLIDE 5: INSIGHTS -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-tag">Análise</div>
+    <h2 class="slide-title">O que funcionou · O que ajustar</h2>
+    <p class="slide-desc">Aprendizados de junho para guiar julho</p>
+  </div>
+  <div class="two-col">
+    <div>
+      <div class="insight-box good">
+        <h4>✅ D2% subiu de 31% para 38%</h4>
+        <p>Apesar do CPM mais alto, a profundidade de conversa melhorou — mais gente engajando de verdade no WhatsApp, mesmo com menos volume total de conversas.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Novos Pacientes segue como melhor CPR da conta</h4>
+        <p>R$8,88 por conversa com 64 conversões — repetindo a performance de maio como campanha mais eficiente. Candidata natural a escala e replicação em Interior/Euclides.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Interior com CPR consistente</h4>
+        <p>R$15,16 na campanha "HT Refinado", dentro da faixa de meta mesmo com o CPM da conta em alta no mês.</p>
+      </div>
+      <div class="insight-box good">
+        <h4>✅ Consolidação de conta já em andamento</h4>
+        <p>A duplicidade de contas identificada em junho foi corrigida em 02/07 (campanhas duplicadas pausadas), eliminando a concorrência de leilão interno para julho.</p>
+      </div>
+    </div>
+    <div>
+      <div class="insight-box bad">
+        <h4>🔴 CPM subiu 37%, alcance caiu 37%</h4>
+        <p>Duas contas de anúncio rodando ao mesmo tempo para o mesmo público inflacionaram o leilão. Efeito direto: CPR médio subiu de R$11,22 para R$14,74 e conversas caíram 30% (1.130 → 789).</p>
+      </div>
+      <div class="insight-box bad">
+        <h4>🔴 Taxa de fechamento em Feira despencou: 67% → 12,5%</h4>
+        <p>De 16 consultas novas, só 2 viraram tratamento. Não é problema de mídia — CPR de conversa em Feira ficou estável. É fechamento dentro do consultório.</p>
+      </div>
+      <div class="insight-box bad">
+        <h4>🔴 ~R$90.000 em receita potencialmente não capturada</h4>
+        <p>Se a taxa de fechamento de maio se mantivesse, ~9 tratamentos a mais teriam sido fechados em junho, a R$10.000 cada.</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠️ Interior "Teste 20/05" com CPR de R$31,06</h4>
+        <p>Bem acima da meta máxima de R$20. Candidata a pausa/reestruturação já na primeira semana de julho.</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠️ Dados clínicos de Interior e Euclides ausentes</h4>
+        <p>Relatório de vendas de junho cobriu só Feira — sem visibilidade da conversão consulta→tratamento nas outras duas praças.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: PRÓXIMOS PASSOS -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-tag">Julho 2026</div>
+    <h2 class="slide-title">Próximos movimentos</h2>
+    <p class="slide-desc">Estratégia e ações planejadas para o mês</p>
+  </div>
+  <div class="region-grid">
+    <div class="region-card">
+      <h4>🔍 Investigar queda de fechamento <span class="pop">Prioridade</span></h4>
+      <p>Alinhar com o consultório o motivo da conversão consulta→tratamento ter caído de 67% para 12,5% em Feira (script de vendas, agenda, follow-up, sazonalidade).</p>
+    </div>
+    <div class="region-card">
+      <h4>✅ Consolidação de conta concluída</h4>
+      <p>Estrutura já unificada em act_1231626225112613 desde 02/07/2026 — não recriar campanhas duplicadas entre contas.</p>
+    </div>
+    <div class="region-card">
+      <h4>📊 Pedir relatório completo</h4>
+      <p>Solicitar ao consultório que o relatório de vendas de julho inclua Interior e Euclides, não só Feira, para fechar o funil financeiro das 3 praças.</p>
+    </div>
+    <div class="region-card">
+      <h4>⚙️ Revisar campanhas acima da meta</h4>
+      <p>Pausar/reestruturar "Interior Teste 20/05" (R$31,06) e "RMK Fechamento" (R$22,71) se não melhorarem na primeira semana de julho.</p>
+    </div>
+    <div class="region-card">
+      <h4>🎯 Escalar "Novos Pacientes"</h4>
+      <p>Melhor CPR da conta (R$8,88) — testar variações do mesmo público em Interior e Euclides.</p>
+    </div>
+    <div class="region-card">
+      <h4>💰 Controle de orçamento</h4>
+      <p>Meta segue R$12.000/mês, distribuído 50/25/25 (Feira/Interior/Euclides) desde 02/07. Acompanhar se o CPM mais alto sustenta esse ritmo de gasto.</p>
+    </div>
+  </div>
+  <div class="notas" style="margin-top:16px;">
+    <div class="notas-label">📋 Meta Julho</div>
+    <p>Recuperar taxa de fechamento em Feira para acima de 40% · CPR médio abaixo de R$15 com conta única (sem duplicidade de leilão) · Revisitar resultado clínico completo das 3 praças na primeira semana de agosto</p>
+  </div>
+</div>
+
+</div>
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nav-btn" onclick="go(-1)">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">CAPA</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" onclick="go(1)">&#8594;</button>
+</div>
+
+<script>
+const labels = ["CAPA","PERFORMANCE DE MÍDIA","CAMPANHAS","RESULTADO CLÍNICO","FUNIL FINANCEIRO","ANÁLISE","JULHO 2026"];
+const slides = document.querySelectorAll('.slide');
+const track = document.getElementById('nav-track');
+const lbl = document.getElementById('slide-label');
+const bar = document.getElementById('progress-bar');
+let cur = 0;
+
+slides.forEach((_,i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i===0?' active':'');
+  d.onclick = () => go(i-cur);
+  track.appendChild(d);
+});
+
+function animateFunnel() {
+  document.querySelectorAll('.funnel-bar').forEach(b => {
+    const w = b.getAttribute('data-w');
+    if (w) setTimeout(() => b.style.width = w + '%', 100);
+  });
+}
+
+function go(dir) {
+  const next = Math.max(0, Math.min(slides.length-1, cur+dir));
+  if (next===cur) return;
+  slides[cur].classList.remove('active');
+  slides[next].classList.add('active');
+  document.querySelectorAll('.dot')[cur].classList.remove('active');
+  document.querySelectorAll('.dot')[next].classList.add('active');
+  cur = next;
+  lbl.textContent = labels[cur];
+  bar.style.width = ((cur/(slides.length-1))*100)+'%';
+  if (cur===4) animateFunnel();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
+  if (e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+});
+
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX);
+document.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX-tx; if (Math.abs(dx)>40) go(dx<0?1:-1); });
+
+bar.style.width = '0%';
+lbl.textContent = labels[0];
+</script>
+</body>
+</html>
