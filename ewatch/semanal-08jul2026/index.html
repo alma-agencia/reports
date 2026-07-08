@@ -403,9 +403,7 @@ const ii = document.getElementById('kv-impr-d');
 ii.textContent = (di>0?'+':'')+di+'% vs semana ant.';
 ii.className = 'kpi-sub kpi-delta '+(di<0?'delta-down':'delta-up');
 
-document.getElementById('kv-meta').textContent = DATA.videos_meta+'/'+DATA.total_videos;
-document.getElementById('kv-meta-s').textContent = DATA.videos_curso+' pausados | '+DATA.videos_pauso+' limite $';
-document.getElementById('kv-viewstotal').textContent = brl(DATA.gasto_views_total);
+// kv-meta e kv-viewstotal removidos do overview — não renderizar
 
 // Tabela campanhas ativas
 const ta = document.getElementById('tbl-ativas');
