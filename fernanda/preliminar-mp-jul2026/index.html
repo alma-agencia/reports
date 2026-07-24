@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Dra. Fernanda Inoue — Preliminar · Julho 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  .tbl-hint {
+    display: none; font-size: 11px; color: var(--gray);
+    margin-bottom: 5px; text-align: center; letter-spacing: .3px;
+  }
+  .tbl-hint.show { display: block; }
+  .tbl-fade {
+    display: none; position: absolute; top: 0; right: 0;
+    width: 52px; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.97));
+    pointer-events: none; z-index: 2; border-radius: 0 6px 6px 0;
+  }
+  .tbl-fade.show { display: block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
+  .two-col-6040 { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; width: 100%; }
+
+  .alma-logo-wrap {
+    position: absolute; top: 20px; right: 20px; z-index: 10;
+  }
+  .alma-logo-text {
+    font-size: 13px; font-weight: 800; letter-spacing: .5px;
+    color: var(--dark); opacity: .5;
+  }
+
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  .funnel { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 34px; background: var(--border);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 4px; display: flex;
+    align-items: center; padding-left: 10px; transition: width 1s ease;
+  }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 180px; }
+  .funnel-val { font-size: 12px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  .text-box {
+    width: 100%; background: var(--light); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px;
+  }
+  .text-box p { font-size: 14px; color: var(--dark); line-height: 1.8; }
+
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 16px 72px; }
+    .cover-wrap { padding: 0 4px; }
+    .cover-badge { font-size: 10px; padding: 4px 12px; margin-bottom: 18px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; flex-wrap: nowrap; justify-content: center; align-items: center; }
+    .cover-meta-item .val { font-size: 20px; }
+    .cover-meta-item .lbl { font-size: 10px; }
+    .cover-divider { width: 1px; height: 32px; flex-shrink: 0; }
+    .slide-title { font-size: 18px; }
+    .slide-desc { font-size: 12px; }
+    .slide-header { margin-bottom: 16px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .kpi { padding: 12px 14px; }
+    .kpi .k-val { font-size: 17px; }
+    .kpi .k-label { font-size: 9px; }
+    .kpi .k-sub, .kpi .k-delta { font-size: 10px; }
+    .tbl-wrap { border-radius: 8px; }
+    .tbl { font-size: 12px; min-width: 480px; }
+    .tbl th { padding: 8px 10px; font-size: 11px; }
+    .tbl td { padding: 6px 10px; }
+    .two-col, .two-col-4060, .two-col-6040 { grid-template-columns: 1fr; gap: 12px; }
+    .region-grid { grid-template-columns: 1fr; gap: 10px; }
+    .funnel-label { width: 100px; font-size: 10px; }
+    .funnel-val { width: 40px; font-size: 10px; }
+    .funnel-bar-wrap { height: 28px; }
+    .notas { padding: 12px 14px; }
+    .notas p { font-size: 12px; }
+    #nav { padding: 0 12px; }
+    .nav-btn { width: 36px; height: 36px; font-size: 13px; }
+    #slide-label { font-size: 10px; }
+  }
+  @media (max-width: 480px) {
+    .slide { padding: 16px 12px 68px; }
+    .cover-title { font-size: 24px; }
+    .cover-meta { gap: 8px; }
+    .cover-meta-item .val { font-size: 18px; }
+    .kpi-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .kpi .k-val { font-size: 15px; }
+    .region-grid { grid-template-columns: 1fr; }
+    .tbl { min-width: 420px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- SLIDE 0 — CAPA -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Relatório Preliminar · Estrutura Nova [MP]</div>
+      <div class="cover-title">Dra. Fernanda Inoue</div>
+      <div class="cover-sub">Performance Meta Ads · 16–24 de Julho de 2026 (8 dias de veiculação)</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$ 646,63</div>
+          <div class="lbl">Investido (campanhas MP)</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">87</div>
+          <div class="lbl">Conversas iniciadas</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$ 7,43</div>
+          <div class="lbl">Custo por conversa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 1 — VISÃO GERAL -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">KPIs das Campanhas [MP]</div>
+      <div class="slide-desc">5 campanhas ativas, subidas em 16/07/2026 — nova estrutura da Agência Prospect. Período: 16 a 24/07 (dado parcial do mês).</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$ 646,63</div>
+        <div class="k-sub">Verba mensal do cliente: R$ 2.500</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Conversas Iniciadas</div>
+        <div class="k-val">87</div>
+        <div class="k-sub">messaging_conversation_started (7d)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Custo por Conversa</div>
+        <div class="k-val">R$ 7,43</div>
+        <div class="k-sub">Meta do cliente: R$ 8,00</div>
+        <div class="k-delta up">↓ 7% abaixo da meta</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Conexões de Mensagem</div>
+        <div class="k-val">131</div>
+        <div class="k-sub">Custo médio: R$ 4,94</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">CPM</div>
+        <div class="k-val">R$ 14,13</div>
+        <div class="k-sub">Custo por mil impressões</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
+        <div class="k-val">5,12%</div>
+        <div class="k-sub">Taxa de clique (2.342 cliques)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Impressões</div>
+        <div class="k-val">45.780</div>
+        <div class="k-sub">8 dias de veiculação</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Alcance</div>
+        <div class="k-val">28.465</div>
+        <div class="k-sub">Soma por campanha (pode ter sobreposição)</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Relatório preliminar — cobre só a estrutura nova com tag <strong>[MP]</strong>, subida em 16/07 pela Prospect, substituindo as campanhas antigas (Camp. Rd, Camp. Rd — 2, Camp. Rd — 3, Camp. JE), que estão pausadas. Com apenas 8 dias de dados, os números aqui são direcionais — regra de ouro da agência é não otimizar/pausar antes de 90% da meta batida ou 48h rodando, então nenhuma ação de escala ou corte é recomendada ainda.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 2 — TABELA DE CAMPANHAS -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Campanhas</div>
+      <div class="slide-title">Performance por Campanha [MP]</div>
+      <div class="slide-desc">Todas ativas, CBO, subidas em 16/07/2026 — ordenadas por gasto</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th class="num">Gasto</th>
+            <th class="num">Conversas Iniciadas</th>
+            <th class="num">Custo/Conversa</th>
+            <th class="num">CTR</th>
+            <th class="num">CPM</th>
+            <th>Objetivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Remarketing-90d-VideoView</td>
+            <td class="num">R$ 198,04</td>
+            <td class="num">38</td>
+            <td class="num">R$ 5,21</td>
+            <td class="num">2,3%</td>
+            <td class="num">R$ 14,96</td>
+            <td><span class="badge green">Retargeting</span></td>
+          </tr>
+          <tr>
+            <td>Teste-C-InteresseEspecifico-HighTicket</td>
+            <td class="num">R$ 128,52</td>
+            <td class="num">15</td>
+            <td class="num">R$ 8,57</td>
+            <td class="num">5,5%</td>
+            <td class="num">R$ 19,77</td>
+            <td><span class="badge amber">Teste C</span></td>
+          </tr>
+          <tr>
+            <td>Teste-B-LookalikeMsg-HighTicket</td>
+            <td class="num">R$ 127,90</td>
+            <td class="num">13</td>
+            <td class="num">R$ 9,84</td>
+            <td class="num">4,9%</td>
+            <td class="num">R$ 27,28</td>
+            <td><span class="badge amber">Teste B</span></td>
+          </tr>
+          <tr>
+            <td>Teste-A-InteresseAtual-HighTicket</td>
+            <td class="num">R$ 127,70</td>
+            <td class="num">19</td>
+            <td class="num">R$ 6,72</td>
+            <td class="num">4,8%</td>
+            <td class="num">R$ 22,01</td>
+            <td><span class="badge amber">Teste A</span></td>
+          </tr>
+          <tr>
+            <td>Cold-HighTicket (Tráfego → Perfil IG)</td>
+            <td class="num">R$ 64,47</td>
+            <td class="num">2</td>
+            <td class="num">—</td>
+            <td class="num">7,5%</td>
+            <td class="num">R$ 4,14</td>
+            <td><span class="badge orange">Topo de funil</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 18px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>"Cold-HighTicket" tem objetivo de tráfego para o perfil (não mensagem) — por isso o CTR mais alto e custo por conversa não se aplica; ela alimenta topo de funil para as campanhas de remarketing. Os 3 testes (A/B/C) de público ainda estão em fase de aprendizado — com R$ 127-129 cada, é cedo para eleger vencedor; recomendo rodar mais alguns dias antes de decidir escala ou pausa.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 3 — FUNIL DE MENSAGENS -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Funil</div>
+      <div class="slide-title">Funil de Mensagens — Estrutura [MP]</div>
+      <div class="slide-desc">Da conexão inicial até a primeira resposta enviada (soma das 5 campanhas)</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Jornada da Conversa</div>
+        <div class="funnel">
+          <div class="funnel-step">
+            <div class="funnel-label">Conexões de mensagem</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">131</span>
+              </div>
+            </div>
+            <div class="funnel-val">100%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Conversas iniciadas</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:66%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">87</span>
+              </div>
+            </div>
+            <div class="funnel-val">66%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Primeira resposta enviada</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:44%;background:#16a34a;">
+                <span style="font-size:11px;font-weight:700;color:white">57</span>
+              </div>
+            </div>
+            <div class="funnel-val">44%</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Leitura do Funil</div>
+        <div class="insight-box good">
+          <h4>Boa taxa de conexão → conversa</h4>
+          <p>66% das conexões de mensagem viram conversa iniciada — acima do que costuma se ver em campanhas recém-subidas, sinal de segmentação e criativo alinhados.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Queda entre conversa e primeira resposta</h4>
+          <p>Só 44% do total chega à primeira resposta enviada. Com poucos dias de histórico ainda não dá para separar "não respondeu" de "atendimento não respondeu a tempo" — vale conferir tempo de resposta do WhatsApp da clínica.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Cliente oculto: atendimento ágil, mas não fecha o agendamento</h4>
+          <p>A agência rodou um teste de cliente oculto no WhatsApp comercial da clínica (14 a 24/07): primeira resposta em ~1h12, depois respostas rápidas para dúvidas, fotos e orçamento (R$4.500–6.000). Em 15/07 o "lead" sinalizou intenção de agendar consulta ("dia 6, marca um dia pra mim ir ao consultório") — 9 dias depois (24/07), o comercial ainda não tinha retornado para confirmar a agenda.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Dado ainda parcial</h4>
+          <p>8 dias de veiculação — a leitura do funil deve ser revisitada no fechamento do mês, com volume maior.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 4 — INSIGHTS -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Insights</div>
+      <div class="slide-title">O que já dá pra ver na estrutura nova</div>
+      <div class="slide-desc">Leitura preliminar — 8 dias de dados</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funcionou</div>
+        <div class="insight-box good">
+          <h4>Custo por conversa dentro da meta</h4>
+          <p>R$ 7,43 por conversa iniciada, abaixo do teto de R$ 8,00 definido para a conta — mesmo em fase de aprendizado das campanhas.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Remarketing é o destaque</h4>
+          <p>A campanha de remarketing (públicos quentes de 90 dias) já entrega o menor custo por conversa (R$ 5,21) e maior volume (38 conversas) do grupo.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Tráfego frio barato para o perfil</h4>
+          <p>Cold-HighTicket entrega CPC de R$ 0,05 e CTR de 7,5% — ótimo custo para aquecer audiência de topo antes de puxar para remarketing.</p>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que observar</div>
+        <div class="insight-box warn">
+          <h4>Testes A/B/C ainda sem vencedor claro</h4>
+          <p>Custo por conversa varia de R$ 6,72 a R$ 9,84 entre os 3 públicos testados — diferença ainda dentro do esperado para volume baixo (R$127-129 cada). Não pausar nenhum ainda.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Pixel não instalado</h4>
+          <p>O roster indica pixel não instalado nesta conta. Não afeta os resultados de mensageria acima (evento nativo do Meta), mas impede rastrear conversão pós-clique no site/WhatsApp fora da plataforma, se isso vier a ser necessário.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Amostra pequena</h4>
+          <p>Todas as leituras aqui são de 8 dias — o relatório de fechamento do mês (dia 01) vai consolidar o quadro real.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 5 — CLIENTE OCULTO -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Cliente Oculto</div>
+      <div class="slide-title">Teste de Cliente Oculto — Atendimento Comercial</div>
+      <div class="slide-desc">Teste realizado pela agência no WhatsApp comercial da clínica (14–24/07/2026), simulando uma paciente interessada — fora do escopo de mídia paga, mas direto ligado à conversão dos leads gerados</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Quando</th>
+            <th>Evento</th>
+            <th>Tempo de resposta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>14/07 · 15:06</td>
+            <td>Primeiro contato ("Vi o Instagram... gostaria de saber mais sobre rinomodelação")</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td>14/07 · 16:18</td>
+            <td>Primeira resposta do comercial (áudio de apresentação)</td>
+            <td class="num">1h12</td>
+          </tr>
+          <tr>
+            <td>14/07 · 16:20–16:29</td>
+            <td>Dúvidas (dor do procedimento, preço médio) respondidas</td>
+            <td class="num">Minutos</td>
+          </tr>
+          <tr>
+            <td>14/07 · 16:29</td>
+            <td>Comercial envia formulário de pré-avaliação (fotos + nome completo)</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td>15/07 · 08:51</td>
+            <td>Follow-up proativo do comercial no dia seguinte ("Fico no aguardo")</td>
+            <td class="num"><span class="badge green">Proativo</span></td>
+          </tr>
+          <tr>
+            <td>15/07 · 13:21–13:23</td>
+            <td>Fotos e nome completo enviados pelo cliente oculto</td>
+            <td class="num">—</td>
+          </tr>
+          <tr>
+            <td>15/07 · 15:16–15:17</td>
+            <td>Orçamento pedido e respondido (R$4.500–6.000, com condição especial "paciente modelo")</td>
+            <td class="num">~1min</td>
+          </tr>
+          <tr>
+            <td>15/07 · 17:30–17:36</td>
+            <td>Cliente oculto sinaliza intenção de agendar ("dia 6, marca um dia pra mim ir ao consultório") — última resposta do comercial</td>
+            <td class="num">6min</td>
+          </tr>
+          <tr>
+            <td>24/07</td>
+            <td>Confirmação/agendamento da consulta</td>
+            <td class="num"><span class="badge red">9 dias sem retorno</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="two-col" style="margin-top:18px;">
+      <div class="insight-box good">
+        <h4>✅ Meio de funil ágil</h4>
+        <p>Dúvidas, avaliação por fotos e orçamento respondidos em minutos — inclusive um follow-up proativo no dia seguinte ao primeiro contato.</p>
+      </div>
+      <div class="insight-box bad">
+        <h4>⚠️ Fechamento não acontece</h4>
+        <p>No momento de maior intenção de compra (pedido pra agendar consulta), o comercial não voltou a contatar a "paciente" em 9 dias — o lead esfria justamente na etapa decisiva.</p>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Teste conduzido pelo time da Prospect, sem se identificar como agência, para avaliar o processo real de atendimento da clínica — não é uma auditoria da campanha, mas um ponto que afeta diretamente a conversão dos leads que a mídia paga está entregando. Recomendação repassada à clínica: alinhar um SLA de follow-up para leads que sinalizam intenção de agendar.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 6 — PRÓXIMOS PASSOS -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Próximos Passos</div>
+      <div class="slide-title">Até o Fechamento de Julho</div>
+      <div class="slide-desc">Ações planejadas para os próximos dias, sem mexer em campanha com menos de 48h/90% da meta ainda</div>
+    </div>
+
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>🔎 Monitorar testes A/B/C<span class="pop">Contínuo</span></h4>
+        <p>Acompanhar diariamente o custo por conversa dos 3 públicos testados até acumular volume suficiente para eleger o vencedor.</p>
+        <div class="strat">→ Decisão prevista para a próxima janela de otimização (a cada 3 dias)</div>
+      </div>
+      <div class="region-card">
+        <h4>📈 Escalar remarketing com cautela<span class="pop">Se sustentar</span></h4>
+        <p>Se o custo por conversa do Remarketing-90d-VideoView seguir abaixo da meta, avaliar escala de até 20% (teto definido pela agência).</p>
+        <div class="strat">→ Depender de confirmação do gestor antes de qualquer ajuste de orçamento</div>
+      </div>
+      <div class="region-card">
+        <h4>💬 Fechar o loop do agendamento<span class="pop">Alta prioridade</span></h4>
+        <p>Teste de cliente oculto da agência (14–24/07) mostrou atendimento ágil até o orçamento, mas sem follow-up de confirmação de agenda em 9 dias — pode estar represando a conversão de conversa qualificada em paciente agendado, fora do alcance da campanha.</p>
+        <div class="strat">→ Alinhar com a clínica um SLA de follow-up para leads que sinalizam intenção de agendar</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Este é um relatório preliminar, gerado a pedido interno da agência para acompanhar a estrutura [MP] recém-lançada — ainda não é o fechamento mensal (previsto para 01/08). Nenhuma escrita foi feita na conta; os números vêm direto do Meta Insights via n8n.</p>
+    </div>
+  </div>
+
+</div><!-- /#slides -->
+
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)" aria-label="Slide anterior">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)" aria-label="Próximo slide">&#8594;</button>
+</div>
+
+<script>
+  // Injeta um selo de texto "Alma." em todos os slides (exceto a capa)
+  document.querySelectorAll('.slide:not(#s0)').forEach(slide => {
+    if (!slide.querySelector('.alma-logo-wrap')) {
+      const wrap = document.createElement('div');
+      wrap.className = 'alma-logo-wrap';
+      const span = document.createElement('span');
+      span.className = 'alma-logo-text';
+      span.textContent = 'Alma.';
+      wrap.appendChild(span);
+      slide.insertBefore(wrap, slide.firstChild);
+    }
+  });
+
+  const slideLabels = [
+    'Capa',
+    'Visão Geral',
+    'Campanhas MP',
+    'Funil de Mensagens',
+    'Insights',
+    'Cliente Oculto',
+    'Próximos Passos',
+  ];
+
+  const slides   = document.querySelectorAll('.slide');
+  const label    = document.getElementById('slide-label');
+  const track    = document.getElementById('nav-track');
+  const progress = document.getElementById('progress-bar');
+  let current    = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    track.querySelectorAll('.dot')[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    track.querySelectorAll('.dot')[current].classList.add('active');
+    label.textContent = slideLabels[current] || `Slide ${current + 1}`;
+    progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+    setTimeout(initTableScrollHints, 60);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+  });
+
+  function initTableScrollHints() {
+    document.querySelectorAll('.slide.active .tbl-wrap').forEach(wrap => {
+      let hint = wrap.previousElementSibling;
+      if (!hint || !hint.classList || !hint.classList.contains('tbl-hint')) {
+        hint = document.createElement('div');
+        hint.className = 'tbl-hint';
+        hint.textContent = '← arraste para o lado →';
+        wrap.parentNode.insertBefore(hint, wrap);
+      }
+      let fade = wrap.querySelector('.tbl-fade');
+      if (!fade) {
+        fade = document.createElement('div');
+        fade.className = 'tbl-fade';
+        wrap.appendChild(fade);
+      }
+      function update() {
+        const hasOverflow = wrap.scrollWidth > wrap.clientWidth + 2;
+        const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
+        const show = hasOverflow && !atEnd;
+        hint.classList.toggle('show', show);
+        fade.classList.toggle('show', show);
+      }
+      if (wrap._scrollHandler) wrap.removeEventListener('scroll', wrap._scrollHandler);
+      wrap._scrollHandler = update;
+      wrap.addEventListener('scroll', update, { passive: true });
+      update();
+    });
+  }
+
+  progress.style.width = '0%';
+  initTableScrollHints();
+</script>
+
+</body>
+</html>
