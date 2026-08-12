@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Tempo Geração — Julho 2026</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi .k-delta.neutral { color: var(--amber); }
+
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .tbl tfoot td { font-weight: 700; background: var(--light); border-top: 2px solid var(--border); }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
+
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  .funnel { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 34px; background: var(--border);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 4px; display: flex;
+    align-items: center; padding-left: 10px; transition: width 1s ease;
+  }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 160px; }
+  .funnel-val { font-size: 12px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
+  .funnel-pct { font-size: 11px; color: white; font-weight: 700; }
+
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  .compare-row {
+    display: flex; gap: 16px; align-items: stretch; width: 100%; margin-bottom: 12px;
+  }
+  .compare-col {
+    flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 16px;
+  }
+  .compare-col.before { border-top: 3px solid var(--amber); }
+  .compare-col.after  { border-top: 3px solid var(--green); }
+  .compare-col .c-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .compare-col.before .c-label { color: var(--amber); }
+  .compare-col.after  .c-label { color: var(--green); }
+  .compare-col .c-row {
+    display: flex; justify-content: space-between;
+    font-size: 13px; padding: 5px 0; border-bottom: 1px solid var(--border);
+  }
+  .compare-col .c-row:last-child { border-bottom: none; }
+  .compare-col .c-row .c-k { color: var(--gray); }
+  .compare-col .c-row .c-v { font-weight: 700; color: var(--dark); }
+
+  .text-box { background: var(--light); border-radius: 8px; padding: 14px 18px; width: 100%; font-size: 13px; color: var(--dark); line-height: 1.6; }
+
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 18px 72px; }
+    .cover-title { font-size: 32px; }
+    .cover-sub { font-size: 14px; margin-bottom: 28px; }
+    .cover-meta { gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .cover-meta-item .val { font-size: 22px; }
+    .slide-title { font-size: 20px; }
+    .slide-desc { font-size: 12px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi .k-val { font-size: 18px; }
+    .two-col, .two-col-4060 { grid-template-columns: 1fr; gap: 16px; }
+    .region-grid { grid-template-columns: 1fr; }
+    .funnel-label { width: 120px; font-size: 11px; }
+    .funnel-val { width: 48px; font-size: 11px; }
+    #nav { padding: 0 16px; }
+    .nav-btn { width: 38px; height: 38px; font-size: 14px; }
+    .compare-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- SLIDE 0 — CAPA -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago</div>
+      <div class="cover-title">Tempo Geração</div>
+      <div class="cover-sub">Performance Meta Ads + Google Ads · Julho 2026</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$5.151</div>
+          <div class="lbl">Investido (Meta+Google)</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">286</div>
+          <div class="lbl">Leads (Meta)</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">10</div>
+          <div class="lbl">Contratos Fechados</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$7.765</div>
+          <div class="lbl">Receita Mensal</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">47x</div>
+          <div class="lbl">ROAS LTV</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1 — KPIs DE TRÁFEGO (META) -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral · Meta Ads</div>
+      <div class="slide-title">KPIs de Tráfego — Julho 2026</div>
+      <div class="slide-desc">Métricas consolidadas da conta Meta · Comparativo com junho · Meta CPL: R$10</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$4.649,59</div>
+        <div class="k-sub">Orçamento: R$5.000/mês</div>
+        <div class="k-delta dn">↓ -6,4% vs junho (R$4.967,57)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Leads</div>
+        <div class="k-val">286</div>
+        <div class="k-sub">358 em junho</div>
+        <div class="k-delta dn">↓ -20,1% vs junho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPL</div>
+        <div class="k-val" style="color:var(--red)">R$16,26</div>
+        <div class="k-sub">Meta: R$10,00</div>
+        <div class="k-delta dn">↑ +17,2% vs junho (R$13,88) — ver nota de qualidade</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
+        <div class="k-val">1,64%</div>
+        <div class="k-sub">1,52% em junho</div>
+        <div class="k-delta up">↑ +0,12pp vs junho</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">CPM</div>
+        <div class="k-val">R$32,72</div>
+        <div class="k-sub">R$29,90 em junho</div>
+        <div class="k-delta dn">↑ +9,4% — leilão mais caro</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPC</div>
+        <div class="k-val">R$2,00</div>
+        <div class="k-sub">R$1,97 em junho</div>
+        <div class="k-delta neutral">→ +1,7% vs junho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Alcance</div>
+        <div class="k-val">72,6K</div>
+        <div class="k-sub">77,3K em junho</div>
+        <div class="k-delta dn">↓ -6,1% vs junho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Impressões</div>
+        <div class="k-val">142,1K</div>
+        <div class="k-sub">166,2K em junho</div>
+        <div class="k-delta dn">↓ -14,5% vs junho</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p><strong>Menos leads, mais caros — mas convertendo melhor.</strong> Investimento, leads e volume de mídia (impressões/alcance) recuaram vs. junho: efeito direto da virada de estratégia de 17/07 (priorizar qualidade sobre volume, restringindo verba em públicos de interesse amplo que traziam leads de conta baixa) somada à interrupção de veiculação no fim do mês (ver Campanhas, slide 05). O CPL subiu 17,2% (R$16,26), acima da meta de R$10 — mas a Taxa de conversão Lead→Venda subiu de 2,51% para 3,50% (slide 04), confirmando que o lead médio de julho é mais qualificado, mesmo custando mais caro para captar. Frequência caiu de 2,15 para 1,96 — sinal positivo de menos saturação de público.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2 — GOOGLE ADS: NOVO CANAL -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Novo Canal · Google Ads</div>
+      <div class="slide-title">Google Ads — Primeiro Mês Completo</div>
+      <div class="slide-desc">Campanha "[MP] [Pesquisa] [LEAD &gt; SITE] [Jul26] Solar-BA" · Sem histórico em junho (R$0 investido)</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$501,76</div>
+        <div class="k-sub">Orçamento: R$16/dia (R$500/mês)</div>
+        <div class="k-delta neutral">→ Praticamente no teto do budget</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Cliques</div>
+        <div class="k-val">214</div>
+        <div class="k-sub">6.231 impressões</div>
+        <div class="k-delta up">↑ CTR 3,43% — bem acima da média Meta</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPC Médio</div>
+        <div class="k-val">R$2,34</div>
+        <div class="k-sub">Rede de Pesquisa · Bahia</div>
+        <div class="k-delta neutral">→ Dentro do range esperado p/ Pesquisa</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Conversões (clique WPP)</div>
+        <div class="k-val">46</div>
+        <div class="k-sub">Custo por conversão: R$10,91</div>
+        <div class="k-delta up">↑ Custo por conversão abaixo do CPL Meta</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Primeiro mês real do Google Ads na conta (campanha lançada em julho, orçamento R$16/dia). Métricas de captação (CTR 3,43%, custo por conversão R$10,91) vieram fortes para um canal recém-ligado — a Rede de Pesquisa captura intenção ativa ("energia solar Bahia"), diferente do Meta que interrompe o feed. O canal já converteu em venda: o contrato de Antonio Eduardo Machado de Jesus (R$1.134,01/mês, ver slide 03) veio do Google/Site — o maior ticket entre os fechamentos "novos" do mês, atrás apenas do outlier Graciele. Ainda é cedo para comparar CPL/CPA diretamente com o Meta (funis diferentes: clique WPP vs. lead formulário), mas o sinal inicial justifica considerar aumento de budget em agosto.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3 — RESULTADOS COMERCIAIS -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Resultados Comerciais</div>
+      <div class="slide-title">Contratos Fechados — Julho 2026</div>
+      <div class="slide-desc">10 negócios ganhos · Total: R$7.765,41/mês · Fechamento comercial (planilha do cliente)</div>
+    </div>
+
+    <div class="kpi-row" style="margin-bottom:16px">
+      <div class="kpi">
+        <div class="k-label">Receita Mensal</div>
+        <div class="k-val">R$7.765</div>
+        <div class="k-sub">10 contratos · +117,2% vs junho</div>
+        <div class="k-delta up">↑ R$3.575 em junho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">ROAS Imediato</div>
+        <div class="k-val" style="color:var(--green)">1,51x</div>
+        <div class="k-sub">R$7.765/mês ÷ R$5.151 investido (Meta+Google)</div>
+        <div class="k-delta up">↑ 1º mês acima de 1x (junho: 0,72x)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">ROAS LTV</div>
+        <div class="k-val" style="color:var(--orange)">47x</div>
+        <div class="k-sub">R$243.517 LTV ÷ R$5.151</div>
+        <div class="k-delta up">↑ Cada R$1 gera R$47 em receita</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CAC</div>
+        <div class="k-val">R$515,14</div>
+        <div class="k-sub">LTV médio: R$24.352</div>
+        <div class="k-delta up">↓ vs R$552,06 em junho</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th class="num">Valor/mês</th>
+            <th>Plano</th>
+            <th>Fidelidade</th>
+            <th class="num">LTV</th>
+            <th>Origem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Graciele Alves Fernandes</strong></td>
+            <td class="num">R$3.442,72</td>
+            <td>Plano 30%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$123.937,92</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Josehilton Martins dos Santos</td>
+            <td class="num">R$742,24</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$26.720,64</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Francisco Fernandez Trujillo</td>
+            <td class="num">R$762,52</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$27.450,72</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Antonio Eduardo Machado de Jesus</td>
+            <td class="num">R$1.134,01</td>
+            <td>Outro (22%)*</td>
+            <td>12 meses*</td>
+            <td class="num"><strong>R$13.608,12</strong></td>
+            <td><span class="badge amber">Google/Site</span></td>
+          </tr>
+          <tr>
+            <td>Williame Carneiro dos Santos Pestana</td>
+            <td class="num">R$342,77</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$12.339,72</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Adeilson Ribeiro de Souza</td>
+            <td class="num">R$313,42</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$11.283,12</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Hildebrando Pereira do Amaral</td>
+            <td class="num">R$241,14</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$8.681,04</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Almir Puresa Lopes Junior</td>
+            <td class="num">R$221,33</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$7.967,88</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Cristiana de Oliveira Costa Silva</td>
+            <td class="num">R$197,69</td>
+            <td>Plano 25%</td>
+            <td>36 meses</td>
+            <td class="num"><strong>R$7.116,84</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+          <tr>
+            <td>Adson Frederico Matos de Sá</td>
+            <td class="num">R$367,57</td>
+            <td>Plano 20%</td>
+            <td>12 meses</td>
+            <td class="num"><strong>R$4.410,84</strong></td>
+            <td><span class="badge orange">Redes Sociais</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>TOTAL</strong></td>
+            <td class="num"><strong>R$7.765,41/mês</strong></td>
+            <td colspan="2"></td>
+            <td class="num"><strong>R$243.516,84</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="text-box" style="margin-top:12px">
+      <strong>* Prazo de fidelidade por plano (referência: simulador de planos do cliente):</strong> 15% = sem fidelidade (base conservadora de 12 meses); 20% = fidelidade de 1 ano (12 meses); 25% = fidelidade de 3+ anos (36 meses); 30% = mesma faixa do plano de 25% (36 meses). O contrato de <strong>Antonio Eduardo (Plano "Outro", 22% de desconto)</strong> não se encaixa nas faixas padrão do simulador — tratado aqui conservadoramente como 12 meses (LTV R$13.608,12) até confirmação do gestor sobre o prazo contratado. Se o prazo real for equivalente ao do Plano 25% (36 meses), o LTV desse contrato sobe para R$40.824,36 e o LTV total do mês para R$270.733,08. <strong>Pedido:</strong> confirmar com o time comercial o prazo de fidelidade real do plano "Outro" antes da publicação.
+    </div>
+
+    <div class="notas" style="margin-top:14px">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Melhor mês comercial do trimestre: 10 contratos (vs 9 em junho), puxados pelo outlier Graciele Alves Fernandes (R$3.442,72/mês, Plano 30%×36m) — maior contrato já fechado na conta, sozinho responde por 51% da receita mensal e 51% do LTV total de julho. Sem esse outlier, a receita mensal seria R$4.322,69 (ainda acima de junho). 9 dos 10 contratos vieram de Redes Sociais (R$6.631,40/mês) e 1 do Google/Site recém-lançado (R$1.134,01/mês). Taxa de conversão Lead→Venda: 3,50% (10/286) — acima dos 2,51% de junho, confirmando a melhora de qualidade após a virada de estratégia de 17/07.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4 — FUNIL + LTV -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Funil + LTV</div>
+      <div class="slide-title">Funil de Conversão — Julho 2026</div>
+      <div class="slide-desc">Da impressão ao contrato · Meta Ads · Gargalos e taxas de conversão</div>
+    </div>
+
+    <div class="funnel">
+      <div class="funnel-step">
+        <div class="funnel-label">Impressões</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00)">
+            <span class="funnel-pct">100%</span>
+          </div>
+        </div>
+        <div class="funnel-val">142.106</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Alcance único</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:51.1%;background:linear-gradient(90deg,#FF8C3A,#FF6B00)">
+            <span class="funnel-pct">51,1%</span>
+          </div>
+        </div>
+        <div class="funnel-val">72.556</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Cliques totais</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:1.6%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+          </div>
+        </div>
+        <div class="funnel-val">2.326</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Leads (formulário)</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.2%;background:linear-gradient(90deg,#16a34a,#16a34a);">
+          </div>
+        </div>
+        <div class="funnel-val">286</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">Contratos Fechados</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:0.01%;background:linear-gradient(90deg,#16a34a,#16a34a);">
+          </div>
+        </div>
+        <div class="funnel-val">10</div>
+      </div>
+    </div>
+
+    <div class="kpi-row" style="margin-top:20px">
+      <div class="kpi">
+        <div class="k-label">CTR (Clique/Impressão)</div>
+        <div class="k-val">1,64%</div>
+        <div class="k-sub">Acima de junho (1,52%)</div>
+        <div class="k-delta up">↑ Criativos seguem performando</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Clique → Lead CVR</div>
+        <div class="k-val">12,30%</div>
+        <div class="k-sub">286 leads de 2.326 cliques</div>
+        <div class="k-delta dn">↓ vs junho (14,17%)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Lead → Venda CVR</div>
+        <div class="k-val" style="color:var(--green)">3,50%</div>
+        <div class="k-sub">10 contratos de 286 leads</div>
+        <div class="k-delta up">↑ Alta vs junho (2,51%)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPL</div>
+        <div class="k-val" style="color:var(--red)">R$16,26</div>
+        <div class="k-sub">Meta: R$10,00</div>
+        <div class="k-delta dn">↑ +17,2% vs junho (R$13,88)</div>
+      </div>
+    </div>
+
+    <div class="slide-header" style="margin-top:16px;margin-bottom:10px">
+      <div class="slide-tag" style="font-size:10px">LTV — ANÁLISE POR PLANO (INVESTIMENTO TOTAL: META + GOOGLE)</div>
+    </div>
+    <div class="kpi-row kpi-row-3" style="margin-bottom:0">
+      <div class="kpi">
+        <div class="k-label">LTV Total Gerado</div>
+        <div class="k-val" style="color:var(--orange)">R$243.517</div>
+        <div class="k-sub">R$243.517 ÷ R$5.151 investido</div>
+        <div class="k-delta up">↑ ROAS LTV: 47x</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">LTV Médio por Contrato</div>
+        <div class="k-val">R$24.352</div>
+        <div class="k-sub">R$13.407 em junho</div>
+        <div class="k-delta up">↑ Puxado pelo outlier Graciele</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Plano dominante</div>
+        <div class="k-val">25% × 36m</div>
+        <div class="k-sub">7 de 10 contratos (80% em 25%+30%)</div>
+        <div class="k-delta up">↑ Mix de fidelidade longa se mantém</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5 — PERFORMANCE POR CAMPANHA -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Campanhas · Meta Ads</div>
+      <div class="slide-title">Performance por Campanha — Julho 2026</div>
+      <div class="slide-desc">5 campanhas ativas · Nomenclatura padronizada em 22/07 · Nova campanha de teste (Empreendedor Conta Alta) lançada em julho</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th class="num">Gasto</th>
+            <th class="num">Impr.</th>
+            <th class="num">CTR</th>
+            <th class="num">CPM</th>
+            <th class="num">Leads</th>
+            <th class="num">CPL</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Pub-LAL-Investidor</strong><br><small style="color:var(--gray)">Campanha original — rodando desde fevereiro</small></td>
+            <td class="num">R$2.315,57</td>
+            <td class="num">55.452</td>
+            <td class="num">2,03%</td>
+            <td class="num">R$41,76</td>
+            <td class="num"><strong>176</strong></td>
+            <td class="num"><span style="color:var(--amber);font-weight:700">R$13,16</span></td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr>
+            <td><strong>ADV-Empresarios-BR</strong><br><small style="color:var(--gray)">Bahia · desde 22/05</small></td>
+            <td class="num">R$1.317,18</td>
+            <td class="num">59.323</td>
+            <td class="num">1,25%</td>
+            <td class="num">R$22,20</td>
+            <td class="num"><strong>72</strong></td>
+            <td class="num"><span style="color:var(--red);font-weight:700">R$18,29</span></td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr>
+            <td><strong>Interesses LAL-BA</strong><br><small style="color:var(--gray)">Nova · lançada 06/07</small></td>
+            <td class="num">R$669,75</td>
+            <td class="num">12.496</td>
+            <td class="num">1,95%</td>
+            <td class="num">R$53,60</td>
+            <td class="num"><strong>24</strong></td>
+            <td class="num"><span style="color:var(--red);font-weight:700">R$27,91</span></td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr>
+            <td><strong>RMKT-VisitouPerfil90d</strong><br><small style="color:var(--gray)">Remarketing 90 dias</small></td>
+            <td class="num">R$133,15</td>
+            <td class="num">8.785</td>
+            <td class="num">1,58%</td>
+            <td class="num">R$15,16</td>
+            <td class="num"><strong>9</strong></td>
+            <td class="num"><span style="color:var(--green);font-weight:700">R$14,79</span></td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr style="opacity:.7">
+            <td><strong>Empreendedor Conta Alta</strong><br><small style="color:var(--gray)">Teste dedicado (conta &gt; R$1.000) · lançada jul/26</small></td>
+            <td class="num">R$213,94</td>
+            <td class="num">6.050</td>
+            <td class="num">1,31%</td>
+            <td class="num">R$35,36</td>
+            <td class="num"><strong>5</strong></td>
+            <td class="num"><span style="color:var(--red);font-weight:700">R$42,79</span></td>
+            <td><span class="badge amber">Baixo volume</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td><strong>TOTAL</strong></td>
+            <td class="num"><strong>R$4.649,59</strong></td>
+            <td class="num">142.106</td>
+            <td class="num">1,64%</td>
+            <td class="num">R$32,72</td>
+            <td class="num"><strong>286</strong></td>
+            <td class="num"><strong>R$16,26</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="two-col" style="margin-top:16px">
+      <div>
+        <div class="insight-box good">
+          <h4>✅ Pub-LAL-Investidor — 61,5% dos leads, CPL estável</h4>
+          <p>176 de 286 leads. CPL R$13,16, praticamente igual a junho (R$13,10) — segue sendo a campanha mais consistente da conta, mesmo rodando desde fevereiro.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>🔴 ADV-Empresarios-BR — CPL piorou pelo 2º mês seguido</h4>
+          <p>R$14,63 (maio) → R$18,29 (julho, após R$14,63 em junho já ter sido apontado como alerta). Sinal reforçado de saturação do público Advantage+.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box warn">
+          <h4>⚠️ Interesses LAL-BA — CPL R$27,91, mais cara do mês</h4>
+          <p>Campanha nova (lançada 06/07) com públicos de interesse amplo — consistente com o diagnóstico de 17/07 de que esses públicos trazem leads de conta mais baixa.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>⚠️ Empreendedor Conta Alta — só 4,6% do budget do mês</h4>
+          <p>Campanha de teste dedicada ao público de conta alta (prioridade do plano de 17/07), mas recebeu apenas R$213,94 de R$4.649,59 investidos — o plano de redirecionar verba para esse público ainda não saiu do papel em termos de orçamento.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-box" style="margin-top:12px">
+      <strong>Criativos — os 3 "legado" seguem concentrando o volume:</strong> <em>post 16/11 - passa de 250?</em> (R$1.352,14 · 97 leads · CPL R$13,94), <em>ad4 - video - sicomercio</em> (R$1.444,28 · 93 leads · CPL R$15,53) e <em>ad2 - passa de 350?</em> (R$1.346,92 · 73 leads · CPL R$18,45) somam <strong>263 dos 286 leads do mês (92%)</strong>. Os 4 criativos novos testados para o público de conta alta (cards estáticos "Pergunta Seletiva", "Desconto 25%", "Antes/Depois Fatura", "Família") somam apenas R$130–174 de investimento cada, com 0–3 leads — volume baixo demais para conclusão, mas confirma que a verba ainda não migrou de fato para o teste.
+    </div>
+
+    <div class="notas" style="margin-top:14px">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p><strong>Outlier — 2º mês seguido com interrupção de veiculação no fim do mês.</strong> Gasto diário caiu de ~R$170–200/dia (01–18/07) para R$18,82 (19/07) e R$69,83 (20/07), e ficou <strong>zerado por 4 dias seguidos (28–31/07)</strong> — mesmo padrão apontado no relatório de junho (queda pós-20/06), agora mais grave (zero total vs. queda parcial). Investigar com prioridade se é esgotamento do budget mensal, corte manual ou instabilidade de conta antes de repetir o padrão em agosto — isso pode explicar parte da queda de 20,1% nos leads vs. junho.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6 — COMPARATIVO JUNHO VS JULHO -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Comparativo</div>
+      <div class="slide-title">Junho vs. Julho 2026</div>
+      <div class="slide-desc">Evolução de todas as métricas principais · Julho já inclui investimento em Google Ads</div>
+    </div>
+
+    <div class="compare-row">
+      <div class="compare-col before">
+        <div class="c-label">Junho 2026</div>
+        <div class="c-row"><span class="c-k">Investimento (Meta)</span><span class="c-v">R$4.967,57</span></div>
+        <div class="c-row"><span class="c-k">Leads</span><span class="c-v">358</span></div>
+        <div class="c-row"><span class="c-k">CPL</span><span class="c-v">R$13,88</span></div>
+        <div class="c-row"><span class="c-k">CTR</span><span class="c-v">1,52%</span></div>
+        <div class="c-row"><span class="c-k">CPM</span><span class="c-v">R$29,90</span></div>
+        <div class="c-row"><span class="c-k">Contratos</span><span class="c-v">9</span></div>
+        <div class="c-row"><span class="c-k">Receita mensal</span><span class="c-v">R$3.575,36</span></div>
+        <div class="c-row"><span class="c-k">LTV total</span><span class="c-v">R$120.667,44</span></div>
+        <div class="c-row"><span class="c-k">ROAS LTV</span><span class="c-v">24,3x</span></div>
+        <div class="c-row"><span class="c-k">CAC</span><span class="c-v">R$552,06</span></div>
+        <div class="c-row"><span class="c-k">Conv. Lead→Venda</span><span class="c-v">2,51%</span></div>
+      </div>
+      <div class="compare-col after">
+        <div class="c-label">Julho 2026 (Meta+Google)</div>
+        <div class="c-row"><span class="c-k">Investimento</span><span class="c-v">R$5.151,35 <small style="color:var(--green)">+3,7%</small></span></div>
+        <div class="c-row"><span class="c-k">Leads (Meta)</span><span class="c-v">286 <small style="color:var(--red)">-20,1%</small></span></div>
+        <div class="c-row"><span class="c-k">CPL (Meta)</span><span class="c-v" style="color:var(--red)">R$16,26 <small>+17,2%</small></span></div>
+        <div class="c-row"><span class="c-k">CTR (Meta)</span><span class="c-v">1,64% <small style="color:var(--green)">+0,12pp</small></span></div>
+        <div class="c-row"><span class="c-k">CPM (Meta)</span><span class="c-v">R$32,72 <small style="color:var(--red)">+9,4%</small></span></div>
+        <div class="c-row"><span class="c-k">Contratos</span><span class="c-v">10 <small style="color:var(--green)">+11,1%</small></span></div>
+        <div class="c-row"><span class="c-k">Receita mensal</span><span class="c-v">R$7.765,41 <small style="color:var(--green)">+117,2%</small></span></div>
+        <div class="c-row"><span class="c-k">LTV total</span><span class="c-v">R$243.516,84 <small style="color:var(--green)">+101,9%</small></span></div>
+        <div class="c-row"><span class="c-k">ROAS LTV</span><span class="c-v">47,3x <small style="color:var(--green)">+94,4%</small></span></div>
+        <div class="c-row"><span class="c-k">CAC</span><span class="c-v">R$515,14 <small style="color:var(--green)">-6,7%</small></span></div>
+        <div class="c-row"><span class="c-k">Conv. Lead→Venda</span><span class="c-v">3,50% <small style="color:var(--green)">+39,4%</small></span></div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Inverteu o padrão de junho: a mídia entregou menos volume (leads -20,1%, CPL +17,2%), mas o comercial disparou (receita +117,2%, contratos +11,1%, conversão Lead→Venda de 2,51% para 3,50%). Parte é o outlier Graciele (R$3.442,72/mês, sozinha 51% da receita) — mesmo sem ela, julho ainda supera junho em receita. Parte é a virada de estratégia de 17/07 (menos volume, mais qualidade) começando a aparecer no funil comercial. O investimento total cresceu pouco (+3,7%) porque a queda no Meta (-6,4%) foi compensada pela estreia do Google Ads (R$501,76, 0% em junho). CAC caiu 6,7% mesmo com CPL pior — a conversão comercial mais eficiente compensou o custo de mídia mais alto.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 7 — RECOMENDAÇÕES -->
+  <div class="slide" id="s7">
+    <div class="slide-header">
+      <div class="slide-tag">07 · Próximos Passos</div>
+      <div class="slide-title">Recomendações — Agosto 2026</div>
+      <div class="slide-desc">Prioridades estratégicas baseadas na performance de julho</div>
+    </div>
+
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>🔴 Resolver interrupção de veiculação <span class="pop">Urgente</span></h4>
+        <p>2º mês seguido com queda de investimento no fim do mês — em julho, 4 dias inteiros zerados (28–31/07). Pode explicar boa parte da queda de leads.</p>
+        <div class="strat">Ação: confirmar com o cliente/financeiro se é esgotamento de budget mensal, corte manual ou instabilidade de conta antes do fechamento de agosto.</div>
+      </div>
+      <div class="region-card">
+        <h4>💰 Executar de fato o redirecionamento de verba <span class="pop">Prioridade</span></h4>
+        <p>O plano de 17/07 pedia mais budget nos criativos de conta alta — mas a campanha dedicada (Empreendedor Conta Alta) recebeu só 4,6% do investimento do mês.</p>
+        <div class="strat">Ação: aumentar orçamento diário da campanha de teste e/ou realocar parte da verba de Interesses LAL-BA (CPL R$27,91) para lá.</div>
+      </div>
+      <div class="region-card">
+        <h4>🔴 Reavaliar ADV-Empresarios-BR <span class="pop">2º mês de piora</span></h4>
+        <p>CPL subiu de R$14,63 (jun) para R$18,29 (jul) — sinal de saturação do público Advantage+ que já havia sido apontado em junho e não foi resolvido.</p>
+        <div class="strat">Ação: testar novo conjunto de públicos/interesses personalizados ou reduzir participação de budget.</div>
+      </div>
+      <div class="region-card">
+        <h4>📈 Escalar Google Ads <span class="pop">Validado</span></h4>
+        <p>1º mês do canal trouxe CTR de 3,43% e já gerou 1 contrato (R$1.134,01/mês). Sinal inicial forte para um canal ainda em teste com R$500/mês.</p>
+        <div class="strat">Ação: propor ao cliente aumento de budget do Google Ads para agosto, mantendo foco na Rede de Pesquisa.</div>
+      </div>
+      <div class="region-card">
+        <h4>⚠️ Rever Interesses LAL-BA <span class="pop">Atenção</span></h4>
+        <p>CPL mais caro do mês (R$27,91) entre públicos de interesse amplo — reforça o diagnóstico de 17/07 sobre queda de qualidade nesses públicos.</p>
+        <div class="strat">Ação: reduzir budget ou pausar adsets de pior performance dentro da campanha, redirecionando para Pub-LAL-Investidor e Google Ads.</div>
+      </div>
+      <div class="region-card">
+        <h4>📝 Nota: decisão de 10/08 fora do período <span class="pop">Info</span></h4>
+        <p>O criativo "ad2 - passa de 350?" (2º maior gerador de leads em julho, 73 leads) foi pausado em 10/08 por feedback de qualidade — decisão tomada após o fechamento deste relatório.</p>
+        <div class="strat">Ação: o efeito dessa pausa aparecerá no relatório de agosto; sem impacto nos números de julho aqui apresentados.</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Julho foi o melhor mês comercial do trimestre (receita +117,2%, conversão Lead→Venda subindo de 2,51% para 3,50%), mas com um investimento de mídia menos eficiente (CPL +17,2%) e um problema operacional recorrente — a interrupção de veiculação no fim do mês, que já aparecera em junho e piorou em julho. O desafio de agosto é destravar esse ponto operacional, dar volume real de verba ao teste de conta alta que está represado desde 17/07, e capitalizar o início forte do Google Ads. O outlier Graciele (R$3.442,72/mês) infla os números de receita/LTV — vale acompanhar se agosto sustenta patamar sem um contrato desse porte.</p>
+    </div>
+  </div>
+
+</div><!-- /slides -->
+
+<!-- NAV -->
+<nav id="nav">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</nav>
+
+<script>
+  const slideLabels = ['Capa','KPIs de Tráfego','Google Ads','Resultados Comerciais','Funil + LTV','Campanhas','Junho vs. Julho','Recomendações'];
+  const slides = document.querySelectorAll('.slide');
+  const track = document.getElementById('nav-track');
+  const label = document.getElementById('slide-label');
+  const bar = document.getElementById('progress-bar');
+  let cur = 0;
+
+  slides.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' active':'');
+    d.addEventListener('click', () => goTo(i));
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[cur].classList.remove('active');
+    document.querySelectorAll('.dot')[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(n, slides.length-1));
+    slides[cur].classList.add('active');
+    document.querySelectorAll('.dot')[cur].classList.add('active');
+    label.textContent = slideLabels[cur] || '';
+    bar.style.width = ((cur/(slides.length-1))*100)+'%';
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(cur-1));
+  document.getElementById('btn-next').addEventListener('click', () => goTo(cur+1));
+  document.addEventListener('keydown', e => {
+    if(e.key==='ArrowRight'||e.key==='ArrowDown') goTo(cur+1);
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp') goTo(cur-1);
+  });
+
+  let tx=0;
+  document.addEventListener('touchstart', e => { tx=e.touches[0].clientX; });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx)>50) dx<0 ? goTo(cur+1) : goTo(cur-1);
+  });
+</script>
+</body>
+</html>
