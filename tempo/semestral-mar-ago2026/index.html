@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tempo Geração — Dashboard 6 Meses (Mar–Ago 2026)</title>
+<style>
+  :root{
+    --orange:#EA580C; --orange-dark:#C2410C; --orange-deep:#7C2D12; --orange-mid:#F97316; --orange-soft:#FDBA74; --orange-pale:#FFF4EC;
+    --blue:#1D4ED8; --teal:#0D9488;
+    --ink:#1a1a1a; --ink2:#4b5563; --muted:#6b7280;
+    --surface:#fcfcfb; --card:#ffffff; --border:#e5e7eb; --grid:#f0f0ee;
+    --good:#15803d; --warn:#b45309; --bad:#b91c1c; --bad-pale:#fef2f2; --good-pale:#f0fdf4; --warn-pale:#fffbeb;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--surface);color:var(--ink);line-height:1.5;font-size:15px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 60px}
+
+  header.hero{background:linear-gradient(120deg,#1a1a1a 0%,#2d1a0e 100%);color:#fff;padding:34px 0 30px;margin-bottom:26px}
+  header.hero .wrap{padding-bottom:0}
+  .hero .kicker{color:var(--orange-soft);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+  .hero h1{font-size:30px;font-weight:700;margin:4px 0 2px}
+  .hero .sub{color:#d1d5db;font-size:14px}
+  .hero .stamp{color:#9ca3af;font-size:12px;margin-top:10px}
+
+  nav.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 26px;border-bottom:2px solid var(--border);padding-bottom:0}
+  nav.tabs button{appearance:none;border:none;background:none;font:inherit;font-weight:600;font-size:14px;color:var(--muted);padding:10px 16px 12px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;border-radius:6px 6px 0 0}
+  nav.tabs button:hover{color:var(--ink);background:var(--orange-pale)}
+  nav.tabs button[aria-selected="true"]{color:var(--orange);border-bottom-color:var(--orange)}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block}
+
+  h2{font-size:20px;margin:30px 0 4px;font-weight:700}
+  h2:first-child{margin-top:0}
+  .lede{color:var(--ink2);font-size:14px;margin-bottom:16px;max-width:860px}
+  h3{font-size:15px;font-weight:700;margin:20px 0 10px}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:18px 0}
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+  .kpi .v{font-size:23px;font-weight:750;letter-spacing:-.01em}
+  .kpi .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .kpi .d{font-size:11.5px;margin-top:4px;color:var(--ink2)}
+  .kpi.hi{border-top:3px solid var(--orange)}
+  .kpi .d.up{color:var(--good)} .kpi .d.dn{color:var(--bad)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:840px){.grid2{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 18px 14px;margin:14px 0}
+  .card h4{font-size:14px;font-weight:700;margin-bottom:2px}
+  .card .cap{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .chartbox{overflow-x:auto}
+
+  .alert{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:12px 14px;margin:8px 0;font-size:13.5px;border:1px solid}
+  .alert.bad{background:var(--bad-pale);border-color:#fecaca}
+  .alert.warn{background:var(--warn-pale);border-color:#fde68a}
+  .alert.good{background:var(--good-pale);border-color:#bbf7d0}
+  .alert .ic{font-size:15px;line-height:1.4}
+  .alert b{font-weight:700}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  .tblwrap{overflow-x:auto}
+  th{background:#f7f7f5;text-align:left;padding:8px 10px;font-weight:650;color:var(--ink2);white-space:nowrap;border-bottom:2px solid var(--border)}
+  th.num,td.num{text-align:right;font-variant-numeric:tabular-nums}
+  td{padding:8px 10px;border-bottom:1px solid var(--grid);white-space:nowrap}
+  tr.total td{font-weight:700;background:#fafaf8;border-top:2px solid var(--border)}
+  td .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:650}
+  .pill.g{background:var(--good-pale);color:var(--good)} .pill.w{background:var(--warn-pale);color:var(--warn)} .pill.b{background:var(--bad-pale);color:var(--bad)}
+  .foot{font-size:11.5px;color:var(--muted);margin-top:8px}
+
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:4px 0 8px}
+  .legend .it{display:flex;align-items:center;gap:6px}
+  .legend .sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  .verdict{border-left:4px solid var(--orange);background:var(--orange-pale);border-radius:0 10px 10px 0;padding:14px 16px;margin:16px 0;font-size:14px}
+  .verdict b{font-weight:750}
+  .note{background:#f7f7f5;border:1px dashed var(--border);border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--ink2);margin:18px 0}
+
+  .tip{position:fixed;pointer-events:none;background:#1a1a1a;color:#fff;font-size:12px;padding:6px 9px;border-radius:6px;opacity:0;transition:opacity .08s;z-index:50;white-space:nowrap}
+  svg text{font-family:inherit}
+  .bar:hover,.hbar:hover{filter:brightness(1.12)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">Relatório Semestral · Tráfego Pago</div>
+    <h1>Tempo Geração — Dashboard 6 Meses</h1>
+    <div class="sub">Março a Agosto de 2026 · Meta Ads + Google Ads · Leads, Investimento, Faturamento e Qualidade</div>
+    <div class="stamp">Gerado em 14/08/2026 · Agosto parcial (dias 1–14) · Fontes: Meta API, Google Ads API, planilha de leads (CRM) e fechamentos comerciais mensais</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<nav class="tabs" role="tablist">
+  <button role="tab" aria-selected="true" data-tab="t1">Visão Geral</button>
+  <button role="tab" aria-selected="false" data-tab="t2">Criativos & o caso ad2</button>
+  <button role="tab" aria-selected="false" data-tab="t3">Públicos</button>
+  <button role="tab" aria-selected="false" data-tab="t4">Fora do Expediente</button>
+</nav>
+
+<!-- ============ TAB 1: VISÃO GERAL ============ -->
+<section id="t1" class="tabpanel active">
+  <h2>Os 6 meses em números</h2>
+  <p class="lede">Consolidado de março a 14 de agosto de 2026. Dados comerciais (contratos, receita, LTV) existem para abril–julho; março e agosto não têm fechamento comercial registrado.</p>
+
+  <div class="kpis">
+    <div class="kpi hi"><div class="v">R$ 18.719</div><div class="l">Investimento total (Meta + Google)</div></div>
+    <div class="kpi hi"><div class="v">1.252</div><div class="l">Leads (formulário Meta)</div><div class="d">+ 46 conversões Google (clique WhatsApp)</div></div>
+    <div class="kpi hi"><div class="v">35</div><div class="l">Contratos fechados (abr–jul)</div></div>
+    <div class="kpi hi"><div class="v">R$ 20.531</div><div class="l">Receita mensal recorrente adicionada</div><div class="d">soma dos fechamentos abr–jul</div></div>
+    <div class="kpi hi"><div class="v">R$ 659.933</div><div class="l">LTV total contratado (abr–jul)</div></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="v">R$ 14,55</div><div class="l">CPL médio (form Meta, 6m)</div><div class="d">meta: R$ 10,00 — acima em todos os meses</div></div>
+    <div class="kpi"><div class="v">R$ 400</div><div class="l">CAC médio (abr–jul)</div><div class="d up">LTV médio por contrato: R$ 18.855</div></div>
+    <div class="kpi"><div class="v">47x</div><div class="l">ROAS LTV agregado (abr–jul)</div><div class="d up">R$ 659.933 ÷ R$ 14.012 investidos</div></div>
+    <div class="kpi"><div class="v">22,0%</div><div class="l">Leads com conta &gt; R$ 500 (6m)</div><div class="d">proxy de qualidade (faixa declarada no form)</div></div>
+    <div class="kpi"><div class="v">[ADV] Empresários</div><div class="l">Melhor público (custo/lead qualificado)</div><div class="d">R$ 52 por lead &gt;R$500 · 27,3% qualificados</div></div>
+  </div>
+
+  <h3>Alertas do período</h3>
+  <div class="alert bad"><div><b>Google Ads parado desde 30/07.</b> A campanha Solar-BA está ativa no painel, mas o gasto é R$ 0 de 30/07 a 14/08 (16 dias). Julho tinha entregado 46 conversões a R$ 10,91. Verificar faturamento/saldo da conta com urgência.</div></div>
+  <div class="alert bad"><div><b>Qualidade em queda acelerada:</b> leads de conta até R$ 250 saltaram de 26% (jun) → 34,6% (jul) → <b>41,6% (ago)</b>. É o pior patamar da série. Coincide com a entrada dos criativos Img_Família (61% de leads até R$ 250) e a pausa do ad2 — ver aba Criativos.</div></div>
+  <div class="alert warn"><div><b>Interrupções de veiculação no fim do mês</b> (Meta): junho e julho tiveram ~4 dias zerados no fechamento do mês — padrão de limite/verba estourada. Agosto corre a ~R$ 148/dia (ritmo de R$ 4.400/mês para verba de R$ 5.000).</div></div>
+  <div class="alert good"><div><b>Economics saudáveis:</b> mesmo com CPL acima da meta, o CAC de R$ 400 contra LTV médio de R$ 18.855 dá relação LTV/CAC de ~47x. O gargalo do negócio não é o custo do lead — é qualidade + velocidade de atendimento.</div></div>
+
+  <div class="grid2">
+    <div class="card"><h4>Leads por mês (formulário Meta)</h4><div class="cap">Agosto parcial (1–14). Google à parte: 46 conversões em julho.</div><div class="chartbox" id="ch-leads"></div></div>
+    <div class="card"><h4>Investimento por mês (R$)</h4><div class="cap">Meta em laranja, Google em azul (empilhado). Ago parcial.</div><div class="chartbox" id="ch-invest"></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h4>Receita mensal adicionada (contratos do mês)</h4><div class="cap">Fechamento comercial · sem dados para mar e ago.</div><div class="chartbox" id="ch-receita"></div></div>
+    <div class="card"><h4>LTV contratado por mês (R$ mil)</h4><div class="cap">Valor total dos contratos × fidelidade. Jul puxado por outlier (1 contrato = 51% do LTV).</div><div class="chartbox" id="ch-ltv"></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h4>CPL (form Meta) vs meta de R$ 10</h4><div class="cap">Linha tracejada = meta. CPL nunca bateu a meta no semestre.</div><div class="chartbox" id="ch-cpl"></div></div>
+    <div class="card"><h4>CAC por mês (abr–jul)</h4><div class="cap">Investimento total do mês ÷ contratos do mês.</div><div class="chartbox" id="ch-cac"></div></div>
+  </div>
+
+  <div class="card">
+    <h4>Mix de qualidade dos leads por mês</h4><div class="cap">Faixa de conta de luz declarada no formulário — % dos leads do mês. Rótulo = % com conta acima de R$ 500 (lead qualificado).</div>
+    <div class="legend" id="lg-faixa"></div>
+    <div class="chartbox" id="ch-qual"></div>
+  </div>
+
+  <h3>Tabela consolidada mês a mês</h3>
+  <div class="tblwrap"><table id="tbl-mensal"></table></div>
+  <p class="foot">* Agosto: dias 1–14, sem fechamento comercial. Março: sem fechamento comercial registrado. Conversões Google = clique no WhatsApp (não formulário — não somam no CPL de formulário). CAC = investimento do mês ÷ contratos assinados no mês (leads podem fechar no mês seguinte).</p>
+</section>
+
+<!-- ============ TAB 2: CRIATIVOS ============ -->
+<section id="t2" class="tabpanel">
+  <h2>Criativos — e o caso "ad2 — passa de 350?"</h2>
+  <p class="lede">O atendimento alegou que o <b>ad2 — passa de 350?</b> estava trazendo lead ruim, e ele foi pausado em 10/08. Esta aba cruza <b>toda a planilha de entrada de leads</b> (2.455 leads desde nov/25) com o investimento por criativo para testar essa alegação com dados.</p>
+
+  <div class="verdict">
+    <b>Veredito: os dados não sustentam a alegação.</b> No período em que rodou (29/01–10/08), o ad2 entregou <b>26,2% de leads qualificados (conta &gt; R$ 500)</b> contra <b>18,2% de todos os outros criativos juntos</b> no mesmo período — e teve <i>menos</i> leads de conta baixa (24,3% até R$ 250, vs 28,2% dos demais). No custo por lead <b>qualificado</b>, o ad2 é o melhor entre os criativos de volume: <b>R$ 54</b> contra R$ 70 do post 16/11 e R$ 61 do ad4. A qualidade dele também não caiu ao longo do tempo (estável entre 26–29% desde maio).
+    <br><br><b>Hipótese para a percepção do atendimento:</b> o criativo com pior qualidade da conta é o <b>post 16/11 — "passa de 250?"</b> (15,9% qualificados, maior volume histórico: 1.419 leads) — nome quase idêntico ao do ad2 ("passa de 350?"). É plausível que a percepção de lead ruim venha do volume do "250" e tenha sido atribuída ao "350". Recomendação: <b>reativar o ad2</b> (a campanha ADV-Empresários, a de melhor CPL da conta, está parada desde a pausa) e, se a régua de qualidade apertar, pausar/reformular o <b>post 16/11</b>, não o ad2.
+  </div>
+
+  <div class="kpis">
+    <div class="kpi hi"><div class="v">26,2%</div><div class="l">ad2 · leads &gt; R$ 500</div><div class="d up">vs 18,2% dos demais no mesmo período</div></div>
+    <div class="kpi hi"><div class="v">R$ 54</div><div class="l">ad2 · custo por lead qualificado</div><div class="d up">melhor entre criativos de volume</div></div>
+    <div class="kpi"><div class="v">15,9%</div><div class="l">post 16/11 ("250?") · leads &gt; R$ 500</div><div class="d dn">o pior índice entre os grandes</div></div>
+    <div class="kpi"><div class="v">60%</div><div class="l">"ad3 — passa de 500?" · qualificados</div><div class="d">amostra pequena (10 leads) — testar escala</div></div>
+  </div>
+
+  <div class="card">
+    <h4>Custo por lead qualificado (conta &gt; R$ 500) — mar–ago/26</h4>
+    <div class="cap">Investimento Meta do criativo ÷ leads com conta &gt; R$ 500. Barras cinza (*) = amostra pequena (&lt; 12 qualificados), ler com cautela.</div>
+    <div class="chartbox" id="ch-cplq"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>Mix de qualidade por criativo</h4><div class="cap">% dos leads por faixa de conta · criativos com 25+ leads no semestre. Rótulo = % &gt; R$ 500.</div>
+      <div class="legend" id="lg-faixa2"></div>
+      <div class="chartbox" id="ch-qual-ad"></div>
+    </div>
+    <div class="card">
+      <h4>Qualidade do ad2 mês a mês</h4><div class="cap">% de leads &gt; R$ 500 · linha pontilhada = média dos demais criativos no semestre (18,2%). A qualidade não caiu.</div>
+      <div class="chartbox" id="ch-ad2-mes"></div>
+    </div>
+  </div>
+
+  <h3>Tabela completa — performance por criativo (mar–ago/26)</h3>
+  <div class="tblwrap"><table id="tbl-ads"></table></div>
+  <p class="foot">Leads e qualidade: planilha de entrada (faixa declarada no formulário). Investimento: Meta API por anúncio, somado entre conjuntos. Criativos com menos de R$ 100 investidos no período foram omitidos. CPL-Q = custo por lead com conta &gt; R$ 500.</p>
+
+  <div class="alert warn"><div><b>Efeito colateral da pausa do ad2 (10/08):</b> o conjunto [ADV-Empresários] Feed só tinha esse anúncio ativo — a campanha ADV-Empresários-BR (melhor CPL da conta) está <b>sem veicular desde então</b>. Enquanto isso, os criativos novos Img_Família geram lead barato (CPL R$ 7–8), porém com 39–61% de conta até R$ 250 — são eles que empurram o mix de agosto para baixo.</div></div>
+</section>
+
+<!-- ============ TAB 3: PÚBLICOS ============ -->
+<section id="t3" class="tabpanel">
+  <h2>Públicos — quem entrega lead que vira contrato</h2>
+  <p class="lede">Mesma lógica da aba de criativos: cruzamos o investimento por conjunto (Meta API) com a qualidade declarada dos leads. A métrica-chave é o <b>custo por lead qualificado</b>, não o CPL bruto.</p>
+
+  <div class="kpis">
+    <div class="kpi hi"><div class="v">[ADV] Empresários</div><div class="l">Melhor público do semestre</div><div class="d up">R$ 52/qualificado · 27,3% &gt; R$500</div></div>
+    <div class="kpi"><div class="v">R$ 61</div><div class="l">Interesse Investidor · custo/qualificado</div><div class="d">maior volume: 517 leads, 21,3% qual.</div></div>
+    <div class="kpi"><div class="v">R$ 65</div><div class="l">Semelhante 1% Lead · custo/qualificado</div><div class="d dn">29,9% dos leads são conta até R$250</div></div>
+    <div class="kpi"><div class="v">R$ 302</div><div class="l">Visitou Perfil 90d · custo/qualificado</div><div class="d dn">5,9% qual. — remarketing de baixa intenção</div></div>
+  </div>
+
+  <div class="card">
+    <h4>Custo por lead qualificado por público — mar–ago/26</h4>
+    <div class="cap">Conjuntos com R$ 150+ investidos. Barras cinza (*) = amostra pequena (&lt; 8 qualificados).</div>
+    <div class="chartbox" id="ch-adset-cplq"></div>
+  </div>
+
+  <div class="card">
+    <h4>Volume × qualidade por público</h4>
+    <div class="cap">% dos leads por faixa de conta · conjuntos com 15+ leads. Rótulo = % &gt; R$ 500.</div>
+    <div class="legend" id="lg-faixa3"></div>
+    <div class="chartbox" id="ch-qual-adset"></div>
+  </div>
+
+  <h3>Tabela completa — performance por público (mar–ago/26)</h3>
+  <div class="tblwrap"><table id="tbl-adsets"></table></div>
+
+  <div class="alert good"><div><b>Leitura estratégica:</b> o público Empresários confirma a tese de 17/07 (focar segmento comercial/conta alta). Os LALs de teste de abril (R$ 370 gastos, 0 leads) e os públicos Luxo/Sustentabilidade/Visitou-Perfil têm custo por qualificado 2–6× pior que os três principais — candidatos a corte na próxima revisão de verba.</div></div>
+</section>
+
+<!-- ============ TAB 4: FORA DO EXPEDIENTE ============ -->
+<section id="t4" class="tabpanel">
+  <h2>Leads fora do expediente — o atendimento que não acontece</h2>
+  <p class="lede">Análise do horário de <b>entrada</b> dos 1.252 leads do semestre (fuso da Bahia). Expediente considerado: segunda a sexta, 8h–18h. A pergunta: quantos leads chegam quando ninguém responde — e qual a qualidade deles?</p>
+
+  <div class="kpis">
+    <div class="kpi hi"><div class="v">64%</div><div class="l">dos leads entram FORA do expediente</div><div class="d">801 de 1.252 leads (mar–ago)</div></div>
+    <div class="kpi"><div class="v">21h–22h</div><div class="l">Pico de entrada de leads</div><div class="d">168 leads nessas 2 horas — mais que qualquer par de horas do dia comercial</div></div>
+    <div class="kpi"><div class="v">22,8%</div><div class="l">Qualificados fora do expediente</div><div class="d up">vs 20,6% dentro — o lead noturno é ATÉ melhor</div></div>
+    <div class="kpi"><div class="v">342</div><div class="l">Leads em fins de semana</div><div class="d">+ 303 à noite (18h–24h) + 156 de madrugada</div></div>
+  </div>
+
+  <div class="card">
+    <h4>Entrada de leads por hora do dia (mar–ago/26)</h4>
+    <div class="cap">Faixa sombreada = expediente (8h–18h, dias úteis e fins de semana somados). O volume noturno rivaliza com o comercial.</div>
+    <div class="chartbox" id="ch-hora"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <h4>Leads por dia da semana</h4><div class="cap">Distribuição praticamente uniforme — sábado tem tanto lead quanto qualquer dia útil.</div>
+      <div class="chartbox" id="ch-dow"></div>
+    </div>
+    <div class="card">
+      <h4>Onde caem os leads "fora do expediente"</h4><div class="cap">801 leads divididos por janela.</div>
+      <div class="chartbox" id="ch-fora"></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <b>Leitura: 2 em cada 3 leads esperam horas (ou o fim de semana inteiro) pela primeira resposta.</b> E não são leads piores — a fatia de conta &gt; R$ 500 é maior fora do expediente (22,8%) do que dentro (20,6%). Num funil em que a conversão lead→venda oscilou entre 2,5% e 7%, o tempo de primeira resposta é uma das alavancas mais baratas disponíveis:
+    <br><br>
+    1. <b>Primeira resposta automática imediata</b> (WhatsApp) no momento do envio do formulário, 24/7 — confirma o recebimento, entrega a simulação/próximo passo e segura o lead até o expediente.<br>
+    2. <b>Fila priorizada na manhã seguinte:</b> ordenar o atendimento do backlog noturno pela faixa de conta declarada (acima de R$ 1.000 primeiro — 47 leads qualificados entraram fora do expediente só neste semestre).<br>
+    3. <b>Testar plantão leve de atendimento 19h–22h</b> (pico real de entrada) e sábado de manhã — cobre as janelas de maior volume sem custo de madrugada (156 leads em 6 meses não justificam plantão noturno).
+  </div>
+
+  <p class="foot">Horário de entrada = timestamp do envio do formulário (planilha CRM), convertido para o fuso America/Bahia. A coluna "horário de contato preferido" do formulário não foi usada nesta análise — o dado analisado é quando o lead chega, não quando pede para ser chamado.</p>
+</section>
+
+<div class="note">
+  <b>Notas metodológicas.</b> Leads = envios de formulário nativo Meta registrados na planilha do CRM (bate 100% com a Meta API no semestre: 1.252). Qualidade = faixa de conta de luz autodeclarada no formulário. Investimento por criativo/público = Meta API (nível anúncio/conjunto). Google Ads: 46 conversões em julho são cliques no WhatsApp — funil distinto do formulário, contadas à parte. Dados comerciais (contratos, receita, LTV, CAC) vêm dos fechamentos mensais validados com a planilha comercial do cliente; não há fechamento para março nem agosto. CAC atribui contratos ao mês da assinatura, não ao mês do lead. LTV = mensalidade × meses de fidelidade contratada.
+</div>
+
+</div><!-- /wrap -->
+
+<div class="tip" id="tip"></div>
+
+<script>
+/* ================= DATA ================= */
+const MESES = ['Mar','Abr','Mai','Jun','Jul','Ago*'];
+const M = {
+  investMeta:[2640.05,1226.49,2666.27,4967.57,4649.59,2066.95],
+  investGoogle:[0,0,0,0,501.76,0],
+  leads:[179,85,195,358,286,149],
+  cpl:[14.75,14.43,13.67,13.88,16.26,13.87],
+  contratos:[null,6,10,9,10,null],
+  receita:[null,4155.89,5033.88,3575.36,7765.41,null],
+  ltv:[null,126795,168954,120667.44,243516.84,null],
+  cac:[null,204.42,266.63,552.06,515.14,null],
+  faixas:[ // [até250, 250-500, 500-1000, >1000] em %
+    [16.8,63.1,14.0,6.1],[18.8,61.2,14.1,5.9],[19.5,55.4,21.0,4.1],
+    [26.0,49.7,17.9,6.4],[34.6,46.9,11.2,7.3],[41.6,35.6,16.1,6.7]],
+  pctQ:[20.1,20.0,25.1,24.3,18.5,22.8]
+};
+const FAIXA_CORES = ['#FDBA74','#F97316','#C2410C','#7C2D12'];
+const FAIXA_NOMES = ['até R$250','R$250–500','R$500–1.000','acima de R$1.000'];
+const ADS = [ // criativo, spend, leads, qual, %q, cpl, cplq
+  ['ad2 — passa de 350?',6483.08,448,120,26.8,14.47,54.03],
+  ['post 16/11 — passa de 250?',4836.86,433,69,15.9,11.17,70.10],
+  ['ad4 — vídeo sicomercio',2767.29,184,45,24.5,15.04,61.50],
+  ['ad3 — card até 30%',836.72,38,10,26.3,22.02,83.67],
+  ['ad4 — vídeo ganhe +5%',745.57,27,5,18.5,27.61,149.11],
+  ['ad4 sicomercio (Interesses)',308.29,13,2,15.4,23.71,154.15],
+  ['Img_Família V1 — Semelhante',300.19,36,7,19.4,8.34,42.88],
+  ['ad4 sicomercio (LAL)',237.83,6,3,50.0,39.64,79.28],
+  ['ad3 — passa de 500?',232.60,10,6,60.0,23.26,38.77],
+  ['Img_Família V1 — Cópia (ADV)',206.01,28,4,14.3,7.36,51.50],
+  ['Img_AntesDepoisFatura V1',159.94,4,1,25.0,39.98,159.94],
+  ['Img_AntesDepois — Empresários',148.45,2,0,0,74.22,null],
+  ['Img_Família V1 — VisitouPerfil',109.29,9,0,0,12.14,null],
+  ['ad3 passa de 500 (Interesses)',100.02,5,1,20.0,20.00,100.02]
+];
+const ADS_QUAL = [ // criativo (25+ leads), [faixas %], %q
+  ['ad2 — passa de 350?',[25.7,46.4,19.2,7.6],26.8],
+  ['post 16/11 — "250?"',[26.1,58.0,12.0,3.9],15.9],
+  ['ad4 — sicomercio',[33.7,41.8,19.0,5.4],24.5],
+  ['ad3 — card até 30%',[18.4,55.3,15.8,10.5],26.3],
+  ['Img_Família — Semelhante',[61.1,19.4,13.9,5.6],19.4],
+  ['Img_Família — Cópia',[39.3,46.4,14.3,0.0],14.3]
+];
+const AD2_MES = { meses:['Mai','Jun','Jul','Ago'], q:[28.9,26.9,26.0,27.5], n:[114,182,73,40] };
+const ADSETS = [ // adset, spend, leads, qual, %q, cpl, cplq
+  ['Interesse Investidor',6741.75,517,110,21.3,13.04,61.29],
+  ['Semelhante 1% Lead (form)',4781.49,377,73,19.4,12.68,65.50],
+  ['[ADV] Empresários Feed',3620.74,253,69,27.3,14.31,52.47],
+  ['[LAL 1% Form] Feed',874.78,38,9,23.7,23.02,97.20],
+  ['Interesses Sustentab.-Economia',417.83,18,3,16.7,23.21,139.28],
+  ['LAL 1% Lead [25-55] (abr)',369.52,0,0,0,null,null],
+  ['Visitou perfil 90d',301.83,17,1,5.9,17.75,301.83],
+  ['[LAL 1% Seguidores IG] Feed',290.86,15,5,33.3,19.39,58.17],
+  ['LAL 1% Leads Form (02)',251.92,6,3,50.0,41.99,83.97],
+  ['[Interesses Empresários]',239.25,3,0,0,79.75,null],
+  ['[Investidor Interesses] 30-50',161.35,4,1,25.0,40.34,161.35]
+];
+const ADSET_QUAL = [
+  ['Interesse Investidor',[23.7,55.0,16.3,4.9],21.3],
+  ['Semelhante 1% Lead',[29.9,52.0,12.8,5.3],18.1],
+  ['[ADV] Empresários',[29.2,43.5,18.6,8.7],27.3],
+  ['[LAL 1% Form] Feed',[21.1,55.3,18.4,5.3],23.7],
+  ['Visitou perfil 90d',[41.2,52.9,5.9,0.0],5.9],
+  ['[LAL 1% Seguidores]',[6.7,60.0,26.7,6.7],33.3]
+];
+const HORA = [29,28,8,13,9,22,33,69,56,60,64,50,64,74,73,81,59,50,50,68,66,87,81,58];
+const DOW = { nomes:['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'], v:[196,179,177,180,178,181,161] };
+const FORA = [['Noite (18h–24h, dias úteis)',303],['Fim de semana',342],['Madrugada (0h–8h, dias úteis)',156]];
+
+/* ================= HELPERS ================= */
+const NS='http://www.w3.org/2000/svg';
+const fmtBR = n => n==null?'—':n.toLocaleString('pt-BR',{maximumFractionDigits:0});
+const fmtR = n => n==null?'—':'R$ '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtR0 = n => n==null?'—':'R$ '+n.toLocaleString('pt-BR',{maximumFractionDigits:0});
+const tip = document.getElementById('tip');
+function hookTip(el, txt){
+  el.addEventListener('mousemove', e=>{ tip.textContent=txt; tip.style.opacity=1; tip.style.left=(e.clientX+12)+'px'; tip.style.top=(e.clientY-30)+'px'; });
+  el.addEventListener('mouseleave', ()=>{ tip.style.opacity=0; });
+}
+function svgEl(tag, attrs){ const el=document.createElementNS(NS,tag); for(const k in attrs) el.setAttribute(k,attrs[k]); return el; }
+function mkSvg(w,h){ const s=svgEl('svg',{viewBox:`0 0 ${w} ${h}`,width:'100%',style:`max-width:${w}px;display:block`}); return s; }
+function txt(s,x,y,t,fill,size,anchor,weight){ const e=svgEl('text',{x,y,fill:fill||'#4b5563','font-size':size||11,'text-anchor':anchor||'middle','font-weight':weight||400}); e.textContent=t; s.appendChild(e); return e; }
+
+/* Vertical bar chart: values[], labels[], color(s), fmt for tooltip, opts */
+function barChart(elId, labels, values, color, fmt, opts={}){
+  const W=opts.w||520, H=opts.h||230, padL=44, padB=26, padT=16;
+  const s=mkSvg(W,H); const max=opts.max||Math.max(...values.filter(v=>v!=null))*1.15;
+  const iw=(W-padL-10)/labels.length;
+  // gridlines
+  for(let g=0; g<=3; g++){ const gy=padT+(H-padT-padB)*g/3; s.appendChild(svgEl('line',{x1:padL,y1:gy,x2:W-6,y2:gy,stroke:'#f0f0ee','stroke-width':1}));
+    txt(s,padL-6,gy+4,(opts.fmtAxis||fmtBR)(max*(1-g/3)),'#9ca3af',10,'end'); }
+  labels.forEach((lb,i)=>{
+    const v=values[i];
+    const x=padL+i*iw+iw*0.18, bw=iw*0.64;
+    if(v!=null && v>0){
+      const bh=(H-padT-padB)*v/max, y=H-padB-bh;
+      const r=svgEl('path',{d:`M${x},${H-padB} L${x},${y+4} Q${x},${y} ${x+4},${y} L${x+bw-4},${y} Q${x+bw},${y} ${x+bw},${y+4} L${x+bw},${H-padB} Z`,fill:(opts.colors&&opts.colors[i])||color,class:'bar'});
+      s.appendChild(r); hookTip(r, lb.replace('*','')+': '+fmt(v));
+      if(opts.labels!==false) txt(s,x+bw/2,y-6,(opts.fmtLabel||fmt)(v),'#1a1a1a',11,'middle',650);
+    } else {
+      txt(s,x+bw/2,H-padB-8,opts.nullText||'s/ dado','#9ca3af',10);
+    }
+    txt(s,x+bw/2,H-8,lb,'#6b7280',11);
+  });
+  if(opts.refLine!=null){ const ry=H-padB-(H-padT-padB)*opts.refLine/max;
+    s.appendChild(svgEl('line',{x1:padL,y1:ry,x2:W-6,y2:ry,stroke:'#b91c1c','stroke-width':1.5,'stroke-dasharray':'5 4'}));
+    txt(s,W-8,ry-5,opts.refText||'',' #b91c1c'.trim(),10,'end',600); }
+  document.getElementById(elId).appendChild(s);
+}
+
+/* Stacked % (vertical, monthly) OR use horizontal for creatives */
+function stacked100(elId, labels, rows, topLabels, opts={}){
+  const W=opts.w||1080, H=opts.h||250, padL=10, padB=26, padT=20;
+  const s=mkSvg(W,H); const iw=(W-padL-10)/labels.length;
+  labels.forEach((lb,i)=>{
+    const x=padL+i*iw+iw*0.14, bw=iw*0.72; let acc=0;
+    rows[i].forEach((p,f)=>{
+      const bh=(H-padT-padB)*p/100, y=H-padB-((H-padT-padB)*acc/100)-bh;
+      const r=svgEl('rect',{x,y,width:bw,height:Math.max(bh-2,0),fill:FAIXA_CORES[f],rx:2,class:'bar'});
+      s.appendChild(r); hookTip(r,`${lb.replace('*','')} · ${FAIXA_NOMES[f]}: ${p.toLocaleString('pt-BR')}%`);
+      acc+=p;
+    });
+    txt(s,x+bw/2,padT-6,topLabels[i].toLocaleString('pt-BR')+'%','#1a1a1a',11.5,'middle',700);
+    txt(s,x+bw/2,H-8,lb,'#6b7280',11);
+  });
+  document.getElementById(elId).appendChild(s);
+}
+
+/* Horizontal bars (rankings) */
+function hbarChart(elId, items, opts={}){
+  // items: [label, value, color, tipTxt, valueLabel]
+  const W=opts.w||1080, rowH=30, padL=opts.padL||250, padT=6;
+  const H=padT+items.length*rowH+8;
+  const s=mkSvg(W,H); const max=Math.max(...items.map(i=>i[1]))*1.12;
+  items.forEach((it,i)=>{
+    const y=padT+i*rowH;
+    const bw=(W-padL-90)*it[1]/max;
+    txt(s,padL-8,y+rowH/2+4,it[0],'#1a1a1a',12,'end');
+    const r=svgEl('path',{d:`M${padL},${y+5} L${padL+bw-4},${y+5} Q${padL+bw},${y+5} ${padL+bw},${y+9} L${padL+bw},${y+rowH-9} Q${padL+bw},${y+rowH-5} ${padL+bw-4},${y+rowH-5} L${padL},${y+rowH-5} Z`,fill:it[2],class:'hbar'});
+    s.appendChild(r); hookTip(r,it[3]);
+    txt(s,padL+bw+8,y+rowH/2+4,it[4],'#1a1a1a',12,'start',650);
+  });
+  document.getElementById(elId).appendChild(s);
+}
+
+/* Line chart (ad2 monthly quality) */
+function lineChart(elId, labels, values, opts={}){
+  const W=opts.w||520,H=opts.h||220,padL=40,padB=26,padT=14;
+  const s=mkSvg(W,H); const max=opts.max||Math.max(...values)*1.25;
+  for(let g=0;g<=3;g++){ const gy=padT+(H-padT-padB)*g/3;
+    s.appendChild(svgEl('line',{x1:padL,y1:gy,x2:W-6,y2:gy,stroke:'#f0f0ee'}));
+    txt(s,padL-6,gy+4,Math.round(max*(1-g/3))+'%','#9ca3af',10,'end'); }
+  const iw=(W-padL-16)/(labels.length-1);
+  const pts=values.map((v,i)=>[padL+i*iw, H-padB-(H-padT-padB)*v/max]);
+  if(opts.refLine!=null){ const ry=H-padB-(H-padT-padB)*opts.refLine/max;
+    s.appendChild(svgEl('line',{x1:padL,y1:ry,x2:W-6,y2:ry,stroke:'#6b7280','stroke-width':1.5,'stroke-dasharray':'4 4'}));
+    txt(s,W-8,ry+13,opts.refText||'','#6b7280',10,'end',600); }
+  s.appendChild(svgEl('path',{d:'M'+pts.map(p=>p.join(',')).join(' L'),fill:'none',stroke:'#EA580C','stroke-width':2.5,'stroke-linejoin':'round'}));
+  pts.forEach((p,i)=>{
+    const c=svgEl('circle',{cx:p[0],cy:p[1],r:5,fill:'#EA580C',stroke:'#fff','stroke-width':2});
+    s.appendChild(c); hookTip(c,`${labels[i]}: ${values[i].toLocaleString('pt-BR')}% qualificados (${opts.ns?opts.ns[i]+' leads':''})`);
+    txt(s,p[0],p[1]-11,values[i].toLocaleString('pt-BR')+'%','#1a1a1a',11,'middle',650);
+    txt(s,p[0],H-8,labels[i],'#6b7280',11);
+  });
+  document.getElementById(elId).appendChild(s);
+}
+
+/* ================= RENDER: TAB 1 ================= */
+barChart('ch-leads', MESES, M.leads, '#EA580C', v=>fmtBR(v)+' leads');
+// invest: stacked meta+google
+(function(){
+  const W=520,H=230,padL=48,padB=26,padT=16;
+  const s=mkSvg(W,H); const totals=M.investMeta.map((v,i)=>v+M.investGoogle[i]);
+  const max=Math.max(...totals)*1.15; const iw=(W-padL-10)/6;
+  for(let g=0;g<=3;g++){const gy=padT+(H-padT-padB)*g/3; s.appendChild(svgEl('line',{x1:padL,y1:gy,x2:W-6,y2:gy,stroke:'#f0f0ee'}));
+    txt(s,padL-6,gy+4,fmtBR(max*(1-g/3)),'#9ca3af',10,'end');}
+  MESES.forEach((lb,i)=>{
+    const x=padL+i*iw+iw*0.18,bw=iw*0.64;
+    const bhM=(H-padT-padB)*M.investMeta[i]/max, yM=H-padB-bhM;
+    const rM=svgEl('rect',{x,y:yM,width:bw,height:bhM,rx:3,fill:'#EA580C',class:'bar'});
+    s.appendChild(rM); hookTip(rM,`${lb.replace('*','')} · Meta: ${fmtR(M.investMeta[i])}`);
+    if(M.investGoogle[i]>0){ const bhG=(H-padT-padB)*M.investGoogle[i]/max, yG=yM-2-bhG;
+      const rG=svgEl('rect',{x,y:yG,width:bw,height:bhG,rx:2,fill:'#1D4ED8',class:'bar'});
+      s.appendChild(rG); hookTip(rG,`${lb.replace('*','')} · Google: ${fmtR(M.investGoogle[i])}`); }
+    txt(s,x+bw/2,yM-(M.investGoogle[i]>0?(H-padT-padB)*M.investGoogle[i]/max+10:6),fmtBR(totals[i]),'#1a1a1a',10.5,'middle',650);
+    txt(s,x+bw/2,H-8,lb,'#6b7280',11);
+  });
+  document.getElementById('ch-invest').appendChild(s);
+  const lg=document.createElement('div'); lg.className='legend';
+  lg.innerHTML='<span class="it"><span class="sw" style="background:#EA580C"></span>Meta</span><span class="it"><span class="sw" style="background:#1D4ED8"></span>Google</span>';
+  document.getElementById('ch-invest').parentNode.insertBefore(lg, document.getElementById('ch-invest'));
+})();
+barChart('ch-receita', MESES, M.receita, '#0D9488', fmtR, {fmtLabel:fmtR0, nullText:'sem fechamento'});
+barChart('ch-ltv', MESES, M.ltv.map(v=>v==null?null:v/1000), '#0D9488', v=>'R$ '+v.toLocaleString('pt-BR',{maximumFractionDigits:0})+' mil', {nullText:'sem fechamento'});
+barChart('ch-cpl', MESES, M.cpl, '#EA580C', fmtR, {refLine:10, refText:'meta R$10', max:20, fmtLabel:v=>v.toLocaleString('pt-BR',{minimumFractionDigits:2}), fmtAxis:v=>'R$'+v.toFixed(0)});
+barChart('ch-cac', MESES, M.cac, '#1D4ED8', fmtR, {nullText:'—', fmtLabel:fmtR0});
+// qualidade mensal stacked
+(function(){
+  const lg=document.getElementById('lg-faixa');
+  FAIXA_NOMES.forEach((n,i)=>{ lg.innerHTML+=`<span class="it"><span class="sw" style="background:${FAIXA_CORES[i]}"></span>${n}</span>`; });
+  stacked100('ch-qual', MESES, M.faixas, M.faixas.map(f=>+(f[2]+f[3]).toFixed(1)), {w:1080,h:250});
+})();
+// tabela mensal
+(function(){
+  const t=document.getElementById('tbl-mensal');
+  let h='<tr><th>Mês</th><th class="num">Invest. Meta</th><th class="num">Invest. Google</th><th class="num">Leads (form)</th><th class="num">CPL</th><th class="num">% conta &gt;R$500</th><th class="num">% conta ≤R$250</th><th class="num">Contratos</th><th class="num">Receita/mês</th><th class="num">LTV contratado</th><th class="num">CAC</th></tr>';
+  MESES.forEach((m,i)=>{
+    const q=M.faixas[i][2]+M.faixas[i][3], low=M.faixas[i][0];
+    const qp=q>=22?'g':(q>=18?'w':'b'); const lp=low<=22?'g':(low<=30?'w':'b');
+    h+=`<tr><td><b>${m}</b></td><td class="num">${fmtR(M.investMeta[i])}</td><td class="num">${M.investGoogle[i]?fmtR(M.investGoogle[i]):'—'}</td><td class="num">${M.leads[i]}</td><td class="num">${fmtR(M.cpl[i])}</td><td class="num"><span class="pill ${qp}">${q.toFixed(1).replace('.',',')}%</span></td><td class="num"><span class="pill ${lp}">${low.toFixed(1).replace('.',',')}%</span></td><td class="num">${M.contratos[i]??'—'}</td><td class="num">${fmtR(M.receita[i])}</td><td class="num">${fmtR0(M.ltv[i])}</td><td class="num">${fmtR(M.cac[i])}</td></tr>`;
+  });
+  h+=`<tr class="total"><td>Total 6m</td><td class="num">R$ 18.216,92</td><td class="num">R$ 501,76</td><td class="num">1.252</td><td class="num">R$ 14,55</td><td class="num">22,0%</td><td class="num">27,0%</td><td class="num">35</td><td class="num">R$ 20.530,54</td><td class="num">R$ 659.933</td><td class="num">R$ 400,33</td></tr>`;
+  t.innerHTML=h;
+})();
+
+/* ================= RENDER: TAB 2 ================= */
+(function(){
+  const items = ADS.filter(a=>a[6]!=null && a[3]>=1 && a[1]>=200)
+    .sort((a,b)=>a[6]-b[6])
+    .map(a=>{
+      const small = a[3]<12;
+      const color = small ? '#c7c9cc' : (a[0].includes('ad2')?'#EA580C':'#F97316');
+      return [a[0], a[6], color, `${a[0]} · ${a[3]} qualificados de ${a[2]} leads (${a[4]}%) · invest ${fmtR0(a[1])}`, fmtR0(a[6])+(small?' *':'')];
+    });
+  hbarChart('ch-cplq', items, {padL:260});
+  const lg=document.getElementById('lg-faixa2');
+  FAIXA_NOMES.forEach((n,i)=>{ lg.innerHTML+=`<span class="it"><span class="sw" style="background:${FAIXA_CORES[i]}"></span>${n}</span>`; });
+  stacked100('ch-qual-ad', ADS_QUAL.map(a=>a[0]), ADS_QUAL.map(a=>a[1]), ADS_QUAL.map(a=>a[2]), {w:1040,h:240});
+  lineChart('ch-ad2-mes', AD2_MES.meses, AD2_MES.q, {refLine:18.2, refText:'demais criativos: 18,2%', max:40, ns:AD2_MES.n});
+  const t=document.getElementById('tbl-ads');
+  let h='<tr><th>Criativo</th><th class="num">Investimento</th><th class="num">Leads</th><th class="num">Qualificados (&gt;R$500)</th><th class="num">% qualif.</th><th class="num">CPL</th><th class="num">CPL-Qualificado</th></tr>';
+  ADS.forEach(a=>{
+    const qp=a[4]>=24?'g':(a[4]>=16?'w':'b');
+    h+=`<tr><td>${a[0]}</td><td class="num">${fmtR(a[1])}</td><td class="num">${a[2]}</td><td class="num">${a[3]}</td><td class="num"><span class="pill ${qp}">${a[4].toFixed(1).replace('.',',')}%</span></td><td class="num">${fmtR(a[5])}</td><td class="num"><b>${a[6]?fmtR(a[6]):'—'}</b></td></tr>`;
+  });
+  t.innerHTML=h;
+})();
+
+/* ================= RENDER: TAB 3 ================= */
+(function(){
+  const items = ADSETS.filter(a=>a[6]!=null)
+    .sort((a,b)=>a[6]-b[6])
+    .map(a=>{
+      const small=a[3]<8;
+      const color= small?'#c7c9cc':(a[0].includes('Empres')?'#EA580C':'#F97316');
+      return [a[0], a[6], color, `${a[0]} · ${a[3]} qualificados de ${a[2]} leads (${a[4]}%) · invest ${fmtR0(a[1])}`, fmtR0(a[6])+(small?' *':'')];
+    });
+  hbarChart('ch-adset-cplq', items, {padL:250});
+  const lg=document.getElementById('lg-faixa3');
+  FAIXA_NOMES.forEach((n,i)=>{ lg.innerHTML+=`<span class="it"><span class="sw" style="background:${FAIXA_CORES[i]}"></span>${n}</span>`; });
+  stacked100('ch-qual-adset', ADSET_QUAL.map(a=>a[0]), ADSET_QUAL.map(a=>a[1]), ADSET_QUAL.map(a=>a[2]), {w:1040,h:240});
+  const t=document.getElementById('tbl-adsets');
+  let h='<tr><th>Público (conjunto)</th><th class="num">Investimento</th><th class="num">Leads</th><th class="num">Qualificados</th><th class="num">% qualif.</th><th class="num">CPL</th><th class="num">CPL-Qualificado</th></tr>';
+  ADSETS.forEach(a=>{
+    const qp=a[4]>=24?'g':(a[4]>=16?'w':'b');
+    h+=`<tr><td>${a[0]}</td><td class="num">${fmtR(a[1])}</td><td class="num">${a[2]}</td><td class="num">${a[3]}</td><td class="num">${a[2]?`<span class="pill ${qp}">${a[4].toFixed(1).replace('.',',')}%</span>`:'—'}</td><td class="num">${a[5]?fmtR(a[5]):'—'}</td><td class="num"><b>${a[6]?fmtR(a[6]):'—'}</b></td></tr>`;
+  });
+  t.innerHTML=h;
+})();
+
+/* ================= RENDER: TAB 4 ================= */
+(function(){
+  // hourly histogram with 8-18 band
+  const W=1080,H=250,padL=36,padB=26,padT=14;
+  const s=mkSvg(W,H); const max=Math.max(...HORA)*1.18; const iw=(W-padL-8)/24;
+  // expediente band
+  s.appendChild(svgEl('rect',{x:padL+8*iw,y:padT-4,width:10*iw,height:H-padT-padB+4,fill:'#f0f9f4'}));
+  txt(s,padL+13*iw,padT+6,'expediente 8h–18h','#15803d',10.5,'middle',600);
+  for(let g=0;g<=3;g++){const gy=padT+(H-padT-padB)*g/3; s.appendChild(svgEl('line',{x1:padL,y1:gy,x2:W-4,y2:gy,stroke:'#ececea'}));
+    txt(s,padL-5,gy+4,Math.round(max*(1-g/3)),'#9ca3af',10,'end');}
+  HORA.forEach((v,hh)=>{
+    const x=padL+hh*iw+1.5, bw=iw-3;
+    const bh=(H-padT-padB)*v/max, y=H-padB-bh;
+    const dentro = hh>=8&&hh<18;
+    const r=svgEl('rect',{x,y,width:bw,height:bh,rx:2.5,fill:dentro?'#9ca3af':'#EA580C',class:'bar'});
+    s.appendChild(r); hookTip(r,`${hh}h–${hh+1}h: ${v} leads ${dentro?'(expediente¹)':'(fora, se dia útil)'}`);
+    if(hh%2===0) txt(s,x+bw/2,H-8,hh+'h','#6b7280',10);
+  });
+  document.getElementById('ch-hora').appendChild(s);
+  const lg=document.createElement('div'); lg.className='legend';
+  lg.innerHTML='<span class="it"><span class="sw" style="background:#EA580C"></span>Fora do expediente (se dia útil: antes das 8h / após 18h)</span><span class="it"><span class="sw" style="background:#9ca3af"></span>Horário comercial</span>';
+  document.getElementById('ch-hora').parentNode.insertBefore(lg, document.getElementById('ch-hora'));
+
+  barChart('ch-dow', DOW.nomes, DOW.v, '#EA580C', v=>v+' leads', {w:520,h:220,colors:DOW.v.map((_,i)=>i>=5?'#EA580C':'#9ca3af')});
+  hbarChart('ch-fora', FORA.map(f=>[f[0],f[1],'#EA580C',`${f[0]}: ${f[1]} leads (${(100*f[1]/801).toFixed(0)}% do total fora)`,f[1]+' leads']), {w:520,padL:230});
+})();
+
+/* ================= TABS ================= */
+document.querySelectorAll('nav.tabs button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav.tabs button').forEach(x=>x.setAttribute('aria-selected','false'));
+    document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+    b.setAttribute('aria-selected','true');
+    document.getElementById(b.dataset.tab).classList.add('active');
+    window.scrollTo({top:0});
+  });
+});
+</script>
+</body>
+</html>
