@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Dra. Marcélia — Agosto 2026 (Parcial)</title>
+<style>
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi.kpi-green::before { background: var(--green); }
+  .kpi.kpi-red::before { background: var(--red); }
+  .kpi.kpi-amber::before { background: var(--amber); }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  .kpi .k-delta.ok { color: var(--amber); }
+
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+  .tbl-hint {
+    display: none; font-size: 11px; color: var(--gray);
+    margin-bottom: 5px; text-align: center; letter-spacing: .3px;
+  }
+  .tbl-hint.show { display: block; }
+  .tbl-fade {
+    display: none; position: absolute; top: 0; right: 0;
+    width: 52px; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.97));
+    pointer-events: none; z-index: 2; border-radius: 0 6px 6px 0;
+  }
+  .tbl-fade.show { display: block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-6040 { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; width: 100%; }
+
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  .funnel { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 38px; background: var(--border);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 4px; display: flex;
+    align-items: center; padding-left: 12px; transition: width 1.2s ease;
+    font-size: 12px; font-weight: 700; color: white;
+  }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 170px; }
+  .funnel-val { font-size: 13px; color: var(--dark); white-space: nowrap; width: 70px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+  .funnel-cvr { font-size: 10px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; }
+
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card .pop.g { color: var(--green); background: #dcfce7; }
+  .region-card .pop.r { color: var(--red); background: #fee2e2; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.6; margin-top: 6px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  .hero-number {
+    font-size: 72px; font-weight: 900; color: var(--orange);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .hero-label { font-size: 16px; color: var(--gray); margin-bottom: 24px; }
+
+  .alma-logo-wrap { position: absolute; top: 20px; right: 20px; z-index: 10; }
+  .alma-logo-img { height: 44px; width: auto; filter: invert(1); opacity: 0.82; }
+
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 16px 72px; }
+    .cover-wrap { padding: 0 4px; }
+    .cover-badge { font-size: 10px; padding: 4px 12px; margin-bottom: 18px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; flex-wrap: nowrap; justify-content: center; align-items: center; }
+    .cover-meta-item .val { font-size: 20px; }
+    .cover-meta-item .lbl { font-size: 10px; }
+    .cover-divider { width: 1px; height: 32px; flex-shrink: 0; }
+    .slide-title { font-size: 18px; }
+    .slide-desc { font-size: 12px; }
+    .slide-header { margin-bottom: 16px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .kpi { padding: 12px 14px; }
+    .kpi .k-val { font-size: 17px; }
+    .kpi .k-label { font-size: 9px; }
+    .kpi .k-sub, .kpi .k-delta { font-size: 10px; }
+    .tbl-wrap { border-radius: 8px; }
+    .tbl { font-size: 12px; min-width: 520px; }
+    .tbl th { padding: 8px 10px; font-size: 11px; }
+    .tbl td { padding: 6px 10px; }
+    .two-col, .two-col-6040 { grid-template-columns: 1fr; gap: 12px; }
+    .region-grid { grid-template-columns: 1fr; gap: 10px; }
+    .funnel-label { width: 100px; font-size: 10px; }
+    .funnel-val { width: 48px; font-size: 11px; }
+    .funnel-cvr { width: 40px; font-size: 9px; }
+    .funnel-bar-wrap { height: 30px; }
+    .notas { padding: 12px 14px; }
+    .notas p { font-size: 12px; }
+    .alma-logo-img { height: 32px; }
+    .alma-logo-wrap { top: 14px; right: 14px; }
+    #nav { padding: 0 12px; }
+    .nav-btn { width: 36px; height: 36px; font-size: 13px; }
+    #slide-label { font-size: 10px; }
+    .hero-number { font-size: 48px; }
+    .hero-label { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- SLIDE 0 — CAPA -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago · Parcial (dados até 27/08)</div>
+      <div class="cover-title">Dra. Marcélia</div>
+      <div class="cover-sub">Performance Meta Ads + Google Ads · Agosto 2026 (mês em andamento)</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$ 1.429,74</div>
+          <div class="lbl">Investido (Meta)</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">159</div>
+          <div class="lbl">Conversas WPP</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$ 8,99</div>
+          <div class="lbl">Custo / Conversa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 1 — VISÃO GERAL -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">KPIs do Mês — Agosto 2026 (parcial)</div>
+      <div class="slide-desc">Período 01/08 – 27/08/2026 · faltam 4 dias para fechar o mês — números abaixo não são o total final de agosto</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi kpi-amber">
+        <div class="k-label">Investimento (Meta)</div>
+        <div class="k-val">R$ 1.429,74</div>
+        <div class="k-sub">Orçamento mensal: R$ 2.000 (+ Google)</div>
+        <div class="k-delta ok">71,5% do orçamento usado, faltam R$ 570,26 e 4 dias</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">Conversas WPP</div>
+        <div class="k-val">159</div>
+        <div class="k-sub">Julho (mês cheio): 250</div>
+        <div class="k-delta dn">Ritmo diário: 5,9/dia (jul: 8,1/dia) ↓ -27%</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">Custo / Conversa</div>
+        <div class="k-val">R$ 8,99</div>
+        <div class="k-sub">Meta: R$ 15,00</div>
+        <div class="k-delta up">40% abaixo da meta — melhor faixa do ano</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">Leads (Form)</div>
+        <div class="k-val">77</div>
+        <div class="k-sub">CPL blended: R$ 9,41</div>
+        <div class="k-delta up">Melhor CPL desde o início do histórico (jan-abr: R$18-58)</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi kpi-green">
+        <div class="k-label">CTR Médio</div>
+        <div class="k-val">2,73%</div>
+        <div class="k-sub">Julho: 2,29%</div>
+        <div class="k-delta up">↑ +19% — melhor CTR do ano</div>
+      </div>
+      <div class="kpi kpi-amber">
+        <div class="k-label">CPM</div>
+        <div class="k-val">R$ 21,10</div>
+        <div class="k-sub">Julho: R$ 18,36</div>
+        <div class="k-delta dn">↑ +15% — leilão mais caro</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">Frequência</div>
+        <div class="k-val">2,33</div>
+        <div class="k-sub">Julho: 2,90</div>
+        <div class="k-delta up">↓ -20% — público menos saturado</div>
+      </div>
+      <div class="kpi kpi-red">
+        <div class="k-label">Google Ads — Investido</div>
+        <div class="k-val">R$ 111,33</div>
+        <div class="k-sub">Julho: R$ 391,62</div>
+        <div class="k-delta dn">↓ -72% — detalhe no slide 03</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Agosto está com a melhor eficiência do ano nas métricas de custo: custo/conversa (R$8,99) e CPL (R$9,41) seguem folgados em relação à meta de R$15, CTR é o maior do ano (2,73%) e a frequência caiu para 2,33 — sinal de que a renovação de audiência recomendada em junho funcionou. O ponto de atenção não é qualidade de mídia: é volume, que caiu de ritmo por causa de uma queda abrupta de entrega nos dias 26 e 27/08 detalhada no slide 04, e que ainda precisa ser resolvida antes do fechamento do mês.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 2 — PERFORMANCE POR CAMPANHA -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Campanhas</div>
+      <div class="slide-title">Performance por Campanha (Meta)</div>
+      <div class="slide-desc">01/08 – 27/08/2026 — ordenado por investimento, 6 campanhas ativas no período</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th>Tipo</th>
+            <th class="num">Gasto</th>
+            <th class="num">Resultado</th>
+            <th class="num">Custo / Result.</th>
+            <th class="num">CTR</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[Jul26] Vídeos Novos Frio</td>
+            <td><span class="badge green">Frio</span></td>
+            <td class="num">R$ 484,50</td>
+            <td class="num">68 leads + 86 conv.</td>
+            <td class="num">R$ 7,13 (lead)</td>
+            <td class="num">3,50%</td>
+            <td><span class="badge green">Destaque do mês</span></td>
+          </tr>
+          <tr>
+            <td>[Abr26] Remarketing Quente</td>
+            <td><span class="badge orange">Remarketing</span></td>
+            <td class="num">R$ 348,01</td>
+            <td class="num">47 conversas</td>
+            <td class="num">R$ 7,40</td>
+            <td class="num">1,98%</td>
+            <td><span class="badge green">Saudável</span></td>
+          </tr>
+          <tr>
+            <td>[Jan26] Remarketing Vídeos Perfil (ABO)</td>
+            <td><span class="badge orange">Remarketing</span></td>
+            <td class="num">R$ 277,41</td>
+            <td class="num">11 conversas</td>
+            <td class="num">R$ 25,22</td>
+            <td class="num">1,75%</td>
+            <td><span class="badge amber">Atenção</span></td>
+          </tr>
+          <tr>
+            <td>[Ago26] Sustentavelmente Rmkt <em>(nova)</em></td>
+            <td><span class="badge orange">Remarketing</span></td>
+            <td class="num">R$ 208,56</td>
+            <td class="num">9 leads + 15 conv.</td>
+            <td class="num">R$ 23,17 (lead)</td>
+            <td class="num">2,49%</td>
+            <td><span class="badge amber">Em aquecimento</span></td>
+          </tr>
+          <tr>
+            <td>[Jul26] Audiência Única (Tráfego IG)</td>
+            <td><span class="badge green">Audiência</span></td>
+            <td class="num">R$ 79,55</td>
+            <td class="num">353 cliques perfil</td>
+            <td class="num">R$ 0,23 / clique</td>
+            <td class="num">2,97%</td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr>
+            <td>[Abr26] Depoimentos Frio (CBO)</td>
+            <td><span class="badge amber">Frio</span></td>
+            <td class="num">R$ 31,71</td>
+            <td class="num">0 leads / conv.</td>
+            <td class="num">—</td>
+            <td class="num">1,59%</td>
+            <td><span class="badge red">Sem conversão</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 16px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p><strong>Vídeos Novos Frio</strong> é a campanha do mês: maior investimento, melhor CPL (R$7,13) e melhor CPR (R$5,63) da conta, puxando o resultado geral para baixo da meta. <strong>Depoimentos Frio</strong> repete em agosto o mesmo problema apontado em junho — segue sem gerar lead ou conversa rastreável, mesmo criativo desde então; é candidata a pausa ou reformulação total. O ABO de Vídeos Perfil (Jan26) segue caro (R$25,22/conversa) e concentrado quase inteiro em um único anúncio antigo ("ad 7/4 - dep. GMN") — precisa de criativo novo.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 3 — GOOGLE ADS -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Google Ads</div>
+      <div class="slide-title">Google Ads — Search Endocrinologista</div>
+      <div class="slide-desc">01/08 – 27/08/2026 — apenas 1 de 4 campanhas segue entregando</div>
+    </div>
+
+    <div class="kpi-row kpi-row-3" style="margin-bottom: 20px;">
+      <div class="kpi kpi-red">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$ 111,33</div>
+        <div class="k-sub">Julho (mês cheio): R$ 391,62</div>
+        <div class="k-delta dn">↓ -72% (ritmo diário: -67%)</div>
+      </div>
+      <div class="kpi kpi-red">
+        <div class="k-label">Conversões</div>
+        <div class="k-val">3</div>
+        <div class="k-sub">Julho: 8</div>
+        <div class="k-delta dn">↓ -63%</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">Custo / Conversão</div>
+        <div class="k-val">R$ 37,11</div>
+        <div class="k-sub">Julho: R$ 48,95</div>
+        <div class="k-delta up">↓ -24% — melhora de eficiência</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th class="num">Gasto</th>
+            <th class="num">Cliques</th>
+            <th class="num">CTR</th>
+            <th class="num">CPC médio</th>
+            <th class="num">Conversões</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[Diabetes] Search - Endocrinologista</td>
+            <td class="num">R$ 111,33</td>
+            <td class="num">18</td>
+            <td class="num">3,20%</td>
+            <td class="num">R$ 6,18</td>
+            <td class="num">3</td>
+          </tr>
+          <tr>
+            <td>[Mp] [Search] Maximizar conversão - teste 24/2</td>
+            <td class="num">R$ 0,00</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0</td>
+          </tr>
+          <tr>
+            <td>busca-geral - Maximizar cliques</td>
+            <td class="num">R$ 0,00</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0</td>
+          </tr>
+          <tr>
+            <td>Performance Max-1</td>
+            <td class="num">R$ 0,00</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0</td>
+          </tr>
+          <tr>
+            <td>busca-geral - Maximizar conversão #2</td>
+            <td class="num">R$ 0,00</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 16px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>O Google Ads praticamente não é o canal principal desta conta: apenas a campanha "[Diabetes] Search - Endocrinologista" entrega, com custo/conversão caindo para R$37,11 (melhor que julho). As outras 4 campanhas seguem zeradas há pelo menos dois meses — vale decidir entre reestruturar (novos grupos de anúncio, palavras-chave e orçamento dedicado) ou pausar formalmente e concentrar 100% do orçamento em Meta, que é onde o resultado está.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 4 — ALERTA: QUEDA DE ENTREGA -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Alerta Operacional</div>
+      <div class="slide-title">Queda Abrupta de Entrega — 26 e 27/08</div>
+      <div class="slide-desc">O ponto que precisa de ação antes de fechar o mês</div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-bottom: 16px;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th class="num">Gasto</th>
+            <th class="num">Impressões</th>
+            <th class="num">Cliques</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>23/08</td><td class="num">R$ 44,40</td><td class="num">1.659</td><td class="num">36</td></tr>
+          <tr><td>24/08</td><td class="num">R$ 60,02</td><td class="num">2.519</td><td class="num">50</td></tr>
+          <tr><td>25/08</td><td class="num">R$ 53,50</td><td class="num">2.007</td><td class="num">51</td></tr>
+          <tr><td>26/08</td><td class="num">R$ 5,91</td><td class="num">268</td><td class="num">12</td></tr>
+          <tr><td>27/08</td><td class="num">R$ 0,06</td><td class="num">9</td><td class="num">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="two-col">
+      <div class="insight-box bad">
+        <h4>🔴 Entrega caiu ~90% em 2 dias, sem motivo de orçamento</h4>
+        <p>De uma média de R$50-60/dia (20-25/08), o gasto despencou para R$5,91 em 26/08 e R$0,06 em 27/08. Não é falta de verba: ainda restam R$570,26 do orçamento mensal (R$2.000) para os últimos 4 dias do mês — o dinheiro está disponível e não está sendo gasto.</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠ Causa ainda não identificada pelas tools de leitura</h4>
+        <p>Os dados de insights não indicam a causa (pausa manual, revisão de anúncio, problema de pagamento ou de política). Recomendo checar diretamente no Gerenciador de Anúncios: status das campanhas, status da conta e do método de pagamento, e alertas de política antes do fechamento do mês.</p>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Esse é o achado mais importante do relatório: sem essa queda, agosto estaria no caminho de repetir ou superar o ritmo de julho — as métricas de eficiência (CPR, CPL, CTR, frequência) são as melhores do ano. Resolver a entrega nos últimos dias do mês é a ação de maior impacto disponível agora, mais do que qualquer otimização fina de campanha.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 5 — FUNIL DE CONVERSÃO -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Funil</div>
+      <div class="slide-title">Funil de Conversão — Meta Ads</div>
+      <div class="slide-desc">Do alcance à conversa WPP — período 01/08 – 27/08/2026</div>
+    </div>
+
+    <div class="funnel" style="margin-bottom: 24px;">
+      <div class="funnel-step">
+        <div class="funnel-label">👁 Pessoas Alcançadas</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:100%; background: linear-gradient(90deg, #374151, #1a1a1a);">29.121</div>
+        </div>
+        <div class="funnel-val">29.121</div>
+        <div class="funnel-cvr"></div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">🖱 Clicaram no Anúncio</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:6.4%; background: linear-gradient(90deg, var(--orange-light), var(--orange));">1.852</div>
+        </div>
+        <div class="funnel-val">1.852</div>
+        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">6,4%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">🔗 Conexões Totais</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:5%; min-width: 5%; background: linear-gradient(90deg, #fb923c, var(--orange));">203</div>
+        </div>
+        <div class="funnel-val">203</div>
+        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">11,0%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">💬 Conversas WPP Iniciadas</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:4%; min-width: 4%; background: linear-gradient(90deg, #4ade80, var(--green));">159</div>
+        </div>
+        <div class="funnel-val">159</div>
+        <div class="funnel-cvr" style="color:var(--green); font-size:10px; font-weight:700;">78,3%</div>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-label">🗂 Leads (Form)</div>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="width:2%; min-width: 2%; background: linear-gradient(90deg, #fbbf24, var(--amber));">77</div>
+        </div>
+        <div class="funnel-val">77</div>
+        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">canal separado</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="insight-box good">
+          <h4>✓ Alcance → Clique é o melhor do ano</h4>
+          <p>6,4% dos alcançados clicaram (era 4,7% em julho) — CTR mais alto do histórico recente, mesmo com menos gente alcançada por conta do mês parcial.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>✓ Clique → Conexão saudável</h4>
+          <p>11,0% dos cliques viram conexão de mensagem, e 78,3% dessas conexões evoluem para conversa iniciada — funil de mensagem sem gargalo aparente.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box warn">
+          <h4>⚠ Sem dado de venda neste relatório</h4>
+          <p>Este ciclo não recebeu números comerciais (vendas/agendamentos fechados). Sem esse dado, não é possível calcular ROAS ou CVR conversa→venda como nos relatórios anteriores — recomenda-se retomar o envio mensal desse número.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Leads (Form) é canal paralelo</h4>
+          <p>Os 77 leads de formulário vêm de campanhas com objetivo de captação (Vídeos Novos Frio e Sustentavelmente Rmkt) e não passam necessariamente pelo mesmo funil de conversa WPP — por isso aparecem como ramo separado, não como etapa final do funil de mensagem.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 6 — O QUE FUNCIONOU / AJUSTES -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Análise</div>
+      <div class="slide-title">O que Funcionou e o que Ajustar</div>
+      <div class="slide-desc">Diagnóstico do mês (parcial) — bases para a estratégia de setembro</div>
+    </div>
+
+    <div class="two-col" style="margin-bottom: 16px;">
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--green); margin-bottom:12px;">✓ O QUE FUNCIONOU</div>
+        <div class="insight-box good">
+          <h4>Vídeos Novos Frio — CPL R$7,13 / CPR R$5,63</h4>
+          <p>Maior investimento do mês e melhor eficiência da conta — testagem em volume de vários vídeos curtos está funcionando bem acima da meta.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Frequência caiu para 2,33 (jul: 2,90)</h4>
+          <p>A renovação de audiência recomendada em junho surtiu efeito — público menos saturado, leilão ainda saudável.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>CTR no melhor patamar do ano — 2,73%</h4>
+          <p>Criativos seguem engajando bem, especialmente os novos vídeos e o Remarketing Quente (Abr26).</p>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--red); margin-bottom:12px;">⚡ O QUE AJUSTAR</div>
+        <div class="insight-box bad">
+          <h4>Queda de entrega em 26-27/08 (slide 04)</h4>
+          <p>Prioridade máxima — resolver antes do fechamento do mês, com budget disponível parado.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Depoimentos Frio zerada pelo 2º mês seguido</h4>
+          <p>Mesmo criativo desde junho sem gerar lead ou conversa — pausar e recriar com ângulo novo.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Google Ads com 3 de 4 campanhas zeradas</h4>
+          <p>Estrutura precisa de revisão — decidir entre reestruturar ou concentrar 100% em Meta.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Diferente de junho, agosto não é um mês de audiência saturada — é o oposto: as métricas de qualidade (CTR, frequência, CPR, CPL) são as melhores do ano. O que está travando o resultado é operacional (queda de entrega) e estrutural (Depoimentos Frio e Google Ads parados). Resolvendo esses dois pontos, agosto tem potencial de fechar como o melhor mês desde março.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 7 — PRÓXIMOS PASSOS -->
+  <div class="slide" id="s7">
+    <div class="slide-header">
+      <div class="slide-tag">07 · Setembro 2026</div>
+      <div class="slide-title">Próximos Passos</div>
+      <div class="slide-desc">Prioridades para fechar agosto e abrir setembro</div>
+    </div>
+
+    <div class="region-grid" style="margin-bottom: 20px;">
+      <div class="region-card">
+        <h4>🚨 Resolver Queda de Entrega <span class="pop r">URGENTE</span></h4>
+        <p>Checar status da conta, campanhas e pagamento no Gerenciador de Anúncios — R$570 de orçamento parado nos últimos dias de agosto.</p>
+        <div class="strat">→ Ação imediata, antes de 31/08</div>
+      </div>
+      <div class="region-card">
+        <h4>🎨 Recriar Depoimentos Frio <span class="pop r">URGENTE</span></h4>
+        <p>Zerada há 2 meses com o mesmo criativo — testar ângulo novo (antes/depois ou rotina de consulta).</p>
+        <div class="strat">→ 1 novo criativo para teste</div>
+      </div>
+      <div class="region-card">
+        <h4>📈 Escalar Vídeos Novos Frio</h4>
+        <p>Melhor CPL e CPR da conta — avaliar aumento de orçamento assim que a entrega normalizar.</p>
+        <div class="strat">→ Após resolver o alerta operacional</div>
+      </div>
+      <div class="region-card">
+        <h4>🔄 Renovar ABO Vídeos Perfil (Jan26)</h4>
+        <p>Custo subiu para R$25,22/conversa, concentrado em anúncio antigo — trocar criativo.</p>
+        <div class="strat">→ Primeira semana de setembro</div>
+      </div>
+      <div class="region-card">
+        <h4>🔍 Revisar Estrutura Google Ads</h4>
+        <p>3 de 4 campanhas seguem zeradas — decidir reestruturar ou concentrar budget em Meta.</p>
+        <div class="strat">→ Revisão em setembro</div>
+      </div>
+      <div class="region-card">
+        <h4>🎯 Meta de Setembro</h4>
+        <p><strong>Manter custo/conversa abaixo de R$15</strong> (agosto: R$8,99) e recuperar ritmo diário de ~R$66/dia. Retomar envio mensal do dado comercial (vendas).</p>
+        <div class="strat">→ Fechamento em 30/09</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Agosto entrega o melhor conjunto de métricas de eficiência do ano — o trabalho de setembro é destravar volume (entrega + Depoimentos Frio + Google Ads), não reinventar a estratégia. Vídeos Novos Frio confirma que criativos novos em maior volume é o caminho certo para este cliente agora.</p>
+    </div>
+  </div>
+
+</div><!-- /slides -->
+
+
+<!-- NAVEGAÇÃO -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">CAPA</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)">&#8594;</button>
+</div>
+
+<script>
+  const logoUrl = 'https://almaagenciadigital.com.br/wp-content/uploads/2024/01/logo-alma-branca.png';
+  document.querySelectorAll('.slide').forEach(slide => {
+    const wrap = document.createElement('div');
+    wrap.className = 'alma-logo-wrap';
+    const img = document.createElement('img');
+    img.className = 'alma-logo-img';
+    img.src = logoUrl;
+    img.alt = 'Alma Agência';
+    img.onerror = () => wrap.remove();
+    wrap.appendChild(img);
+    slide.insertBefore(wrap, slide.firstChild);
+  });
+
+  const slideLabels = [
+    'Capa',
+    'Visão Geral',
+    'Campanhas',
+    'Google Ads',
+    'Alerta Operacional',
+    'Funil',
+    'Análise',
+    'Próximos Passos',
+  ];
+
+  const slides   = document.querySelectorAll('.slide');
+  const label    = document.getElementById('slide-label');
+  const track    = document.getElementById('nav-track');
+  const progress = document.getElementById('progress-bar');
+  let current    = 0;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    track.querySelectorAll('.dot')[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    track.querySelectorAll('.dot')[current].classList.add('active');
+    label.textContent = slideLabels[current] || `Slide ${current + 1}`;
+    progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+    setTimeout(initTableScrollHints, 60);
+  }
+
+  function initTableScrollHints() {
+    const activeSlide = slides[current];
+    activeSlide.querySelectorAll('.tbl-wrap').forEach(wrap => {
+      let hint = wrap.previousElementSibling;
+      if (!hint || !hint.classList.contains('tbl-hint')) {
+        hint = document.createElement('div');
+        hint.className = 'tbl-hint';
+        hint.textContent = '↔ deslize para ver mais';
+        wrap.parentNode.insertBefore(hint, wrap);
+      }
+      let fade = wrap.querySelector('.tbl-fade');
+      if (!fade) {
+        fade = document.createElement('div');
+        fade.className = 'tbl-fade';
+        wrap.appendChild(fade);
+      }
+      function update() {
+        const hasOverflow = wrap.scrollWidth > wrap.clientWidth + 2;
+        const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
+        const show = hasOverflow && !atEnd;
+        hint.classList.toggle('show', show);
+        fade.classList.toggle('show', show);
+      }
+      if (wrap._scrollHandler) wrap.removeEventListener('scroll', wrap._scrollHandler);
+      wrap._scrollHandler = update;
+      wrap.addEventListener('scroll', update, { passive: true });
+      update();
+    });
+  }
+
+  setTimeout(initTableScrollHints, 100);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+</script>
+</body>
+</html>
