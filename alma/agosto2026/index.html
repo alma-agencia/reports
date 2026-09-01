@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  TEMPLATE DE RELATÓRIO — AGÊNCIA PROSPECT                        ║
+  ║                                                                  ║
+  ║  COMO USAR:                                                      ║
+  ║  1. Duplique este arquivo para a pasta do cliente                ║
+  ║     Ex: TRAFEGO_PAGO/clientes/[cliente]/Relatorio_[Mes][Ano].html ║
+  ║  2. Substitua os placeholders marcados com [COLCHETES]           ║
+  ║  3. Adicione/remova slides conforme a demanda                    ║
+  ║  4. Faça upload no subdomínio:                                   ║
+  ║     report.almaagenciadigital.com.br/[cliente]/[slug]            ║
+  ║     Ex: report.almaagenciadigital.com.br/tempo/maio2026          ║
+  ║                                                                  ║
+  ║  COMPONENTES DISPONÍVEIS (exemplificados nos slides):            ║
+  ║  • .kpi-row + .kpi       → Cards de métricas (4 colunas)        ║
+  ║  • .tbl + .tbl-wrap      → Tabela com hover laranja              ║
+  ║  • .badge.(green|red|amber|orange) → Badges de status           ║
+  ║  • .two-col              → Layout 2 colunas                      ║
+  ║  • .creative-grid + .creative-card → Grid de criativos          ║
+  ║  • .insight-box          → Caixa de insight com borda laranja    ║
+  ║  • .funnel               → Funil de conversão com barras         ║
+  ║  • .notas                → Rodapé escuro com notas do gestor     ║
+  ║  • .region-grid          → Grid 3 colunas para regiões/items     ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<title>Relatório Alma Agência Digital — Agosto 2026</title>
+<style>
+  /* ══════════════════════════════════
+     DESIGN SYSTEM — NÃO MODIFICAR
+     Cores, tipografia e tokens visuais
+     ══════════════════════════════════ */
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  /* ── SLIDES CONTAINER ── */
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* ── BARRA DE PROGRESSO ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  /* ── NAVEGAÇÃO ── */
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  /* ── CAPA ── */
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  /* ── CABEÇALHO DE SLIDE ── */
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  /* ── KPI CARDS ── */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  /* variação: 2 ou 3 colunas — aplique na classe inline */
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* ── TABELA ── */
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+
+  /* ── INDICADORES DE SCROLL NAS TABELAS ── */
+  .tbl-hint {
+    display: none; font-size: 11px; color: var(--gray);
+    margin-bottom: 5px; text-align: center; letter-spacing: .3px;
+  }
+  .tbl-hint.show { display: block; }
+  .tbl-fade {
+    display: none; position: absolute; top: 0; right: 0;
+    width: 52px; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.97));
+    pointer-events: none; z-index: 2; border-radius: 0 6px 6px 0;
+  }
+  .tbl-fade.show { display: block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  /* ── LAYOUT 2 COLUNAS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
+  .two-col-6040 { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; width: 100%; }
+
+  /* ── LOGO ALMA ── */
+  .alma-logo-wrap {
+    position: absolute; top: 20px; right: 20px; z-index: 10;
+  }
+  .alma-logo-img {
+    height: 44px; width: auto; filter: invert(1); opacity: 0.82;
+  }
+
+  /* ── GRID DE CRIATIVOS ── */
+  .creative-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 12px; width: 100%;
+  }
+  .creative-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; background: white;
+  }
+  /* Thumbnail do criativo */
+  .creative-thumb {
+    width: 100%; aspect-ratio: 9/16;
+    border-radius: 6px; overflow: hidden;
+    background: var(--light); margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .creative-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  /* Placeholder quando sem imagem */
+  .creative-thumb .thumb-placeholder {
+    font-size: 11px; color: var(--gray); text-align: center; padding: 8px;
+  }
+  /* Badge de formato sobre a thumb */
+  .creative-thumb .thumb-badge {
+    position: absolute; bottom: 6px; left: 6px;
+    background: rgba(0,0,0,0.65); color: white;
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 100px; letter-spacing: .5px;
+  }
+  .creative-card .rank {
+    font-size: 10px; font-weight: 700; color: var(--orange);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .creative-card .name {
+    font-size: 12px; font-weight: 700; color: var(--dark);
+    margin-bottom: 8px; line-height: 1.3; min-height: 30px;
+  }
+  .creative-card .metric {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--border);
+  }
+  .creative-card .metric:last-of-type { border-bottom: none; }
+  .creative-card .metric .ml { color: var(--gray); }
+  .creative-card .metric .mv { font-weight: 600; color: var(--dark); }
+  .d2-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .d2-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--orange-light), var(--orange)); }
+
+  /* ── INSIGHT BOX ── */
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  /* ── FUNIL ── */
+  .funnel { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 34px; background: var(--border);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 4px; display: flex;
+    align-items: center; padding-left: 10px; transition: width 1s ease;
+  }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 160px; }
+  .funnel-val { font-size: 12px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ── NOTAS DO GESTOR ── */
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  /* ── GRID DE REGIÕES / ITEMS ── */
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  /* ── CAIXA DE TEXTO LIVRE ── */
+  .text-box {
+    width: 100%; background: var(--light); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px;
+  }
+  .text-box p { font-size: 14px; color: var(--dark); line-height: 1.8; }
+  .text-box ul, .text-box ol { padding-left: 20px; }
+  .text-box li { font-size: 14px; color: var(--dark); line-height: 1.8; margin-bottom: 4px; }
+
+  /* ── DESTAQUE ÚNICO (hero number) ── */
+  .hero-number {
+    font-size: 72px; font-weight: 900; color: var(--orange);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .hero-label { font-size: 16px; color: var(--gray); margin-bottom: 24px; }
+
+  /* ── COMPARATIVO ANTES/DEPOIS ── */
+  .compare-row {
+    display: flex; gap: 16px; align-items: stretch; width: 100%; margin-bottom: 12px;
+  }
+  .compare-col {
+    flex: 1; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px;
+  }
+  .compare-col.before { border-top: 3px solid var(--red); }
+  .compare-col.after  { border-top: 3px solid var(--green); }
+  .compare-col .c-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .compare-col.before .c-label { color: var(--red); }
+  .compare-col.after  .c-label { color: var(--green); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 16px 72px; }
+
+    /* Capa */
+    .cover-wrap { padding: 0 4px; }
+    .cover-badge { font-size: 10px; padding: 4px 12px; margin-bottom: 18px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; flex-wrap: nowrap; justify-content: center; align-items: center; }
+    .cover-meta-item .val { font-size: 20px; }
+    .cover-meta-item .lbl { font-size: 10px; }
+    .cover-divider { width: 1px; height: 32px; flex-shrink: 0; }
+
+    /* Cabeçalhos */
+    .slide-title { font-size: 18px; }
+    .slide-desc { font-size: 12px; }
+    .slide-header { margin-bottom: 16px; }
+
+    /* KPIs */
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .kpi { padding: 12px 14px; }
+    .kpi .k-val { font-size: 17px; }
+    .kpi .k-label { font-size: 9px; }
+    .kpi .k-sub, .kpi .k-delta { font-size: 10px; }
+
+    /* Tabelas — scroll horizontal visível */
+    .tbl-wrap { border-radius: 8px; }
+    .tbl { font-size: 12px; min-width: 480px; }
+    .tbl th { padding: 8px 10px; font-size: 11px; }
+    .tbl td { padding: 6px 10px; }
+
+    /* Criativos */
+    .creative-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .creative-card { padding: 10px; }
+    .creative-card .name { font-size: 11px; min-height: 24px; }
+    .creative-card .metric { font-size: 11px; }
+
+    /* Layouts */
+    .two-col, .two-col-4060, .two-col-6040 { grid-template-columns: 1fr; gap: 12px; }
+    .region-grid { grid-template-columns: 1fr; gap: 10px; }
+    .compare-row { flex-direction: column; gap: 10px; }
+
+    /* Funil */
+    .funnel-label { width: 100px; font-size: 10px; }
+    .funnel-val { width: 40px; font-size: 10px; }
+    .funnel-bar-wrap { height: 28px; }
+
+    /* Notas */
+    .notas { padding: 12px 14px; }
+    .notas p { font-size: 12px; }
+
+    /* Logo */
+    .alma-logo-img { height: 32px; }
+    .alma-logo-wrap { top: 14px; right: 14px; }
+
+    /* Misc */
+    #nav { padding: 0 12px; }
+    .nav-btn { width: 36px; height: 36px; font-size: 13px; }
+    #slide-label { font-size: 10px; }
+    .hero-number { font-size: 48px; }
+    .hero-label { font-size: 14px; }
+  }
+  @media (max-width: 480px) {
+    .slide { padding: 16px 12px 68px; }
+    .cover-title { font-size: 24px; }
+    .cover-meta { gap: 8px; }
+    .cover-meta-item .val { font-size: 18px; }
+    .kpi-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .kpi .k-val { font-size: 15px; }
+    .creative-grid { grid-template-columns: 1fr 1fr; }
+    .region-grid { grid-template-columns: 1fr; }
+    .tbl { min-width: 420px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 0 — CAPA
+       Personalize: badge, título, subtítulo e 3 métricas-destaque
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <!-- Badge: tipo do relatório (ex: "Relatório Mensal · Tráfego Pago") -->
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago</div>
+      <!-- Título: nome do cliente ou da campanha -->
+      <div class="cover-title">Alma Agência Digital</div>
+      <!-- Subtítulo: contexto breve -->
+      <div class="cover-sub">Performance Meta Ads + Google Ads · Agosto 2026</div>
+      <!-- 3 métricas de destaque da capa (invista, leads, CPA/ROAS) -->
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$1.151</div>
+          <div class="lbl">Investido</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">28</div>
+          <div class="lbl">Conversas + Conversões</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$41</div>
+          <div class="lbl">Custo médio/resultado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 1 — VISÃO GERAL / KPIs
+       Use .kpi-row com 4 cards (ou kpi-row-2 / kpi-row-3)
+       Cada .kpi suporta: k-label, k-val, k-sub, k-delta (up/dn)
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">Agosto 2026 — Meta Ads + Google Ads</div>
+      <div class="slide-desc">Conta interna da agência · janela de atribuição 7d clique / 1d view</div>
+    </div>
+
+    <!-- Linha 1 de KPIs — 4 colunas -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$1.151,04</div>
+        <div class="k-sub">Meta: R$730,67 · Google: R$420,37</div>
+        <div class="k-delta up">↑ 151% vs julho (R$458,10)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Resultados (conversas + conversões)</div>
+        <div class="k-val">28</div>
+        <div class="k-sub">21 conversas Meta · 7 conversões Google</div>
+        <div class="k-delta up">↑ vs 12 em julho (5 leads + 7 conversas)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Custo por Resultado (blend)</div>
+        <div class="k-val">R$41,11</div>
+        <div class="k-sub">Meta: R$34,79/conversa · Google: R$60,05/conversão</div>
+        <div class="k-delta dn">↑ 7,7% vs R$38,18 em julho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR médio (Meta)</div>
+        <div class="k-val">0,94%</div>
+        <div class="k-sub">Benchmark B2B: &gt; 0,8%</div>
+        <div class="k-delta dn">↓ 0,12pp vs 1,06% em julho</div>
+      </div>
+    </div>
+
+    <!-- Linha 2 de KPIs — opcional -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">CPM (Meta)</div>
+        <div class="k-val">R$1,75</div>
+        <div class="k-sub">Custo por mil impressões</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPC (Meta)</div>
+        <div class="k-val">R$0,19</div>
+        <div class="k-sub">Custo por clique</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Frequência (Meta)</div>
+        <div class="k-val">1,46</div>
+        <div class="k-sub">Impressões / Alcance</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Alcance (Meta)</div>
+        <div class="k-val">284,5K</div>
+        <div class="k-sub">Pessoas únicas</div>
+      </div>
+    </div>
+
+    <!-- Notas do gestor (dark box — opcional em qualquer slide) -->
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Agosto marcou uma virada de estratégia: o Meta saiu quase totalmente do formato Lead Form (dominante em julho) para campanhas de Mensagem Direta/WhatsApp e Tráfego para o Perfil — por isso o CPM e o CPC despencaram (público mais amplo, engajamento em vez de captura de lead), mas nenhum evento "lead" nativo foi registrado no Meta em agosto. O Google Ads entrou pela primeira vez com investimento real (R$420,37, ativado em 14/08), gerando 7 conversões de contato com o Typebot a R$60,05 cada — 1.101% acima da meta de R$5 para Lead Frio, embora ainda com volume baixo (7 conversões) para conclusão estatística forte. Não temos, pela mídia, como confirmar quantos desses contatos evoluíram para Lead Qualificado — isso acontece no Typebot/SDR, fora do pixel. Aguardando dado comercial do gestor.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 2 — TABELA DE PERFORMANCE (campanhas / adsets)
+       Use .tbl-wrap + .tbl para tabelas com scroll horizontal
+       Badges: .badge.green / .red / .amber / .orange
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Campanhas</div>
+      <div class="slide-title">Performance por Campanha — Agosto</div>
+      <div class="slide-desc">Meta Ads (4 campanhas ativas no mês) + Google Ads (1 campanha, ativada em 14/08)</div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th class="num">Gasto</th>
+            <th class="num">Resultados</th>
+            <th class="num">Custo/Resultado</th>
+            <th class="num">CTR</th>
+            <th class="num">CPM</th>
+            <th>Status atual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[MP] [Alma] [CBO] [TRAFEGO&gt;PERFIL] rodízio de postagens</td>
+            <td class="num">R$108,87</td>
+            <td class="num">3.631 cliques</td>
+            <td class="num">R$0,03/clique</td>
+            <td class="num">0,92%</td>
+            <td class="num">R$0,28</td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr>
+            <td>[MP] [Alma] [ABO] [MSG&gt;DIRECT] EspecialistaCampanhasPoliticas 02</td>
+            <td class="num">R$507,33</td>
+            <td class="num">19 conversas</td>
+            <td class="num">R$26,70/conversa</td>
+            <td class="num">1,24%</td>
+            <td class="num">R$25,40</td>
+            <td><span class="badge red">Pausada</span></td>
+          </tr>
+          <tr>
+            <td>[MP] [Alma] [CBO] [MSG&gt;WHATSAPP] Diagnostico300k</td>
+            <td class="num">R$96,71</td>
+            <td class="num">0 conversas</td>
+            <td class="num">—</td>
+            <td class="num">0,67%</td>
+            <td class="num">R$59,01</td>
+            <td><span class="badge red">Pausada</span></td>
+          </tr>
+          <tr>
+            <td>[MP] [Alma] [ABO] [MSG&gt;DIRECT] EspecialistaCampanhasPoliticas</td>
+            <td class="num">R$17,76</td>
+            <td class="num">2 conversas</td>
+            <td class="num">R$8,88/conversa</td>
+            <td class="num">1,38%</td>
+            <td class="num">R$34,89</td>
+            <td><span class="badge red">Pausada</span></td>
+          </tr>
+          <tr>
+            <td>[alma] [Search] [Lead] - agencia-marketing (Google)</td>
+            <td class="num">R$420,37</td>
+            <td class="num">7 conversões</td>
+            <td class="num">R$60,05/conversão</td>
+            <td class="num">3,67%</td>
+            <td class="num">—</td>
+            <td><span class="badge amber">Aprendizado</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 18px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Todas as 4 campanhas Meta que rodaram em agosto já estão pausadas hoje (01/09) — só a campanha de tráfego para o perfil segue ativa. A campanha dedicada de WhatsApp (Diagnostico300k) gastou R$96,71 sem registrar nenhuma conversa iniciada no período — mesmo com 11 cliques no link, o pixel não capturou nenhuma abertura de conversa; recomendo auditoria de tracking dessa campanha antes de reativá-la (ver pendência "correção do WhatsApp" no perfil.md). A campanha "EspecialistaCampanhasPoliticas 02" foi a que mais gerou conversas (19) e concentrou 44% do investimento do mês. Google segue em aprendizado (ativado há só 18 dias no mês) — negativação de concorrentes seguiu ativa (105 termos bloqueados até 21/08).</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 3 — TOP CRIATIVOS
+       Use .creative-grid + .creative-card (máx 5 por linha)
+       .d2-bar-fill: ajuste o width% para a taxa de conversão
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Criativos</div>
+      <div class="slide-title">Top Criativos em Performance — Agosto</div>
+      <div class="slide-desc">Ranking por conversas geradas e eficiência de custo (Meta Ads)</div>
+    </div>
+
+    <div class="creative-grid">
+      <!--
+        Para cada criativo:
+        - .creative-thumb > img: coloque src com URL ou base64 da thumbnail
+        - .thumb-badge: "Vídeo" ou "Imagem" ou "Carrossel"
+        - Se não tiver imagem, deixe .thumb-placeholder no lugar do img
+      -->
+      <div class="creative-card">
+        <div class="rank"># 01</div>
+        <!-- THUMBNAIL — substitua src pela URL ou base64 da imagem/frame do vídeo -->
+        <div class="creative-thumb">
+          <img src="[URL_OU_CAMINHO_DA_IMAGEM]" alt="Criativo 01"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">"ad1 - eleicao" · Adset Frio Interesse-CampanhaEleitoral</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">0,98%</span></div>
+        <div class="metric"><span class="ml">Custo/conversa</span><span class="mv">R$19,04</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$304,68</span></div>
+        <!-- Barra de conversão: ajuste width para o % de taxa de conversão -->
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:75%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 02</div>
+        <div class="creative-thumb">
+          <img src="[URL_OU_CAMINHO_DA_IMAGEM]" alt="Criativo 02"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">"ad1 - eleicao" · Adset Rmkt Engajamento IG 365d</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,87%</span></div>
+        <div class="metric"><span class="ml">Custo/conversa</span><span class="mv">R$67,55</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$202,65</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:60%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 03</div>
+        <div class="creative-thumb">
+          <img src="[URL_OU_CAMINHO_DA_IMAGEM]" alt="Criativo 03"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">"06.08_post_Clientes incríveis" · Reels+Feed (rodízio)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">0,92%</span></div>
+        <div class="metric"><span class="ml">CPM</span><span class="mv">R$0,26</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$95,31 (3.443 cliques)</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:45%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 04</div>
+        <div class="creative-thumb">
+          <img src="[URL_OU_CAMINHO_DA_IMAGEM]" alt="Criativo 04"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">"post 17/8 - campanha eleições" · Adset Frio Interesse</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,63%</span></div>
+        <div class="metric"><span class="ml">Custo/conversa</span><span class="mv">R$7,26</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$14,52</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:35%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 05 · Atenção</div>
+        <div class="creative-thumb">
+          <img src="[URL_OU_CAMINHO_DA_IMAGEM]" alt="Criativo 05"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">"Video_Diagnostico300k_V1" · Campanha WhatsApp dedicada</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">0,67%</span></div>
+        <div class="metric"><span class="ml">Conversas WhatsApp</span><span class="mv">0 (zero)</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$96,71 (11 cliques)</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:2%;background:var(--red)"></div></div>
+      </div>
+    </div>
+
+    <div class="notas" style="margin-top: 18px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Os 2 melhores criativos do mês vieram do mesmo vídeo ("ad1 - eleição", campanha EspecialistaCampanhasPoliticas 02) rodando em públicos diferentes — o de interesse frio trouxe o menor custo por conversa (R$19,04) e o de remarketing (engajamento IG 365d) trouxe o maior CTR (1,87%). O post orgânico impulsionado "Clientes incríveis" mostrou que conteúdo de prova social funciona muito bem como iscas de tráfego baratíssimo (CPM R$0,26). Ponto de atenção real: o criativo da campanha de WhatsApp dedicada (Diagnostico300k) não gerou nenhuma conversa registrada em todo o mês, apesar do gasto de R$96,71 — recomendo investigar a configuração de destino/tracking antes de reativar essa campanha ou repetir esse vídeo em outro formato.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 4 — INSIGHTS / ANÁLISE (layout 2 colunas)
+       Use .two-col para dividir análise textual e visual
+       .insight-box suporta modificadores: .good / .bad / .warn
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Diagnóstico</div>
+      <div class="slide-title">O que Funcionou e o que Ajustar</div>
+      <div class="slide-desc">Leitura consolidada Meta + Google — agosto/2026</div>
+    </div>
+
+    <div class="two-col">
+      <!-- Coluna esquerda: o que funcionou -->
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funcionou</div>
+        <div class="insight-box good">
+          <h4>CPM e CPC caíram drasticamente</h4>
+          <p>Migrar parte do investimento para campanhas de engajamento/tráfego levou o CPM de R$79,74 (julho) para R$1,75 (agosto) e o CPC de R$7,51 para R$0,19 — sinal de que o público amplo por interesse está muito menos saturado do que o público de remarketing/high-ticket usado em julho.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Google Ads validado com primeira leva de conversões</h4>
+          <p>Campanha Search ativada em 14/08 já trouxe 7 conversões de contato com o Typebot em 18 dias de veiculação (R$420,37 investidos) — a limpeza de negativas de concorrentes (105 termos bloqueados) parece estar direcionando o gasto para buscas mais relevantes.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Vídeo "ad1 - eleição" performou bem em 2 públicos</h4>
+          <p>O mesmo criativo gerou o menor custo por conversa (R$19,04 no público frio) e o maior CTR (1,87% no remarketing) — candidato natural a repetir em novos testes de público no próximo mês.</p>
+        </div>
+      </div>
+
+      <!-- Coluna direita: o que ajustar -->
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que ajustar</div>
+        <div class="insight-box bad">
+          <h4>Campanha de WhatsApp dedicada com zero conversas</h4>
+          <p>R$96,71 gastos na campanha "Diagnostico300k" sem nenhuma conversa de WhatsApp registrada no mês inteiro — pode ser problema de tracking/configuração de destino (a página teve histórico de WhatsApp Business desconectado em 21/08). Auditar antes de reativar.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Nenhum evento "lead" no Meta em agosto</h4>
+          <p>Com a saída total do formato Lead Form, não há como calcular CPA Lead Frio/Qualificado via Meta este mês — isso quebra a comparabilidade direta com julho (CPA lead R$91,62) e com a meta histórica (R$5 frio / R$100 qualificado). Se o pivot para WhatsApp for definitivo, sugiro definir um evento de conversão equivalente (ex: início de conversa) como novo "lead frio" de referência.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Qualificação real ainda é uma caixa-preta para a mídia</h4>
+          <p>Nem Meta nem Google enxergam quantos dos 28 contatos de agosto avançaram a Lead Qualificado no Typebot/SDR. Aguardando dado comercial do gestor para calcular o CPA real por tier e validar se o CPA Google de R$60,05 (Lead Frio) está de fato 1.101% acima da meta ou se parte já qualificou.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 5 — FUNIL DE CONVERSÃO
+       Use .funnel + .funnel-step
+       .funnel-bar: ajuste background e width% para cada etapa
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Funil</div>
+      <div class="slide-title">Onde as Conversas Somem (Meta Ads)</div>
+      <div class="slide-desc">Do clique no anúncio até o início de conversa — agosto/2026</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Funil de Conversa — Meta Ads</div>
+        <div class="funnel">
+          <!-- Etapa 1: 100% -->
+          <div class="funnel-step">
+            <div class="funnel-label">Cliques no anúncio</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">3.896</span>
+              </div>
+            </div>
+            <div class="funnel-val">100%</div>
+          </div>
+          <!-- Etapa 2 -->
+          <div class="funnel-step">
+            <div class="funnel-label">Cliques no link</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:97.8%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">3.809</span>
+              </div>
+            </div>
+            <div class="funnel-val">97,8%</div>
+          </div>
+          <!-- Etapa 3 (conversão final) -->
+          <div class="funnel-step">
+            <div class="funnel-label">Conversa iniciada</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:2%;min-width:24px;background:#16a34a;">
+                <span style="font-size:11px;font-weight:700;color:white">21</span>
+              </div>
+            </div>
+            <div class="funnel-val">0,54%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna direita: análise do gargalo -->
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Análise do Gargalo</div>
+        <div class="insight-box bad">
+          <h4>Gargalo concentrado entre clique no link e conversa</h4>
+          <p>De 3.809 cliques no link, só 21 (0,54%) viraram uma conversa iniciada no Direct/WhatsApp — a queda de 100% para quase zero acontece toda nessa única etapa, não gradualmente. Isso é esperado em campanhas de engajamento/tráfego (não desenhadas para conversa), mas contrasta com o objetivo de geração de contato do cliente.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Ação proposta</h4>
+          <p>Separar objetivo por campanha: manter tráfego/engajamento como topo de funil de marca (é barato e funciona), e concentrar o CTA de conversa/lead só nas campanhas com destino de mensagem já qualificado (como fazia o Lead Form em julho), evitando misturar métricas de resultado tão diferentes na mesma leitura mensal.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Referência de julho</h4>
+          <p>Em julho, com Lead Form, a taxa de conversão de clique para lead foi de 8,2% (5 leads / 61 cliques) — muito acima dos 0,54% de agosto. O formato de captura direta converte melhor quando o objetivo é geração de contato qualificável.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>O funil de agosto reflete a mudança de estratégia: tráfego caiu para R$0,03/clique mas quase não gerou conversa. Recomendo decidir com o gestor se o objetivo de setembro é volume de marca (manter o mix atual) ou geração de contato (voltar a testar Lead Form em paralelo ao WhatsApp, com destino corrigido).</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 6 — COMPARATIVO (antes vs depois / mês vs mês)
+       Use .compare-row + .compare-col.before / .compare-col.after
+       Ou use a tabela comparativa abaixo
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Comparativo</div>
+      <div class="slide-title">Julho vs Agosto — Meta + Google combinados</div>
+      <div class="slide-desc">Atenção: o mix de campanhas mudou de Lead Form (jul) para Mensagem/Tráfego (ago) — comparar com cautela</div>
+    </div>
+
+    <!-- Tabela comparativa -->
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Métrica</th>
+            <th class="num">Julho</th>
+            <th class="num">Agosto</th>
+            <th class="num">Δ%</th>
+            <th>Tendência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Investimento total</td>
+            <td class="num">R$458,10</td>
+            <td class="num">R$1.151,04</td>
+            <td class="num">+151,3%</td>
+            <td><span class="badge orange">↑ Cresceu</span></td>
+          </tr>
+          <tr>
+            <td>Resultados (conversas + conversões)</td>
+            <td class="num">12</td>
+            <td class="num">28</td>
+            <td class="num">+133,3%</td>
+            <td><span class="badge green">↑ Melhorou</span></td>
+          </tr>
+          <tr>
+            <td>Custo por Resultado (blend)</td>
+            <td class="num">R$38,18</td>
+            <td class="num">R$41,11</td>
+            <td class="num">+7,7%</td>
+            <td><span class="badge amber">Atenção</span></td>
+          </tr>
+          <tr>
+            <td>CTR (Meta)</td>
+            <td class="num">1,06%</td>
+            <td class="num">0,94%</td>
+            <td class="num">-0,12pp</td>
+            <td><span class="badge amber">Atenção</span></td>
+          </tr>
+          <tr>
+            <td>CPM (Meta)</td>
+            <td class="num">R$79,74</td>
+            <td class="num">R$1,75</td>
+            <td class="num">-97,8%</td>
+            <td><span class="badge green">↓ Reduziu</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- KPIs de destaque do comparativo -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Economia por Clique (Meta)</div>
+        <div class="k-val">R$7,32</div>
+        <div class="k-sub">R$7,51 → R$0,19 por clique</div>
+        <div class="k-delta up">↓ 97,5% de redução de custo</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Crescimento de Volume</div>
+        <div class="k-val">+133%</div>
+        <div class="k-sub">28 vs 12 resultados</div>
+        <div class="k-delta up">↑ mix mais barato, mais volume</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Novo Canal: Google Ads</div>
+        <div class="k-val">R$420,37</div>
+        <div class="k-sub">0% do investimento em julho → 36,5% em agosto</div>
+        <div class="k-delta up">Ativado em 14/08</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Custo por Resultado (blend)</div>
+        <div class="k-val">R$41,11</div>
+        <div class="k-sub">vs R$38,18 em julho</div>
+        <div class="k-delta dn">↑ 7,7% — mix inclui canal novo em aprendizado</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 7 — RECOMENDAÇÕES / PRÓXIMOS PASSOS
+       Use .region-grid para cards de ação (3 colunas)
+       Ou .insight-box para listagem de recomendações
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s7">
+    <div class="slide-header">
+      <div class="slide-tag">07 · Recomendações</div>
+      <div class="slide-title">Próximos Passos — Setembro 2026</div>
+      <div class="slide-desc">Ações priorizadas por impacto e esforço de implementação</div>
+    </div>
+
+    <div class="region-grid">
+      <!-- Card de ação 1 -->
+      <div class="region-card">
+        <h4>🎯 Auditar WhatsApp da Diagnostico300k<span class="pop">Alta prioridade</span></h4>
+        <p>Campanha dedicada a WhatsApp gastou R$96,71 sem nenhuma conversa registrada em agosto. Antes de reativar ou escalar, confirmar se o WhatsApp Business da página está conectado e se o evento de mensagem está sendo capturado corretamente.</p>
+        <div class="strat">→ Auditoria de tracking + confirmação manual no Ads Manager</div>
+      </div>
+      <!-- Card de ação 2 -->
+      <div class="region-card">
+        <h4>📣 Definir evento de "lead" para o novo funil de mensagem<span class="pop">Alta prioridade</span></h4>
+        <p>Sem campanhas de Lead Form, o Meta não gera mais o evento "lead" nativo — isso impede calcular CPA Lead Frio/Qualificado como antes. Alinhar com o gestor um evento substituto (ex: conversa iniciada) como novo proxy de Lead Frio.</p>
+        <div class="strat">→ Decisão do gestor + ajuste de pixel/eventos</div>
+      </div>
+      <!-- Card de ação 3 -->
+      <div class="region-card">
+        <h4>🧪 Retomar teste de Lead Form em paralelo ao WhatsApp<span class="pop">Próximo mês</span></h4>
+        <p>Hipótese: uma campanha de captura direta (Lead Form) rodando ao lado do WhatsApp recupera a taxa de conversão de clique→lead de julho (8,2%) sem abandonar o ganho de CPM/CPC de agosto.</p>
+        <div class="strat">→ Reativar 1 campanha Lead Form com o vídeo "ad1 - eleição"</div>
+      </div>
+      <!-- Card de ação 4 -->
+      <div class="region-card">
+        <h4>💰 Orçamento de setembro<span class="pop">Planejamento</span></h4>
+        <p>Manter Meta como base de tráfego/engajamento (mais barato) e sustentar o Google Ads recém-validado, que já converte a R$60,05. Sugestão de distribuição: 55% Meta / 45% Google dentro do teto de R$2.000/mês.</p>
+        <div class="strat">→ Total recomendado: R$2.000 (dentro do orçamento contratado)</div>
+      </div>
+      <!-- Card de ação 5 -->
+      <div class="region-card">
+        <h4>🎨 Repetir o vídeo vencedor em novos públicos<span class="pop">Produção</span></h4>
+        <p>"ad1 - eleição" foi o criativo mais eficiente do mês em 2 públicos diferentes — testar o mesmo vídeo em públicos de interesse ainda não explorados (ex: donos de e-commerce, prestadores de serviço).</p>
+        <div class="strat">→ Duplicar adset com novo público, mesmo criativo</div>
+      </div>
+      <!-- Card de ação 6 -->
+      <div class="region-card">
+        <h4>📊 Pendência comercial<span class="pop">Aguardando gestor</span></h4>
+        <p>Precisamos do número de leads que viraram Lead Qualificado (SDR/Typebot) em agosto para calcular o CPA real por tier e validar se o CPA Google de R$60,05 está de fato fora da meta.</p>
+        <div class="strat">→ Solicitar dado comercial ao gestor até a próxima revisão tática</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Setembro é o mês de decidir se o pivot para Mensagem/WhatsApp é definitivo ou se volta a coexistir com Lead Form — a decisão muda qual métrica vira o novo "lead frio" de referência. Prioridade número 1 segue sendo destravar o tracking do WhatsApp antes de qualquer novo investimento nessa frente.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       [SLIDE EXTRA OPCIONAL — duplicar e customizar]
+       ══════════════════════════════════════════════════════════ -->
+  <!--
+  <div class="slide" id="sX">
+    <div class="slide-header">
+      <div class="slide-tag">0X · [Nome da seção]</div>
+      <div class="slide-title">[Título]</div>
+      <div class="slide-desc">[Descrição]</div>
+    </div>
+
+    Insira aqui o conteúdo usando os componentes do design system:
+    • .kpi-row / .kpi
+    • .tbl-wrap / .tbl
+    • .two-col
+    • .creative-grid / .creative-card
+    • .insight-box
+    • .funnel / .funnel-step
+    • .region-grid / .region-card
+    • .text-box
+    • .compare-row / .compare-col
+    • .hero-number + .hero-label
+    • .notas
+
+  </div>
+  -->
+
+</div><!-- /#slides -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     NAVEGAÇÃO — não modificar
+     ══════════════════════════════════════════════════════════ -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)" aria-label="Slide anterior">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)" aria-label="Próximo slide">&#8594;</button>
+</div>
+
+<script>
+  /* ══════════════════════════════════════════════════════════
+     LOGO DA ALMA — injetada automaticamente em todos os slides
+     (exceto a capa). Não precisa repetir nos HTMLs dos slides.
+     ══════════════════════════════════════════════════════════ */
+  const ALMA_LOGO_SRC = "data:image/jpeg;base64,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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2gAMAwEAAgADAAAAIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAACAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAADAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAKAAAAAAAAAAABBCAAABBCAAAAABCDACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAANAAAAKAAAAIAAACPBAAMCAEIAEFAAAACIBAILAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAACAAAKAAAAAAAAKAEKAADAAAAAEIAIAACECAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAKAAAAAAAAKAAIAAAAAAAAAJEAAAIFKAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAFAAAKAAAAAAAAKAAAAAAAAAAAAAEJAGAFKAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAKAAAAAAAAKAAAAAAAAAAAAAAENLDFKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAKAAAAAAAAKAAAAAAAAAAAAAAEIFAFKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAEAAKAAAAAAAAKAAAAAAAAAAAAACIACAFKAAAAACBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAANAKAAAAAAAAKAAAAAAAAAAAAAOAAKAFKAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAACKAAAAAAAAKAAAAAAAAAAAAAKAAJAFKAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAJKAAAAAAAAKAAAAAAAAAAAAAICAAJHKAAAAJAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAIIAAAAAAAAAEAAAAAAEAALAIEIAAEAMIAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIABCAAAACDAAACBCDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFNLDDIEAHFIAPIEHFBBFGCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIEMMIIMEIIAIMMAEAEEMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/9oADAMBAAIAAwAAABDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzRzzzzzzywwwzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyxzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzjTzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyzTzzzzzzzzzzzzzzzzzzzTTTTzzzzzDzzzzzzDDjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxDzzyjzzzzzzzzwwwwzyTjyzjzzDTyxDzzyzDxTxxDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyzzzzzTzzzzzzzzzzzzzyzTzzjzwzzzzShzyzzzzyzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxTzzyDzzzzzzzzzzzzzzxzzzjzyjzzwyjzzxzhTzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxjzzzzTzzzzzzzzzzzzzzzzzzzyjzzyjxTyByhTzzjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyjzzzxjzzzzzzzzzzzzzzzzzzzyjzzyjzwjzChTzyjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxjzzzjzzzzzzzzzzzzzzzzzzzyjzzyjzAzjyhTzyjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxDCDTzzzzzzzzzzzzzzzzzzzzzzyjzzyjxzwzyhTzyjzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzTzzwjzzzzzzzzzzzzzzzzzzyjzzyjTzzzyhTzyjzTyzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyhzzzzzzzzzzzzzzzzzzyjzzyjTzxTyhTzyjzzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyhTzzxjzzzzzzzzzzzzzzzzzyjzzyhzTzxCBTzyixjzgzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyxzzzxzzzzxzzxzzzzzyzzzyzwyAwzzzzzzzxhxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzDTzDzTzzzzTTzDzTDTDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzywwQTjCzTzzyzARTzwhTDTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzywzzzyyzzzwwywyzzzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz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";
+
+  // Injeta o logo em todos os slides (exceto o de capa, id="s0")
+  document.querySelectorAll('.slide:not(#s0)').forEach(slide => {
+    if (!slide.querySelector('.alma-logo-wrap')) {
+      const wrap = document.createElement('div');
+      wrap.className = 'alma-logo-wrap';
+      const img = document.createElement('img');
+      img.src = ALMA_LOGO_SRC;
+      img.alt = 'Alma.';
+      img.className = 'alma-logo-img';
+      wrap.appendChild(img);
+      slide.insertBefore(wrap, slide.firstChild);
+    }
+  });
+
+  /* ── LABELS DOS SLIDES
+     Ajuste o array abaixo com os títulos curtos de cada slide
+     (aparece no centro da navegação inferior)
+  ── */
+  const slideLabels = [
+    'Capa',
+    'Visão Geral',
+    'Campanhas',
+    'Criativos',
+    'Diagnóstico',
+    'Funil',
+    'Comparativo',
+    'Recomendações',
+    // Adicione mais se criar slides extras
+  ];
+
+  /* ── ENGINE DE NAVEGAÇÃO — não modificar ── */
+  const slides   = document.querySelectorAll('.slide');
+  const label    = document.getElementById('slide-label');
+  const track    = document.getElementById('nav-track');
+  const progress = document.getElementById('progress-bar');
+  let current    = 0;
+
+  // Cria os dots de navegação
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    track.querySelectorAll('.dot')[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    track.querySelectorAll('.dot')[current].classList.add('active');
+    label.textContent = slideLabels[current] || `Slide ${current + 1}`;
+    progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+    // Re-inicializa indicadores de scroll ao trocar de slide
+    setTimeout(initTableScrollHints, 60);
+  }
+
+  /* ── INDICADORES DE SCROLL NAS TABELAS ──
+     • Injeta hint "↔ deslize para ver mais" acima de cada tabela
+     • Injeta fade gradiente na borda direita
+     • Some automaticamente ao rolar até o fim
+     • Some imediatamente se a tabela couber na tela
+     • Re-inicializa ao trocar de slide (chamado no goTo)
+  ── */
+  function initTableScrollHints() {
+    const activeSlide = slides[current];
+    activeSlide.querySelectorAll('.tbl-wrap').forEach(wrap => {
+      // Hint text: cria uma vez e reutiliza
+      let hint = wrap.previousElementSibling;
+      if (!hint || !hint.classList.contains('tbl-hint')) {
+        hint = document.createElement('div');
+        hint.className = 'tbl-hint';
+        hint.textContent = '↔ deslize para ver mais';
+        wrap.parentNode.insertBefore(hint, wrap);
+      }
+      // Fade: cria dentro do tbl-wrap uma vez
+      let fade = wrap.querySelector('.tbl-fade');
+      if (!fade) {
+        fade = document.createElement('div');
+        fade.className = 'tbl-fade';
+        wrap.appendChild(fade);
+      }
+      // Função de atualização
+      function update() {
+        const hasOverflow = wrap.scrollWidth > wrap.clientWidth + 2;
+        const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
+        const show = hasOverflow && !atEnd;
+        hint.classList.toggle('show', show);
+        fade.classList.toggle('show', show);
+      }
+      // Remove listener antigo e registra novo (evita duplicatas ao trocar slides)
+      if (wrap._scrollHandler) wrap.removeEventListener('scroll', wrap._scrollHandler);
+      wrap._scrollHandler = update;
+      wrap.addEventListener('scroll', update, { passive: true });
+      update(); // Avalia imediatamente
+    });
+  }
+
+  // Inicializa ao carregar
+  setTimeout(initTableScrollHints, 100);
+
+  // Navegação por teclado
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  // Navegação por swipe (mobile)
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+</script>
+</body>
+</html>
