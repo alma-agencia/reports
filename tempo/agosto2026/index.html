@@ -28,7 +28,7 @@
   ║  • .region-grid          → Grid 3 colunas para regiões/items     ║
   ╚══════════════════════════════════════════════════════════════════╝
 -->
-<title>Relatório Dra. Luiza Mazzafera — Agosto 2026</title>
+<title>Relatório Tempo Geração — Agosto 2026</title>
 <style>
   /* ══════════════════════════════════
      DESIGN SYSTEM — NÃO MODIFICAR
@@ -431,113 +431,133 @@
 
 <div id="progress-bar" style="width:0%"></div>
 
-  <!-- SLIDE 0 — CAPA -->
+<div id="slides">
+
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 0 — CAPA
+       Personalize: badge, título, subtítulo e 3 métricas-destaque
+       ══════════════════════════════════════════════════════════ -->
   <div class="slide active" id="s0">
     <div class="cover-wrap">
+      <!-- Badge: tipo do relatório (ex: "Relatório Mensal · Tráfego Pago") -->
       <div class="cover-badge">Relatório Mensal · Agosto 2026</div>
-      <div class="cover-title">Dra. Luiza Mazzafera</div>
-      <div class="cover-sub">Performance Meta Ads · Oftalmologia · Mês 1 de mídia paga</div>
+      <!-- Título: nome do cliente ou da campanha -->
+      <div class="cover-title">Tempo Geração</div>
+      <!-- Subtítulo: contexto breve -->
+      <div class="cover-sub">Performance Meta Ads + Google Ads · Agosto 2026 (vs. Julho 2026)</div>
+      <!-- 3 métricas de destaque da capa (invista, leads, CPA/ROAS) -->
       <div class="cover-meta">
         <div class="cover-meta-item">
-          <div class="val">R$163,06</div>
+          <div class="val">R$4.825</div>
           <div class="lbl">Investido</div>
         </div>
         <div class="cover-divider"></div>
         <div class="cover-meta-item">
-          <div class="val">18</div>
-          <div class="lbl">Conversas iniciadas</div>
+          <div class="val">359</div>
+          <div class="lbl">Leads (Meta + Google)</div>
         </div>
         <div class="cover-divider"></div>
         <div class="cover-meta-item">
-          <div class="val">R$9,06</div>
-          <div class="lbl">CPA por conversa</div>
+          <div class="val">R$13,44</div>
+          <div class="lbl">CPL médio</div>
         </div>
       </div>
     </div>
   </div>
 
 
-  <!-- SLIDE 1 — VISÃO GERAL / KPIs -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 1 — VISÃO GERAL / KPIs
+       Use .kpi-row com 4 cards (ou kpi-row-2 / kpi-row-3)
+       Cada .kpi suporta: k-label, k-val, k-sub, k-delta (up/dn)
+       ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s1">
     <div class="slide-header">
       <div class="slide-tag">01 · Visão Geral</div>
-      <div class="slide-title">Agosto 2026 — Primeiro Mês de Campanha</div>
-      <div class="slide-desc">Campanha única, ativa de 21 a 31/08 (11 de 31 dias do mês) — sem histórico de julho para comparar (conta ainda não rodava mídia).</div>
+      <div class="slide-title">Meta Ads + Google Ads — Agosto 2026</div>
+      <div class="slide-desc">Investimento total combinado, geração de leads e custo por lead vs. Julho/2026. Janela de atribuição: 7d clique / 1d view.</div>
     </div>
 
+    <!-- Linha 1 de KPIs — 4 colunas -->
     <div class="kpi-row">
       <div class="kpi">
-        <div class="k-label">Investimento</div>
-        <div class="k-val">R$163,06</div>
-        <div class="k-sub">de R$600,00 de orçamento mensal</div>
-        <div class="k-delta">27% do orçamento — campanha rodou só 11 dos 31 dias</div>
+        <div class="k-label">Investimento Total</div>
+        <div class="k-val">R$4.825,86</div>
+        <div class="k-sub">Orçamento: R$5.000 (96,5% usado) · Meta R$4.499 + Google R$327</div>
+        <div class="k-delta up">↓ 6,3% vs julho (R$5.151,35)</div>
       </div>
       <div class="kpi">
-        <div class="k-label">Conversas iniciadas</div>
-        <div class="k-val">18</div>
-        <div class="k-sub">Meta em ritmo pleno: ~60/mês</div>
-        <div class="k-delta">Mês 1 — sem mês anterior para comparar</div>
+        <div class="k-label">Leads (Meta + Google)</div>
+        <div class="k-val">359</div>
+        <div class="k-sub">Meta: 337 · Google: 22</div>
+        <div class="k-delta up">↑ 8,1% vs julho (332)</div>
       </div>
       <div class="kpi">
-        <div class="k-label">CPA por Conversa</div>
-        <div class="k-val">R$9,06</div>
-        <div class="k-sub">Meta: R$10,00</div>
-        <div class="k-delta up">↓ 9% abaixo da meta — já bateu o CPA no mês 1</div>
+        <div class="k-label">CPL Combinado</div>
+        <div class="k-val">R$13,44</div>
+        <div class="k-sub">Meta cliente: R$10,00 (34,4% acima)</div>
+        <div class="k-delta up">↓ 13,4% vs julho (R$15,52)</div>
       </div>
       <div class="kpi">
-        <div class="k-label">CTR (Feed/Reels)</div>
-        <div class="k-val">1,76%</div>
-        <div class="k-sub">Benchmark serviços locais: &gt; 1,2%</div>
-        <div class="k-delta up">↑ acima do benchmark do nicho</div>
+        <div class="k-label">CPL Meta Ads</div>
+        <div class="k-val">R$13,35</div>
+        <div class="k-sub">337 leads · R$4.499,04 investidos</div>
+        <div class="k-delta up">↓ 17,9% vs julho (R$16,26)</div>
       </div>
     </div>
 
+    <!-- Linha 2 de KPIs — Meta Ads -->
     <div class="kpi-row">
       <div class="kpi">
-        <div class="k-label">CPM</div>
-        <div class="k-val">R$34,54</div>
-        <div class="k-sub">Benchmark: R$10–25 (alerta &gt; R$45)</div>
+        <div class="k-label">CPM (Meta)</div>
+        <div class="k-val">R$24,65</div>
+        <div class="k-sub">Julho: R$32,72 (↓ 24,7%)</div>
       </div>
       <div class="kpi">
-        <div class="k-label">CTR</div>
-        <div class="k-val">1,76%</div>
-        <div class="k-sub">Taxa de clique no link</div>
+        <div class="k-label">CTR (Meta)</div>
+        <div class="k-val">1,64%</div>
+        <div class="k-sub">Julho: 1,64% (estável)</div>
       </div>
       <div class="kpi">
-        <div class="k-label">Frequência</div>
-        <div class="k-val">1,63</div>
-        <div class="k-sub">Impressões / Alcance — sem sinal de saturação</div>
+        <div class="k-label">Frequência (Meta)</div>
+        <div class="k-val">2,07</div>
+        <div class="k-sub">Julho: 1,96 — dentro do saudável (benchmark &lt;3,5)</div>
       </div>
       <div class="kpi">
-        <div class="k-label">Alcance</div>
-        <div class="k-val">2,9K</div>
-        <div class="k-sub">2.893 pessoas únicas</div>
+        <div class="k-label">Alcance (Meta)</div>
+        <div class="k-val">88,1K</div>
+        <div class="k-sub">Julho: 72,6K (↑ 21,4%)</div>
       </div>
     </div>
 
+    <!-- Notas do gestor (dark box — opcional em qualquer slide) -->
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Agosto foi o mês de estreia da conta: a campanha só entrou no ar em 21/08 (aprovação + ajustes de onboarding tomaram a primeira parte do mês), rodando 11 dos 31 dias com orçamento diário configurado de R$15/dia. Mesmo com amostra pequena (R$163,06 gastos, 18 conversas), o CPA de R$9,06 já veio abaixo da meta de R$10,00 — resultado sólido para um mês 1. Não há dado de julho: a conta não tinha campanha ativa antes de agosto, então este relatório não traz comparativo mês a mês — ele serve como a própria linha de base (baseline) para os próximos meses. Atenção: no ritmo diário atual (R$15/dia) o mês completo consumiria ~R$450, deixando cerca de R$150 do orçamento mensal sem uso — ver recomendação de escalonamento no slide de próximos passos.</p>
+      <p>Agosto fechou com CPL combinado 13,4% melhor que julho, puxado quase inteiramente pelo Meta Ads (CPL caiu de R$16,26 para R$13,35, -17,9%) — efeito direto da correção de geo-leak (18/08, restringiu "recent" para "home" no targeting) e da entrada dos criativos de teste no fim do mês. O Google Ads teve o efeito contrário: a limpeza de negativas (14/08) melhorou o CPA da campanha principal "Solar-BA" (R$10,91 → R$8,74), mas o volume caiu forte (46 → 21 conversões) e a nova campanha de teste "Concorrentes-TesteLP" ainda não performou (1 lead a R$143,26) — puxando o CPL combinado do Google de R$10,91 para R$14,86. Investimento total ficou 3,5% abaixo do teto de R$5.000, dentro do orçamento aprovado.</p>
     </div>
   </div>
 
 
-  <!-- SLIDE 2 — TABELA DE PERFORMANCE (anúncios) -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 2 — TABELA DE PERFORMANCE (campanhas / adsets)
+       Use .tbl-wrap + .tbl para tabelas com scroll horizontal
+       Badges: .badge.green / .red / .amber / .orange
+       ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s2">
     <div class="slide-header">
-      <div class="slide-tag">02 · Estrutura da Conta</div>
-      <div class="slide-title">Campanha e Anúncios — Agosto/2026</div>
-      <div class="slide-desc">1 campanha ativa · 1 conjunto (Camaçari + Dias d'Ávila, 40–65 anos, só Instagram) · 5 anúncios testados</div>
+      <div class="slide-tag">02 · Performance por Campanha</div>
+      <div class="slide-title">Campanhas — Agosto 2026</div>
+      <div class="slide-desc">Meta Ads — 11 campanhas ativas no mês (2 agrupadas por nome idêntico com orçamento reduzido; 5 testes de criativo agrupados por não terem lead ainda).</div>
     </div>
 
     <div class="tbl-wrap">
       <table class="tbl">
         <thead>
           <tr>
-            <th>Anúncio</th>
+            <th>Campanha</th>
             <th class="num">Gasto</th>
-            <th class="num">Conversas</th>
-            <th class="num">CPA</th>
+            <th class="num">Leads</th>
+            <th class="num">CPL</th>
             <th class="num">CTR</th>
             <th class="num">CPM</th>
             <th>Status</th>
@@ -545,49 +565,92 @@
         </thead>
         <tbody>
           <tr>
-            <td>Video_MaisDe40Cirurgia_V1</td>
-            <td class="num">R$89,41</td>
-            <td class="num">8</td>
-            <td class="num">R$11,18</td>
-            <td class="num">1,30%</td>
-            <td class="num">R$32,22</td>
-            <td><span class="badge amber">Acima da meta CPA</span></td>
+            <td>[22/05] ADV-Empresarios-BR</td>
+            <td class="num">R$1.440,53</td>
+            <td class="num">137</td>
+            <td class="num">R$10,52</td>
+            <td class="num">1,54%</td>
+            <td class="num">R$20,28</td>
+            <td><span class="badge green">Melhor CPL — escalar</span></td>
           </tr>
           <tr>
-            <td>Video_aparelhoAlemanha_V1</td>
-            <td class="num">R$48,45</td>
-            <td class="num">4</td>
-            <td class="num">R$12,11</td>
-            <td class="num">1,87%</td>
-            <td class="num">R$41,16</td>
-            <td><span class="badge red">Pior CPA e CPM</span></td>
+            <td>[10/07] Pub-LAL-Investidor</td>
+            <td class="num">R$1.380,34</td>
+            <td class="num">83</td>
+            <td class="num">R$16,63</td>
+            <td class="num">1,43%</td>
+            <td class="num">R$22,03</td>
+            <td><span class="badge amber">Atenção — CPL subiu</span></td>
           </tr>
           <tr>
-            <td>Video_DepoimentosCirurgia_V1</td>
-            <td class="num">R$23,27</td>
-            <td class="num">6</td>
-            <td class="num">R$3,88</td>
-            <td class="num">3,75%</td>
-            <td class="num">R$34,94</td>
-            <td><span class="badge green">Melhor CPA e CTR</span></td>
+            <td>[10/08] Pub-LAL-Investidor — Cópia (2 conjuntos)</td>
+            <td class="num">R$954,38</td>
+            <td class="num">66</td>
+            <td class="num">R$14,46</td>
+            <td class="num">2,08%</td>
+            <td class="num">R$37,02</td>
+            <td><span class="badge amber">Orçamento cortado 62% (24/08)</span></td>
           </tr>
           <tr>
-            <td>Video_MedoPosOperatorio_V1 — Cópia</td>
-            <td class="num">R$1,82</td>
+            <td>[24/08] TesteCriativo-PrimeiraReacao</td>
+            <td class="num">R$178,50</td>
+            <td class="num">48</td>
+            <td class="num">R$3,72</td>
+            <td class="num">3,24%</td>
+            <td class="num">R$25,60</td>
+            <td><span class="badge green">Destaque do mês</span></td>
+          </tr>
+          <tr>
+            <td>[Jul26] Empreendedor Conta Alta (ABO)</td>
+            <td class="num">R$283,90</td>
+            <td class="num">3</td>
+            <td class="num">R$94,63</td>
+            <td class="num">1,60%</td>
+            <td class="num">R$31,30</td>
+            <td><span class="badge red">CPL 9x acima da meta</span></td>
+          </tr>
+          <tr>
+            <td>5 testes de criativo (Descubra, Hotel, Mensagens, Restaurante, OperaGrande)</td>
+            <td class="num">R$261,39</td>
             <td class="num">0</td>
             <td class="num">—</td>
-            <td class="num">0%</td>
-            <td class="num">R$20,00</td>
-            <td><span class="badge orange">Sem volume — teste</span></td>
+            <td class="num">1,46%</td>
+            <td class="num">R$37,03</td>
+            <td><span class="badge amber">Em teste desde 24/08 — sem lead ainda</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="font-size:13px;font-weight:700;color:var(--dark);margin:20px 0 10px;">Google Ads — Campanhas</div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th class="num">Gasto</th>
+            <th class="num">Conversões</th>
+            <th class="num">CPA</th>
+            <th class="num">CTR</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[Jul26] Solar-BA (Pesquisa)</td>
+            <td class="num">R$183,56</td>
+            <td class="num">21</td>
+            <td class="num">R$8,74</td>
+            <td class="num">5,35%</td>
+            <td><span class="badge green">CPA melhorou pós-negativas</span></td>
           </tr>
           <tr>
-            <td>Novo anúncio de Engajamento</td>
-            <td class="num">R$0,11</td>
-            <td class="num">0</td>
-            <td class="num">—</td>
-            <td class="num">0%</td>
-            <td class="num">R$9,17</td>
-            <td><span class="badge orange">Residual — sem relevância</span></td>
+            <td>[Ago26] Solar-Assinatura-Concorrentes-TesteLP</td>
+            <td class="num">R$143,26</td>
+            <td class="num">1</td>
+            <td class="num">R$143,26</td>
+            <td class="num">9,52%</td>
+            <td><span class="badge amber">Teste novo (18/08) — volume baixo</span></td>
           </tr>
         </tbody>
       </table>
@@ -595,227 +658,355 @@
 
     <div class="notas" style="margin-top: 18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>O anúncio de depoimento (Video_DepoimentosCirurgia_V1) recebeu só 14% do orçamento mas entregou o melhor CTR (3,75%) e o menor CPA (R$3,88) — quase 3x mais eficiente que os demais. Já o Video_aparelhoAlemanha_V1 teve o CPM mais caro (R$41,16) e o pior CPA (R$12,11), acima da meta de R$10. Os dois anúncios residuais (R$0,11 e R$1,82 de gasto) não têm volume suficiente para qualquer leitura — ignorar nas decisões deste mês (regra de ouro: sem otimizar/pausar com menos de R$10 gastos).</p>
+      <p>ADV-Empresarios-BR segue como a campanha mais eficiente da conta e concentra o público replicado nos 6 testes de criativo — segue como prioridade de verba. Pub-LAL-Investidor (original) perdeu eficiência (CPL +26% vs julho); a "Cópia" teve o orçamento reduzido de R$40/dia para R$15/dia em 24/08 por CPL pior sem ganho de qualidade — corte já refletido no gasto do mês. Empreendedor Conta Alta segue com CPL muito acima da meta nos dois meses (R$42,79 em julho, R$94,63 em agosto) — candidata a pausa ou reestruturação completa de público/criativo. No Google, a limpeza de termos genéricos (14/08) melhorou o CPA da campanha principal, mas a nova campanha de teste de LP ainda não tem volume suficiente para avaliação.</p>
     </div>
   </div>
 
 
-  <!-- SLIDE 3 — TOP CRIATIVOS -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 3 — TOP CRIATIVOS
+       Use .creative-grid + .creative-card (máx 5 por linha)
+       .d2-bar-fill: ajuste o width% para a taxa de conversão
+       ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s3">
     <div class="slide-header">
       <div class="slide-tag">03 · Criativos</div>
-      <div class="slide-title">Ranking de Criativos — Agosto/2026</div>
-      <div class="slide-desc">Ordenado por CPA (conversas iniciadas) — excluídos os 2 anúncios residuais sem volume (&lt; R$2 de gasto)</div>
+      <div class="slide-title">Top Criativos em Performance</div>
+      <div class="slide-desc">Classificação por CPL — apenas criativos com 15+ leads no mês.</div>
     </div>
 
-    <div class="creative-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="creative-grid">
       <div class="creative-card">
-        <div class="rank"># 01 — Melhor CPA</div>
+        <div class="rank"># 01 — CPL R$3,72</div>
         <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/782582095_2867782686933501_6648749115388897414_n.jpg?_nc_cat=105&ccb=1-7&_nc_ohc=6aMTDUPVk3QQ7kNvwEVyJJt&_nc_oc=AdoDFdPWOL2aou665_1x3L2Y-Hi0vwPKpbhM9JoQgMX6Xg1_-iewTz-UucfKecHZPow&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=Z_wulkZbZLD4ltipFarn_A&_nc_tpa=Q5bMBQJxyjQyAuZPx7bP81k_OcsDxhftdKqGMVyecRoz3IV747zrJxe9xtQdqT3TP3YXfxUcKnBO1hrkBg&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_AQJyaQ7FQ0v5EG0nC5-uAKBFtKE_8Y8VvYGayWeV753Ihg&oe=6A9CCC26" alt="Video_DepoimentosCirurgia_V1"
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/784540947_2830935347285408_8792927414145103077_n.jpg?_nc_cat=106&ccb=1-7&_nc_ohc=S3kUuocjjaYQ7kNvwERm-vR&_nc_oc=Adr2VfNwqoUU_psIDz5z2SaGyZTxGATWZuDzAxytxRHfoyqubm5h5bzrLjbZserryAA&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=Ie8boZYHkB8d_K46VFYZcA&_nc_tpa=Q5bMBQKOnqIv7xLDLFerIyAQW_sJUsBFiOzkblqzextbM9HqD_uTBDFWPijlngpe0BBjZ00N_ZLpBW4TQA&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_AQLtRqgf88-39AikPPKMSxIHG7Y6ks2UMeNe7WtOzJpZBg&oe=6A9CE832" alt="Video_PrimeiraReacao_V1"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
           <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
           <div class="thumb-badge">Vídeo</div>
         </div>
-        <div class="name">Video_DepoimentosCirurgia_V1</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">3,75%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$3,88</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">6</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$23,27</span></div>
+        <div class="name">Video_PrimeiraReacao_V1 (Reel 25/06 — teste iniciado 24/08)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">3,24%</span></div>
+        <div class="metric"><span class="ml">CPL</span><span class="mv">R$3,72</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$178,50</span></div>
+        <div class="metric"><span class="ml">Leads</span><span class="mv">48</span></div>
         <div class="d2-bar"><div class="d2-bar-fill" style="width:100%"></div></div>
       </div>
       <div class="creative-card">
-        <div class="rank"># 02</div>
+        <div class="rank"># 02 — CPL R$7,15</div>
         <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/778869371_28352694614421527_4607347753288896060_n.jpg?_nc_cat=103&ccb=1-7&_nc_ohc=_XqCsUBgZO4Q7kNvwGkdqAx&_nc_oc=AdptlLhI5rX7FWmzWzraYfc13f4n0u1h_4Ovs-XUAsysxD31UV7H68xCpXJZ1ISgJQc&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=Z_wulkZbZLD4ltipFarn_A&_nc_tpa=Q5bMBQIMCjmPk9AoHnfMEbDb-kliiAFMoY1NwiydZbdHlQjbHkUiN1mA2MR1YgNTaUK5OzfkZbho0ew9yA&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_AQJLiEutXS_Br9XRlY4t3R_KlbLHWis5DtOEIs3EwQ7_rA&oe=6A9CF6B0" alt="Video_MaisDe40Cirurgia_V1"
+          <img src="https://external-bos5-1.xx.fbcdn.net/emg1/v/t13/8448786575267937154?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQK5yhcUN-zoTLs-rVEdlFkbm4J7Ujex-ZL1x9wpqxJCbqkDuZFzreB9dqS_Vig6TSJuw0-4DE_wnoa7rFU69z4zZdahtuacth2IseL_fssjdZ0hWh9QosDt21_PaSsgSpyD3eJ96Eb93dHSOTsGUx29&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=Ie8boZYHkB8d_K46VFYZcA&_nc_oc=AdqXuFXUyPPVrT0NUZHjiL6bisDvn43eg0K10yI3kLySBN1khtPEO5L3NspcOS6a2A4&ccb=13-1&oh=06_Q3_CAbOaZ9hIsXF2FTTUUy8Mr0yCjMTI1QWAPBHGGRuZ66og&oe=6A98DA45&_nc_sid=58080a" alt="Img_Familia_V1 - Semelhante — Cópia"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
           <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
-          <div class="thumb-badge">Vídeo</div>
+          <div class="thumb-badge">Imagem</div>
         </div>
-        <div class="name">Video_MaisDe40Cirurgia_V1</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">1,30%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$11,18</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">8</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$89,41</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:35%"></div></div>
+        <div class="name">Img_Familia_V1 - Semelhante — Cópia (ADV-Empresarios-BR)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,69%</span></div>
+        <div class="metric"><span class="ml">CPL</span><span class="mv">R$7,15</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$207,46</span></div>
+        <div class="metric"><span class="ml">Leads</span><span class="mv">29</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:53%"></div></div>
       </div>
       <div class="creative-card">
-        <div class="rank"># 03 — Pior CPA</div>
+        <div class="rank"># 03 — CPL R$8,35</div>
         <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/787830903_1052213807391057_3178837638408688417_n.jpg?_nc_cat=102&ccb=1-7&_nc_ohc=10Gl5yoT8s4Q7kNvwFFogTb&_nc_oc=Ado_OxL91KJIr8RoS3W6gOSBr-u1sodyOsL9vkBBCpP69tOQnwLhaAVZuSNPA_b5uok&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=Z_wulkZbZLD4ltipFarn_A&_nc_tpa=Q5bMBQLJUSLO05CvRCHGGTTnQBh4gwuI9566VNmGUHtR4_Lfqa6c4nu-hMvR-7AOd2D1g1fCdOTdR91m0A&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_AQKtsI-6TdMs3fhFMhgnSJu3Z9_Reqr5FBwJHYacFN1ATg&oe=6A9CFE4F" alt="Video_aparelhoAlemanha_V1"
+          <img src="https://external-bos5-1.xx.fbcdn.net/emg1/v/t13/2121147478153540148?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQIt5oLjZdAhSTBnHwfDBt5Ml8eE41dWcwySvAK2gjsSe6VGRUBqO-ilPdpLJ_DjUPKiOqx7gsGOb37rXjU9j_fcOadrG2NuzuzEZGmRiNfMKpWx5sxYhfdjMk60v5NcTASl6p66ltI6ieqnzdZbNe9v&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=Ie8boZYHkB8d_K46VFYZcA&_nc_oc=Ado8bWduDm9xpg0lxblZdoKvSdgd06UZTH02TMx4uIj47ozpu1mEPMhxNp2gN7FSzIA&ccb=13-1&oh=06_Q3_CAT88bRQ68h20A9ZQvWi81iwJIDEY9JuilGnJsiaORuuo&oe=6A98FBCA&_nc_sid=58080a" alt="Img_Familia_V1 - Semelhante"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Imagem</div>
+        </div>
+        <div class="name">Img_Familia_V1 - Semelhante (Pub-LAL-Investidor)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,89%</span></div>
+        <div class="metric"><span class="ml">CPL</span><span class="mv">R$8,35</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$275,53</span></div>
+        <div class="metric"><span class="ml">Leads</span><span class="mv">33</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:39%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 04 — CPL R$11,40</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t45.1600-4/585378497_861098603143747_4240560178891226595_n.jpg?_nc_cat=105&ccb=1-7&_nc_ohc=8ZqU0IPEjBUQ7kNvwFsKKeE&_nc_oc=AdrzKKNsUS6gFK5XQzpllHvppdDoc34Blc3udSTs0qpvjYCL2EnFd3EQ1GzW1zJEoI8&_nc_zt=1&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=Ie8boZYHkB8d_K46VFYZcA&_nc_tpa=Q5bMBQLHwyr11zBcFyr2RKut-aksr7V_3uozY0GHIbC5YTXWKY_iDg9t5h7_Twd55cKUweTbkRVj7no_uA&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=52f3c4&_nc_sid=58080a&oh=00_AQJZr-qyNctnJKUtsTlke077oKvgo-CiEsjC_pgnGjxNRg&oe=6A9CFD5F" alt="ad2 - passa de 350?"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Imagem</div>
+        </div>
+        <div class="name">ad2 - passa de 350? (ADV-Empresarios-BR)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,50%</span></div>
+        <div class="metric"><span class="ml">CPL</span><span class="mv">R$11,40</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$1.219,88</span></div>
+        <div class="metric"><span class="ml">Leads</span><span class="mv">107</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:61%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 05 — CPL R$17,88</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t51.71878-10/576321271_1130199388847326_9039042113364445338_n.jpg?_nc_cat=105&ccb=1-7&_nc_ohc=A6VHEJEg1VYQ7kNvwFHAgk-&_nc_oc=AdqVaMDymcZBP9aLOZH8LqlK1mRS19vi5LkZ2MFeQhkrEjeFl4Dr1ZbY4zt29EJqLHo&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=Ie8boZYHkB8d_K46VFYZcA&_nc_tpa=Q5bMBQIESIzF4xLRZkYWFaYoec9_S-ELnyr5Bhh4JkSARag8OS5sSCchDy8fTRvFvsFsBfj49hIK-uSYoA&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=5fad0e&_nc_sid=58080a&oh=00_AQLJ9FiUd2j-1lSEsNSc9eN0954UHDmnoxPNKroKvJSzDg&oe=6A9CFB96" alt="ad4 - video - sicomercio"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
           <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
           <div class="thumb-badge">Vídeo</div>
         </div>
-        <div class="name">Video_aparelhoAlemanha_V1</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">1,87%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$12,11</span></div>
-        <div class="metric"><span class="ml">Conversas</span><span class="mv">4</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$48,45</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:20%"></div></div>
+        <div class="name">ad4 - video - sicomercio (Pub-LAL-Investidor)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">2,02%</span></div>
+        <div class="metric"><span class="ml">CPL</span><span class="mv">R$17,88</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$482,77</span></div>
+        <div class="metric"><span class="ml">Leads</span><span class="mv">27</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:65%"></div></div>
       </div>
     </div>
 
     <div class="notas" style="margin-top: 18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Padrão claro no mês 1: o formato depoimento/relato de paciente converteu muito melhor que os vídeos "institucionais" (mais de 40 / aparelho importado). Hipótese: linguagem de autoridade médica com prova social gera mais confiança para iniciar a conversa do que o apelo a tecnologia. Para setembro, vale produzir mais variações no formato depoimento (respeitando as travas do nicho: sem antes/depois, sem promessa de resultado).</p>
+      <p>Destaque absoluto do mês: o Reel "Primeira Reação" (teste iniciado 24/08 dentro do lote de 6 criativos novos) fechou a R$3,72 de CPL — 3,6x mais barato que a meta do cliente (R$10) e o melhor resultado registrado na conta em 2026. Recomendação: escalar orçamento desse criativo isoladamente em setembro e testar variações do mesmo gancho (reação genuína/depoimento). Atenção: os 2 criativos "Img_Família" têm CPL ótimo (R$7,15–8,35) mas foram PAUSADOS em 24/08 por qualidade de lead ruim (51,6% combinado com conta de luz ≤R$250, perfil fora do foco declarado pelo cliente desde 17/07) — mantidos aqui como referência histórica do mês, não como recomendação de escalar. "ad2 - passa de 350?" ficou 1 semana pausado (10-17/08) por teste de qualidade e depois voltou a veicular — resultado do mês já reflete esse intervalo.</p>
     </div>
   </div>
 
 
-  <!-- SLIDE 4 — INSIGHTS -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 4 — INSIGHTS / ANÁLISE (layout 2 colunas)
+       Use .two-col para dividir análise textual e visual
+       .insight-box suporta modificadores: .good / .bad / .warn
+       ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s4">
     <div class="slide-header">
-      <div class="slide-tag">04 · Diagnóstico</div>
-      <div class="slide-title">O que Funcionou e o que Ajustar</div>
-      <div class="slide-desc">Leitura do mês 1 — amostra ainda pequena (18 conversas), tratar como direção e não como certeza estatística</div>
+      <div class="slide-tag">04 · Análise</div>
+      <div class="slide-title">O que funcionou e o que ajustar em Agosto</div>
+      <div class="slide-desc">Leitura cruzada de Meta Insights, Google Ads e registros de otimização do mês.</div>
     </div>
 
     <div class="two-col">
+      <!-- Coluna esquerda: o que funcionou -->
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funcionou</div>
         <div class="insight-box good">
-          <h4>CPA já abaixo da meta no mês 1</h4>
-          <p>R$9,06 por conversa vs meta de R$10,00 — mesmo com a conta em fase de aprendizado e apenas 11 dias no ar. Bom sinal para escalar com mais confiança em setembro.</p>
+          <h4>Correção de geo-leak destravou eficiência do Meta</h4>
+          <p>A troca de "recent" para "home" no targeting (18/08, 6 adsets) resolveu leads fora da Bahia sem mudar público-alvo declarado. CPL do Meta caiu 17,9% no mês (R$16,26 → R$13,35) mesmo com CPM 24,7% mais barato — sinal de leilão mais saudável pós-correção.</p>
         </div>
         <div class="insight-box good">
-          <h4>Criativo de depoimento performou 3x melhor</h4>
-          <p>Video_DepoimentosCirurgia_V1: CTR de 3,75% e CPA de R$3,88, muito acima da média da conta. Direção clara de produção para o próximo mês.</p>
+          <h4>ADV-Empresarios-BR consolidou-se como a campanha âncora</h4>
+          <p>CPL caiu de R$18,29 (jul) para R$10,52 (ago) com volume quase dobrando (72 → 137 leads). É o público replicado nos 6 testes de criativo de 24/08 — confirma a tese de escalar esse público em setembro.</p>
         </div>
         <div class="insight-box good">
-          <h4>Sem sinal de saturação de público</h4>
-          <p>Frequência de 1,63 (benchmark saudável para o nicho: 2–3) — a conta ainda tem espaço para ganhar mais alcance no mesmo público antes de precisar de expansão ou refresh de criativo.</p>
+          <h4>Teste de criativo "Primeira Reação" bateu recorde de CPL</h4>
+          <p>R$3,72 de CPL com apenas 7 dias de veiculação (desde 24/08) — melhor resultado do ano na conta. Prioridade nº1 para setembro: escalar orçamento e testar variações do gancho.</p>
         </div>
       </div>
 
+      <!-- Coluna direita: o que ajustar -->
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que ajustar</div>
         <div class="insight-box warn">
-          <h4>Orçamento diário abaixo do necessário</h4>
-          <p>Configurado em R$15/dia; para usar o orçamento mensal de R$600 completo seria preciso ~R$20/dia. No ritmo atual, setembro fecharia com ~R$150 de verba não investida.</p>
+          <h4>Google Ads perdeu 52% do volume de conversão</h4>
+          <p>Campanha "Solar-BA" caiu de 46 para 21 conversões (impressões -80%, cliques -70%) após a limpeza de negativas de 14/08. O CPA da campanha melhorou (R$10,91 → R$8,74), mas o corte de tráfego genérico foi mais agressivo que o esperado — revisar se as negativas/lance estão restringindo demais o alcance.</p>
         </div>
         <div class="insight-box bad">
-          <h4>Video_aparelhoAlemanha_V1 é o pior desempenho</h4>
-          <p>CPM mais caro (R$41,16) e CPA mais alto (R$12,11, acima da meta). Já tem R$48,45 gastos — volume suficiente para revisar quando o gestor confirmar a ação (regra de ouro: nada é pausado sem confirmação explícita).</p>
+          <h4>"Empreendedor Conta Alta" segue muito acima da meta</h4>
+          <p>CPL de R$94,63 em agosto (R$42,79 em julho) — 9x a meta de R$10. Rodou os dois meses sem ajuste estrutural. Recomendação: pausar ou reconstruir público/criativo do zero antes de manter verba nela.</p>
         </div>
         <div class="insight-box">
-          <h4>Faixa etária 55-64 abaixo da meta</h4>
-          <p>CPA de R$10,88 nessa faixa vs R$8,32 na faixa 45-54 (a mais eficiente). Oportunidade de testar peso maior de verba em 45-54 no próximo mês — ainda com amostra pequena para decisão definitiva.</p>
+          <h4>Sem delivery em 2 dias no início do mês (01–02/08)</h4>
+          <p>Conta ficou zerada de gasto/impressão em 01–02/08 (confirmado via Meta Insights diário) — mesmo padrão ocorreu em 28–31/07. Vale investigar junto ao gestor se é pausa proposital (troca de campanha/orçamento) ou instabilidade de entrega, para não perder dias de veiculação no mês.</p>
         </div>
       </div>
     </div>
   </div>
 
 
-  <!-- SLIDE 5 — FUNIL -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 5 — FUNIL DE CONVERSÃO
+       Use .funnel + .funnel-step
+       .funnel-bar: ajuste background e width% para cada etapa
+       ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s5">
     <div class="slide-header">
       <div class="slide-tag">05 · Funil</div>
-      <div class="slide-title">Do Alcance à Conversa Iniciada</div>
-      <div class="slide-desc">Funil de engajamento até a conversa no WhatsApp/Direct — agosto/2026, campanha de Mensagens</div>
+      <div class="slide-title">Onde os Leads Somem — Meta Ads</div>
+      <div class="slide-desc">Impressões → Cliques → Cliques no link → Leads (formulário nativo). Agosto 2026.</div>
     </div>
 
     <div class="two-col">
       <div>
-        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Funil da Campanha de Mensagens</div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Funil de Captação (Meta)</div>
         <div class="funnel">
+          <!-- Etapa 1: 100% -->
           <div class="funnel-step">
-            <div class="funnel-label">Alcance</div>
+            <div class="funnel-label">Impressões</div>
             <div class="funnel-bar-wrap">
               <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
-                <span style="font-size:11px;font-weight:700;color:white">2.893</span>
+                <span style="font-size:11px;font-weight:700;color:white">182.552</span>
               </div>
             </div>
             <div class="funnel-val">100%</div>
           </div>
+          <!-- Etapa 2 -->
           <div class="funnel-step">
-            <div class="funnel-label">Engajamento c/ post</div>
+            <div class="funnel-label">Cliques (todos)</div>
             <div class="funnel-bar-wrap">
-              <div class="funnel-bar" style="width:64%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
-                <span style="font-size:11px;font-weight:700;color:white">1.846</span>
+              <div class="funnel-bar" style="width:35%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">3.000</span>
               </div>
             </div>
-            <div class="funnel-val">63,8%</div>
+            <div class="funnel-val">1,64%</div>
           </div>
+          <!-- Etapa 3 -->
           <div class="funnel-step">
-            <div class="funnel-label">Conexão de mensagem</div>
+            <div class="funnel-label">Cliques no link</div>
             <div class="funnel-bar-wrap">
-              <div class="funnel-bar" style="width:12%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
-                <span style="font-size:11px;font-weight:700;color:white">24</span>
+              <div class="funnel-bar" style="width:28%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">2.243</span>
               </div>
             </div>
-            <div class="funnel-val">0,8%</div>
+            <div class="funnel-val">1,23%</div>
           </div>
+          <!-- Etapa 4 (conversão final) -->
           <div class="funnel-step">
-            <div class="funnel-label">Conversa iniciada</div>
+            <div class="funnel-label">Leads (formulário)</div>
             <div class="funnel-bar-wrap">
-              <div class="funnel-bar" style="width:9%;background:#16a34a;">
-                <span style="font-size:11px;font-weight:700;color:white">18</span>
+              <div class="funnel-bar" style="width:12%;background:#16a34a;">
+                <span style="font-size:11px;font-weight:700;color:white">337</span>
               </div>
             </div>
-            <div class="funnel-val">0,6%</div>
+            <div class="funnel-val">0,18%</div>
           </div>
         </div>
       </div>
 
+      <!-- Coluna direita: análise do gargalo -->
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Análise do Gargalo</div>
         <div class="insight-box bad">
-          <h4>Queda grande de Engajamento → Conexão</h4>
-          <p>63,8% de quem alcançado engajou com o post (curtida/comentário/vídeo assistido), mas só 0,8% chegou a abrir uma conversa. Parte disso é natural em anúncio de vídeo (visualização conta como engajamento), mas é o ponto de maior perda no funil.</p>
+          <h4>Cliques no link → Lead é a etapa mais fraca</h4>
+          <p>Apenas 15,0% de quem clica no link completa o formulário (337 de 2.243) — em julho essa taxa era 17,1% (286 de 1.669). Leve piora mês a mês nessa etapa, mesmo com CPL geral melhor (efeito de CPM/CPC mais baratos, não de conversão do formulário).</p>
         </div>
         <div class="insight-box">
-          <h4>Testar CTA mais direto para mensagem</h4>
-          <p>Reforçar no criativo e na legenda um chamado explícito para "chamar no WhatsApp" pode reduzir essa perda — testar em conjunto com o formato depoimento, que já converte melhor.</p>
+          <h4>Revisar formulário nativo e velocidade de carregamento</h4>
+          <p>Como o destino é formulário nativo do Meta (não site), a queda tende a ser abandono dentro do próprio formulário — vale revisar nº de campos, copy do formulário e se o público replicado nos testes de criativo (Advantage+ Audience) mantém a mesma qualidade de intenção do público de interesses.</p>
         </div>
         <div class="insight-box good">
-          <h4>Da conexão à conversa: 75% de aproveitamento</h4>
-          <p>Das 24 conexões de mensagem, 18 viraram conversa iniciada de fato (75%) — a etapa final do funil está saudável, o gargalo está antes dela.</p>
+          <h4>Meta de referência</h4>
+          <p>Voltar a taxa de cliques no link → lead para ~17% (nível de julho) já reduziria o CPL combinado em ~2pp sem precisar de mais verba.</p>
         </div>
       </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>O funil confirma que o criativo certo (depoimento) reduz a distância entre engajamento e conversa. O maior ganho de setembro provavelmente vem de reproduzir esse formato, não de mexer no orçamento ou público.</p>
+      <p>O funil de agosto é mais barato no topo (CPM e CPC mais baixos após a correção de geo-leak) mas ligeiramente menos eficiente na etapa final de preenchimento do formulário. Como o volume de leads ainda cresceu (impressões e cliques subiram mais que proporcionalmente à queda de conversão), o resultado líquido do mês foi positivo — mas a taxa de conversão do formulário é o ponto a monitorar em setembro.</p>
     </div>
   </div>
 
 
-  <!-- SLIDE 6 — CONTEXTO DO MÊS 1 (sem comparativo — conta nova) -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 6 — COMPARATIVO (antes vs depois / mês vs mês)
+       Use .compare-row + .compare-col.before / .compare-col.after
+       Ou use a tabela comparativa abaixo
+       ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s6">
     <div class="slide-header">
-      <div class="slide-tag">06 · Contexto</div>
-      <div class="slide-title">Agosto 2026 é o Mês 1 — Não Há Julho para Comparar</div>
-      <div class="slide-desc">A conta da Dra. Luiza Mazzafera não teve nenhuma campanha ativa em julho/2026 (onboarding concluído em 21/08) — não existe dado real de mídia paga anterior a agosto para comparação, então este relatório não traz um comparativo mês a mês.</div>
+      <div class="slide-tag">06 · Comparativo</div>
+      <div class="slide-title">Julho vs Agosto 2026 — Meta + Google Ads</div>
+      <div class="slide-desc">Comparativo mês a mês, investimento combinado nas duas plataformas.</div>
     </div>
 
-    <div class="text-box" style="margin-bottom:20px;">
-      <p><strong>O que confirmamos nas tools do n8n:</strong> a consulta de Meta Insights para julho/2026 (01/07 a 31/07) retornou zero linhas de dado — e a consulta de estrutura confirma que a única campanha da conta (<em>[MP] [DraLuizaMazzafera] [ABO] [MSG &gt; WPP] [Ago26] Camaçari-DiasAvila</em>) foi criada em 21/08/2026. Não existiu investimento em julho para comparar — não é um dado ausente por falha, é a realidade da conta nesse período.</p>
-      <p style="margin-top:12px;">Por isso, agosto/2026 passa a ser a <strong>linha de base (baseline)</strong> desta conta: os relatórios de setembro em diante já vão trazer o comparativo mês a mês normal.</p>
+    <!-- Tabela comparativa -->
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Métrica</th>
+            <th class="num">Julho</th>
+            <th class="num">Agosto</th>
+            <th class="num">Δ%</th>
+            <th>Tendência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Investimento total</td>
+            <td class="num">R$5.151,35</td>
+            <td class="num">R$4.825,86</td>
+            <td class="num">-6,3%</td>
+            <td><span class="badge orange">↓ Reduziu</span></td>
+          </tr>
+          <tr>
+            <td>Leads (Meta + Google)</td>
+            <td class="num">332</td>
+            <td class="num">359</td>
+            <td class="num">+8,1%</td>
+            <td><span class="badge green">↑ Melhorou</span></td>
+          </tr>
+          <tr>
+            <td>CPL combinado</td>
+            <td class="num">R$15,52</td>
+            <td class="num">R$13,44</td>
+            <td class="num">-13,4%</td>
+            <td><span class="badge green">↓ Reduziu</span></td>
+          </tr>
+          <tr>
+            <td>CPL Meta Ads</td>
+            <td class="num">R$16,26</td>
+            <td class="num">R$13,35</td>
+            <td class="num">-17,9%</td>
+            <td><span class="badge green">↓ Reduziu</span></td>
+          </tr>
+          <tr>
+            <td>CPA Google Ads</td>
+            <td class="num">R$10,91</td>
+            <td class="num">R$14,86</td>
+            <td class="num">+36,2%</td>
+            <td><span class="badge red">↑ Piorou</span></td>
+          </tr>
+          <tr>
+            <td>CTR (Meta)</td>
+            <td class="num">1,64%</td>
+            <td class="num">1,64%</td>
+            <td class="num">0,0pp</td>
+            <td><span class="badge orange">Estável</span></td>
+          </tr>
+          <tr>
+            <td>CPM (Meta)</td>
+            <td class="num">R$32,72</td>
+            <td class="num">R$24,65</td>
+            <td class="num">-24,7%</td>
+            <td><span class="badge green">↓ Reduziu</span></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="kpi-row kpi-row-3">
+    <!-- KPIs de destaque do comparativo -->
+    <div class="kpi-row">
       <div class="kpi">
-        <div class="k-label">Dias com mídia ativa</div>
-        <div class="k-val">11 / 31</div>
-        <div class="k-sub">21/08 a 31/08/2026</div>
+        <div class="k-label">Economia por Lead</div>
+        <div class="k-val">R$2,08</div>
+        <div class="k-sub">CPL combinado vs julho</div>
+        <div class="k-delta up">↓ 13,4% de redução de custo</div>
       </div>
       <div class="kpi">
-        <div class="k-label">Investimento no mês 1</div>
-        <div class="k-val">R$163,06</div>
-        <div class="k-sub">Baseline para setembro</div>
+        <div class="k-label">Crescimento de Volume</div>
+        <div class="k-val">+8,1%</div>
+        <div class="k-sub">mais leads com menos verba</div>
+        <div class="k-delta up">↑ eficiência de escala</div>
       </div>
       <div class="kpi">
-        <div class="k-label">CPA no mês 1</div>
-        <div class="k-val">R$9,06</div>
-        <div class="k-sub">Meta: R$10,00 — baseline para setembro</div>
+        <div class="k-label">Google Ads — Volume</div>
+        <div class="k-val">-52,2%</div>
+        <div class="k-sub">conversões: 46 → 22</div>
+        <div class="k-delta dn">↓ atenção — negativas cortaram volume</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Meta Ads — CPM</div>
+        <div class="k-val">R$24,65</div>
+        <div class="k-sub">leilão mais barato pós geo-leak</div>
+        <div class="k-delta up">↓ 24,7% vs julho</div>
       </div>
     </div>
   </div>
 
 
-  <!-- SLIDE 7 — RECOMENDAÇÕES -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 7 — RECOMENDAÇÕES / PRÓXIMOS PASSOS
+       Use .region-grid para cards de ação (3 colunas)
+       Ou .insight-box para listagem de recomendações
+       ══════════════════════════════════════════════════════════ -->
   <!-- ══════════════════════════════════════════════════════════
        SLIDE 06B — INSTAGRAM ORGÂNICO
        ══════════════════════════════════════════════════════════ -->
@@ -823,13 +1014,13 @@
     <div class="slide-header">
       <div class="slide-tag">06B · Instagram Orgânico</div>
       <div class="slide-title">Resultado do orgânico no mês</div>
-      <div class="slide-desc">Perfil @draluizamazzafera.oftalmo — conteúdo não pago no Instagram (Agosto/2026).</div>
+      <div class="slide-desc">Perfil @tempogeracao — conteúdo não pago no Instagram (Agosto/2026).</div>
     </div>
     <div class="kpi-row">
-      <div class="kpi"><div class="k-label">Seguidores</div><div class="k-val">6.483</div><div class="k-delta up">+113 (últ. 30 dias)</div></div>
-      <div class="kpi"><div class="k-label">Alcance</div><div class="k-val">10.802</div><div class="k-sub">contas únicas · 62 mil visualizações</div></div>
-      <div class="kpi"><div class="k-label">Visitas ao perfil</div><div class="k-val">755</div><div class="k-sub">44 cliques no link</div></div>
-      <div class="kpi"><div class="k-label">Interações</div><div class="k-val">2.395</div><div class="k-sub">24 salvam. · 113 compart.</div></div>
+      <div class="kpi"><div class="k-label">Seguidores</div><div class="k-val">1.292</div><div class="k-delta up">+95 (últ. 30 dias)</div></div>
+      <div class="kpi"><div class="k-label">Alcance</div><div class="k-val">70.168</div><div class="k-sub">contas únicas · 157 mil visualizações</div></div>
+      <div class="kpi"><div class="k-label">Visitas ao perfil</div><div class="k-val">325</div><div class="k-sub">28 cliques no link</div></div>
+      <div class="kpi"><div class="k-label">Interações</div><div class="k-val">400</div><div class="k-sub">20 salvam. · 15 compart.</div></div>
     </div>
     <div class="tbl-hint">← arraste para ver todas as colunas →</div>
     <div class="tbl-wrap">
@@ -840,17 +1031,17 @@
           <th class="num">Salvam.</th><th class="num">Compart.</th><th class="num">Engaj.</th>
         </tr></thead>
         <tbody>
-          <tr><td>01/08</td><td>Photodump de Julho/2026</td><td><span class="badge orange">Carrossel</span></td><td class="num">1.760</td><td class="num">207</td><td class="num">14</td><td class="num">0</td><td class="num">0</td><td class="num"><b>12,7%</b></td></tr>
-          <tr><td>21/08</td><td>O soro fisiológico não serve para tudo</td><td><span class="badge orange">Reel</span></td><td class="num">1.418</td><td class="num">154</td><td class="num">20</td><td class="num">6</td><td class="num">18</td><td class="num"><b>14,5%</b></td></tr>
-          <tr><td>03/08</td><td>Miopia, astigmatismo… nem sempre é só isso</td><td><span class="badge orange">Reel</span></td><td class="num">1.414</td><td class="num">116</td><td class="num">29</td><td class="num">1</td><td class="num">16</td><td class="num"><b>11,6%</b></td></tr>
-          <tr><td>14/08</td><td>Um pedacinho da minha rotina com vocês</td><td><span class="badge orange">Reel</span></td><td class="num">1.601</td><td class="num">101</td><td class="num">10</td><td class="num">1</td><td class="num">5</td><td class="num"><b>7,7%</b></td></tr>
-          <tr><td>28/08</td><td>"Pode?" e "Não pode?" — dúvidas sobre a cirurgia</td><td><span class="badge orange">Reel</span></td><td class="num">461</td><td class="num">50</td><td class="num">6</td><td class="num">4</td><td class="num">3</td><td class="num"><b>14,8%</b></td></tr>
+          <tr><td>21/08</td><td>Quem nunca comprou algo "baratinho" e se arrependeu</td><td><span class="badge orange">Carrossel</span></td><td class="num">48</td><td class="num">6</td><td class="num">0</td><td class="num">1</td><td class="num">1</td><td class="num"><b>16,7%</b></td></tr>
+          <tr><td>19/08</td><td>A bandeira amarela não é cobrança da distribuidora</td><td><span class="badge orange">Reel</span></td><td class="num">114</td><td class="num">5</td><td class="num">1</td><td class="num">0</td><td class="num">1</td><td class="num"><b>6,1%</b></td></tr>
+          <tr><td>07/08</td><td>A vida adulta é cheia de pequenas pegadinhas</td><td><span class="badge orange">Carrossel</span></td><td class="num">60</td><td class="num">6</td><td class="num">0</td><td class="num">1</td><td class="num">0</td><td class="num"><b>11,7%</b></td></tr>
+          <tr><td>10/08</td><td>Nem sempre o que pesa no bolso é decisão racional</td><td><span class="badge orange">Carrossel</span></td><td class="num">50</td><td class="num">7</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num"><b>14,0%</b></td></tr>
+          <tr><td>09/08</td><td>Tem frases que atravessam gerações</td><td><span class="badge orange">Card</span></td><td class="num">48</td><td class="num">7</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num"><b>14,6%</b></td></tr>
         </tbody>
       </table>
     </div>
     <div class="insight-box good" style="margin-top:16px">
       <h4>Leitura do orgânico</h4>
-      <p>Mês forte de orgânico: 4 dos 5 melhores posts passaram de 1.400 contas alcançadas com engajamento alto (8–15%). O Reel de 21/08 (soro fisiológico) e o Carrossel Photodump lideraram. +113 seguidores no período. Caminho: manter os Reels educativos de oftalmologia (mitos, pode/não pode) e o registro de rotina, que geram salvamento e compartilhamento.</p>
+      <p>O orgânico ainda é nascente: os posts alcançaram poucas dezenas de contas, enquanto o alcance de conta (70 mil) vem quase todo do impulsionamento. O ponto positivo está na taxa de engajamento dos carrosséis educativos (economia/energia). +95 seguidores no período. Caminho: aumentar a cadência e investir em Reels curtos para construir alcance orgânico próprio.</p>
     </div>
     <p style="font-size:11px;color:var(--gray);margin-top:10px">Métricas de conta (alcance, visualizações e interações) incluem conteúdo impulsionado, conforme reportado pelo Instagram.</p>
   </div>
@@ -858,49 +1049,89 @@
   <div class="slide" id="s7">
     <div class="slide-header">
       <div class="slide-tag">07 · Recomendações</div>
-      <div class="slide-title">Próximos Passos — Setembro/2026</div>
-      <div class="slide-desc">Ações propostas para a próxima revisão com o gestor — nenhuma escrita foi feita na conta, tudo aqui depende de confirmação</div>
+      <div class="slide-title">Próximos Passos — Setembro 2026</div>
+      <div class="slide-desc">Ações priorizadas por impacto, com base no fechamento de agosto.</div>
+    </div>
+
+    <div class="insight-box warn" style="margin-bottom:16px;">
+      <h4>⏳ Pendência comercial</h4>
+      <p>Este relatório cobre apenas dados de mídia (Meta Ads e Google Ads) — custo por lead e volume de leads captados. A taxa de fechamento de assinatura (lead → contrato assinado) e o CAC real do negócio dependem da planilha comercial do cliente, que não está disponível nas tools de mídia. <strong>Aguardando dado comercial do gestor</strong> para calcular CAC e ROI real do investimento de agosto.</p>
     </div>
 
     <div class="region-grid">
+      <!-- Card de ação 1 -->
       <div class="region-card">
-        <h4>💰 Orçamento diário<span class="pop">Alta prioridade</span></h4>
-        <p>Orçamento diário atual (R$15/dia) não usa o orçamento mensal completo de R$600. Escalar em etapas de até 20% (regra de ouro) até chegar perto de R$20/dia.</p>
-        <div class="strat">→ Confirmar com o gestor e executar via Meta: Escrever com dry_run antes</div>
+        <h4>🎯 Escalar os 2 vencedores do mês<span class="pop">Alta prioridade</span></h4>
+        <p>ADV-Empresarios-BR (CPL R$10,52, quase na meta) e o Reel "Primeira Reação" (CPL R$3,72) concentram a melhor eficiência da conta. Aumentar orçamento gradualmente nos dois nos primeiros dias de setembro.</p>
+        <div class="strat">→ Escala em até 20% por vez, monitorando CPL diário</div>
       </div>
+      <!-- Card de ação 2 -->
       <div class="region-card">
-        <h4>🎨 Criativo vencedor<span class="pop">Alta prioridade</span></h4>
-        <p>Produzir mais variações no formato depoimento/relato de paciente (como Video_DepoimentosCirurgia_V1) — foi o de melhor CTR e CPA do mês.</p>
-        <div class="strat">→ Briefing de produção respeitando as travas do nicho saúde (sem antes/depois, sem promessa de resultado)</div>
+        <h4>📣 Decidir sobre Empreendedor Conta Alta<span class="pop">Alta prioridade</span></h4>
+        <p>CPL de R$94,63 em agosto (9x a meta), sem melhora entre julho e agosto. Levar ao gestor a decisão: pausar de vez ou reconstruir público/criativo do zero.</p>
+        <div class="strat">→ Confirmar com o gestor antes de qualquer pausa</div>
       </div>
+      <!-- Card de ação 3 -->
       <div class="region-card">
-        <h4>🧪 Teste de público<span class="pop">Próximo mês</span></h4>
-        <p>Faixa 45-54 teve o melhor CPA (R$8,32) e mais volume; 55-64 ficou acima da meta (R$10,88). Testar concentrar mais verba em 45-54, mantendo alcance nas demais.</p>
-        <div class="strat">→ Amostra ainda pequena — reavaliar com mais dados antes de restringir de vez</div>
+        <h4>🧪 Testar o formulário nativo<span class="pop">Próximo mês</span></h4>
+        <p>Taxa de cliques no link → lead caiu de 17,1% (jul) para 15,0% (ago). Hipótese: nº de campos ou copy do formulário. Testar uma versão reduzida do formulário.</p>
+        <div class="strat">→ Meta de sucesso: voltar a 17%+ de conversão</div>
       </div>
+      <!-- Card de ação 4 -->
       <div class="region-card">
-        <h4>📉 Revisar criativo fraco<span class="pop">Média prioridade</span></h4>
-        <p>Video_aparelhoAlemanha_V1: pior CPM e pior CPA da conta, já com volume suficiente (R$48,45 gastos, acima do piso de R$10).</p>
-        <div class="strat">→ Confirmar com o gestor antes de pausar ou substituir criativo</div>
+        <h4>💰 Orçamento de Setembro<span class="pop">Planejamento</span></h4>
+        <p>Manter teto de R$5.000/mês combinado. Realocar parte do corte já feito em Pub-LAL-Investidor Cópia (R$15/dia) e de Empreendedor Conta Alta (se pausado) para ADV-Empresarios-BR e o teste Primeira Reação.</p>
+        <div class="strat">→ Total recomendado: R$5.000 (Meta ~R$4.700 + Google ~R$300)</div>
       </div>
+      <!-- Card de ação 5 -->
       <div class="region-card">
-        <h4>📊 Dado comercial pendente<span class="pop">Aguardando gestor</span></h4>
-        <p>Sem pixel e sem CRM conhecido, o CPA de R$9,06 mede "conversa iniciada", não consulta agendada/realizada. Não temos como calcular o ROI real (custo por consulta ou por paciente) sem esse dado.</p>
-        <div class="strat">→ Aguardando dado comercial do gestor: quantas das 18 conversas viraram consulta agendada</div>
+        <h4>🎨 Criativos — dobrar na aposta certa<span class="pop">Produção</span></h4>
+        <p>Produzir 2-3 variações do gancho "reação genuína/depoimento" do Reel vencedor. Descartar novas peças no estilo "Img_Família" (CPL bom, qualidade de lead ruim).</p>
+        <div class="strat">→ Briefing: reação espontânea + prova social, sem foco em desconto</div>
       </div>
+      <!-- Card de ação 6 -->
       <div class="region-card">
-        <h4>📌 Metas — Setembro/2026<span class="pop">Planejamento</span></h4>
-        <p>CPA meta: R$10,00 · Conversas: ~40-50 (mês completo, orçamento ainda em ajuste) · Investimento: até R$600,00</p>
-        <div class="strat">→ Revisão tática a cada 3 dias, conforme cadência padrão</div>
+        <h4>📊 Metas — Setembro 2026<span class="pop">Setembro</span></h4>
+        <p>CPL meta: R$10,00 · Leads esperados: 400+ (mantendo ritmo de agosto) · Invest: R$5.000</p>
+        <div class="strat">→ Revisão tática a cada 3 dias, relatório fechado em 01/10</div>
       </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Mês 1 foi positivo mesmo em amostra pequena: CPA abaixo da meta e um padrão de criativo já claro (depoimento). O ganho de setembro está mais em ajustar orçamento diário e reforçar o criativo vencedor do que em mudar estrutura de campanha. Ainda falta confirmar o destino final dos anúncios (WhatsApp dedicado x Direct do Instagram) e coletar do cliente a taxa de conversa → consulta agendada para medir resultado além do proxy do Meta.</p>
+      <p>Agosto foi o melhor mês do semestre em CPL do Meta Ads, puxado pela correção de geo-leak e por um teste de criativo que superou todas as expectativas. O ponto de atenção real do mês é o Google Ads (volume caiu pela metade) e a campanha "Empreendedor Conta Alta", que já consome verba há 2 meses sem retorno. Prioridade de setembro: escalar o que funciona, decidir o que vai ser pausado, e fechar a lacuna de dado comercial para medir o resultado de negócio, não só o custo de mídia.</p>
     </div>
   </div>
 
+
+  <!-- ══════════════════════════════════════════════════════════
+       [SLIDE EXTRA OPCIONAL — duplicar e customizar]
+       ══════════════════════════════════════════════════════════ -->
+  <!--
+  <div class="slide" id="sX">
+    <div class="slide-header">
+      <div class="slide-tag">0X · [Nome da seção]</div>
+      <div class="slide-title">[Título]</div>
+      <div class="slide-desc">[Descrição]</div>
+    </div>
+
+    Insira aqui o conteúdo usando os componentes do design system:
+    • .kpi-row / .kpi
+    • .tbl-wrap / .tbl
+    • .two-col
+    • .creative-grid / .creative-card
+    • .insight-box
+    • .funnel / .funnel-step
+    • .region-grid / .region-card
+    • .text-box
+    • .compare-row / .compare-col
+    • .hero-number + .hero-label
+    • .notas
+
+  </div>
+  -->
+
+</div><!-- /#slides -->
 
 
 <!-- ══════════════════════════════════════════════════════════
@@ -943,11 +1174,11 @@
   const slideLabels = [
     'Capa',
     'Visão Geral',
-    'Estrutura da Conta',
+    'Campanhas',
     'Criativos',
-    'Diagnóstico',
+    'Análise',
     'Funil',
-    'Contexto — Mês 1',
+    'Comparativo',
     'Instagram Orgânico',
     'Recomendações',
     // Adicione mais se criar slides extras
