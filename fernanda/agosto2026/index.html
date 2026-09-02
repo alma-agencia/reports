@@ -3,37 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!--
-  ╔══════════════════════════════════════════════════════════════════╗
-  ║  TEMPLATE DE RELATÓRIO — AGÊNCIA PROSPECT                        ║
-  ║                                                                  ║
-  ║  COMO USAR:                                                      ║
-  ║  1. Duplique este arquivo para a pasta do cliente                ║
-  ║     Ex: TRAFEGO_PAGO/clientes/[cliente]/Relatorio_[Mes][Ano].html ║
-  ║  2. Substitua os placeholders marcados com [COLCHETES]           ║
-  ║  3. Adicione/remova slides conforme a demanda                    ║
-  ║  4. Faça upload no subdomínio:                                   ║
-  ║     report.almaagenciadigital.com.br/[cliente]/[slug]            ║
-  ║     Ex: report.almaagenciadigital.com.br/tempo/maio2026          ║
-  ║                                                                  ║
-  ║  COMPONENTES DISPONÍVEIS (exemplificados nos slides):            ║
-  ║  • .kpi-row + .kpi       → Cards de métricas (4 colunas)        ║
-  ║  • .tbl + .tbl-wrap      → Tabela com hover laranja              ║
-  ║  • .badge.(green|red|amber|orange) → Badges de status           ║
-  ║  • .two-col              → Layout 2 colunas                      ║
-  ║  • .creative-grid + .creative-card → Grid de criativos          ║
-  ║  • .insight-box          → Caixa de insight com borda laranja    ║
-  ║  • .funnel               → Funil de conversão com barras         ║
-  ║  • .notas                → Rodapé escuro com notas do gestor     ║
-  ║  • .region-grid          → Grid 3 colunas para regiões/items     ║
-  ╚══════════════════════════════════════════════════════════════════╝
--->
-<title>Relatório Kero Mais Pães — Agosto 2026</title>
+<title>Relatório Dra. Fernanda Inoue — Agosto 2026</title>
 <style>
-  /* ══════════════════════════════════
-     DESIGN SYSTEM — NÃO MODIFICAR
-     Cores, tipografia e tokens visuais
-     ══════════════════════════════════ */
   :root {
     --orange: #FF6B00;
     --orange-light: #FF8C3A;
@@ -433,131 +404,118 @@
 
 <div id="slides">
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 0 — CAPA
-       Personalize: badge, título, subtítulo e 3 métricas-destaque
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 0 — CAPA -->
   <div class="slide active" id="s0">
     <div class="cover-wrap">
       <!-- Badge: tipo do relatório (ex: "Relatório Mensal · Tráfego Pago") -->
-      <div class="cover-badge">Relatório Mensal · Tráfego Pago</div>
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago (Meta Ads)</div>
       <!-- Título: nome do cliente ou da campanha -->
-      <div class="cover-title">Kero Mais Pães Congelados</div>
+      <div class="cover-title">Dra. Fernanda Inoue</div>
       <!-- Subtítulo: contexto breve -->
-      <div class="cover-sub">Performance Meta Ads · Agosto 2026 (vs. Julho 2026)</div>
+      <div class="cover-sub">Rinomodelação Definitiva · Performance Meta Ads · Agosto 2026 (vs Julho 2026)</div>
       <!-- 3 métricas de destaque da capa (invista, leads, CPA/ROAS) -->
       <div class="cover-meta">
         <div class="cover-meta-item">
-          <div class="val">R$2.851,75</div>
-          <div class="lbl">Investido (total conta)</div>
+          <div class="val">R$2.152</div>
+          <div class="lbl">Investido</div>
         </div>
         <div class="cover-divider"></div>
         <div class="cover-meta-item">
-          <div class="val">143</div>
-          <div class="lbl">Leads comerciais (Lead Ads)</div>
+          <div class="val">292</div>
+          <div class="lbl">Conversas Iniciadas (WhatsApp)</div>
         </div>
         <div class="cover-divider"></div>
         <div class="cover-meta-item">
-          <div class="val">R$9,97</div>
-          <div class="lbl">CPA médio (meta R$5–12)</div>
+          <div class="val">R$7,37</div>
+          <div class="lbl">Custo por Conversa</div>
         </div>
       </div>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 1 — VISÃO GERAL / KPIs
-       Use .kpi-row com 4 cards (ou kpi-row-2 / kpi-row-3)
-       Cada .kpi suporta: k-label, k-val, k-sub, k-delta (up/dn)
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 1 — VISÃO GERAL -->
   <div class="slide" id="s1">
     <div class="slide-header">
       <div class="slide-tag">01 · Visão Geral</div>
-      <div class="slide-title">Agosto 2026 — Conta Completa</div>
-      <div class="slide-desc">act_199283145730865 · Meta Ads · 01/08 a 31/08/2026, atribuição 7d clique / 1d view</div>
+      <div class="slide-title">Agosto fechou com mais eficiência e menos verba</div>
+      <div class="slide-desc">Meta Ads · 01–31/08/2026 · Janela de atribuição 7d clique / 1d view · Conversão = "Conversa iniciada" no WhatsApp (sem pixel instalado, ver nota abaixo)</div>
     </div>
 
     <!-- Linha 1 de KPIs — 4 colunas -->
     <div class="kpi-row">
       <div class="kpi">
-        <div class="k-label">Investimento (conta toda)</div>
-        <div class="k-val">R$2.851,75</div>
-        <div class="k-sub">Orçamento mensal: R$2.000,00</div>
-        <div class="k-delta dn">⚠ +90,5% vs julho · 42,6% acima do orçamento</div>
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$2.152,33</div>
+        <div class="k-sub">Orçamento mensal: R$2.500 (86% executado)</div>
+        <div class="k-delta up">↓ 28,6% vs julho (R$3.012,42)</div>
       </div>
       <div class="kpi">
-        <div class="k-label">Leads comerciais (Lead Ads)</div>
-        <div class="k-val">143</div>
-        <div class="k-sub">Rotas + Goiânia e região</div>
-        <div class="k-delta up">↑ 6,7% vs julho (134)</div>
+        <div class="k-label">Conversas Iniciadas</div>
+        <div class="k-val">292</div>
+        <div class="k-sub">Julho: 270</div>
+        <div class="k-delta up">↑ 8,1% vs mês anterior</div>
       </div>
       <div class="kpi">
-        <div class="k-label">CPA comercial</div>
-        <div class="k-val">R$9,97</div>
-        <div class="k-sub">Meta: R$5 – R$12</div>
-        <div class="k-delta dn">↑ 47% vs julho (R$6,78) — dentro da faixa, subindo</div>
+        <div class="k-label">Custo por Conversa</div>
+        <div class="k-val">R$7,37</div>
+        <div class="k-sub">Meta do gestor: R$8,00</div>
+        <div class="k-delta up">↓ 34,0% vs julho (R$11,16) · dentro da meta</div>
       </div>
       <div class="kpi">
-        <div class="k-label">CTR médio (conta)</div>
-        <div class="k-val">2,43%</div>
-        <div class="k-sub">Benchmark B2B: &gt;0,8%</div>
-        <div class="k-delta dn">↓ 0,37pp vs julho (2,80%)</div>
+        <div class="k-label">Cliques no link</div>
+        <div class="k-val">5.848</div>
+        <div class="k-sub">Julho: 4.846</div>
+        <div class="k-delta up">↑ 20,7% vs mês anterior</div>
       </div>
     </div>
 
-    <!-- Linha 2 de KPIs — opcional -->
     <div class="kpi-row">
       <div class="kpi">
         <div class="k-label">CPM</div>
-        <div class="k-val">R$11,93</div>
-        <div class="k-sub">Custo por mil impressões · -21,3% vs julho (R$15,15)</div>
+        <div class="k-val">R$13,30</div>
+        <div class="k-sub">Julho: R$16,57 (↓ 19,7%)</div>
       </div>
       <div class="kpi">
         <div class="k-label">CTR</div>
-        <div class="k-val">2,43%</div>
-        <div class="k-sub">Taxa de clique (conta toda)</div>
+        <div class="k-val">3,61%</div>
+        <div class="k-sub">Julho: 2,67% (↑ 0,95pp)</div>
       </div>
       <div class="kpi">
         <div class="k-label">Frequência</div>
-        <div class="k-val">1,88</div>
-        <div class="k-sub">Impressões / Alcance</div>
+        <div class="k-val">2,11</div>
+        <div class="k-sub">Julho: 2,79 — saturação sob controle</div>
       </div>
       <div class="kpi">
         <div class="k-label">Alcance</div>
-        <div class="k-val">127,3K</div>
-        <div class="k-sub">Pessoas únicas (conta toda)</div>
+        <div class="k-val">76,9K</div>
+        <div class="k-sub">Julho: 65,2K (↑ 17,8%)</div>
       </div>
     </div>
 
-    <!-- Notas do gestor (dark box — opcional em qualquer slide) -->
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Agosto teve 6 campanhas ativas na mesma conta: 2 de captação de leads (Rotas + Goiânia e região — o objetivo comercial com meta de CPA), 1 de posicionamento/IG, 1 de recrutamento (Vagas/RH) e 2 pontuais (evento de degustação + teste de tráfego para um parceiro/"Trigomar"). O investimento total (R$2.851,75) ficou 42,6% acima do orçamento mensal contratado de R$2.000 — o principal motivo foi a campanha de Vagas (R$955,38, ~33% do total). Ver alerta detalhado no slide de Recomendações.</p>
+      <p>Agosto entregou o melhor resultado da conta desde que a agência assumiu: 34% menos custo por conversa gastando 28,6% menos verba que julho. A frequência caindo de 2,79 para 2,11 mostra que o sinal de saturação de público identificado na auditoria de 16/07 foi controlado — CPM e CPC caíram junto. Importante: a conta segue sem Pixel Meta instalado (confirmado — zero pixels na conta), então "conversa iniciada" é medida direto no Meta (evento nativo de mensageria), não por conversão on-site. Não há CRM para saber quantas dessas 292 conversas viraram paciente fechado — ver pendência comercial no slide de recomendações.</p>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 2 — TABELA DE PERFORMANCE (campanhas / adsets)
-       Use .tbl-wrap + .tbl para tabelas com scroll horizontal
-       Badges: .badge.green / .red / .amber / .orange
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 2 — TABELA DE CAMPANHAS -->
   <div class="slide" id="s2">
     <div class="slide-header">
       <div class="slide-tag">02 · Performance por Campanha</div>
-      <div class="slide-title">Agosto 2026 — Todas as Campanhas</div>
-      <div class="slide-desc">Resultados = leads (Lead Ads) para campanhas comerciais; conversas iniciadas para Vagas (RH); alcance para campanhas de reconhecimento</div>
+      <div class="slide-title">7 campanhas com veiculação em agosto</div>
+      <div class="slide-desc">Resultado = conversa iniciada no WhatsApp · Status refere-se à situação atual da campanha</div>
     </div>
 
     <div class="tbl-wrap">
       <table class="tbl">
         <thead>
           <tr>
-            <th>Campanha / Conjunto</th>
+            <th>Campanha</th>
             <th class="num">Gasto</th>
-            <th class="num">Resultados</th>
-            <th class="num">CPA / CPL</th>
+            <th class="num">Conversas</th>
+            <th class="num">Custo/Conversa</th>
             <th class="num">CTR</th>
             <th class="num">CPM</th>
             <th>Status</th>
@@ -565,58 +523,67 @@
         </thead>
         <tbody>
           <tr>
-            <td>[CBO] [CADASTRO&gt;FORM] Goiânia e região</td>
-            <td class="num">R$640,98</td>
-            <td class="num">71 leads</td>
-            <td class="num">R$9,03</td>
-            <td class="num">2,78%</td>
-            <td class="num">R$19,47</td>
-            <td><span class="badge green">Comercial · dentro da meta</span></td>
+            <td>Testado-InteresseEspecífico-HighTicket — Cópia</td>
+            <td class="num">R$996,36</td>
+            <td class="num">179</td>
+            <td class="num">R$5,57</td>
+            <td class="num">3,45%</td>
+            <td class="num">R$16,60</td>
+            <td><span class="badge green">Ativa</span></td>
           </tr>
           <tr>
-            <td>[ABO] [CADASTRO&gt;FORM] Rotas</td>
-            <td class="num">R$784,85</td>
-            <td class="num">72 leads</td>
-            <td class="num">R$10,90</td>
-            <td class="num">2,38%</td>
-            <td class="num">R$16,56</td>
-            <td><span class="badge amber">Comercial · próximo do teto</span></td>
+            <td>Remarketing-90d-VideoView</td>
+            <td class="num">R$574,34</td>
+            <td class="num">75</td>
+            <td class="num">R$7,66</td>
+            <td class="num">1,41%</td>
+            <td class="num">R$17,35</td>
+            <td><span class="badge green">Ativa</span></td>
           </tr>
           <tr>
-            <td>[ABO] [MSG&gt;WPP RH] Vagas</td>
-            <td class="num">R$955,38</td>
-            <td class="num">1.121 conversas · 7 candidaturas</td>
-            <td class="num">R$0,85 /conversa</td>
-            <td class="num">4,18%</td>
-            <td class="num">R$14,29</td>
-            <td><span class="badge orange">RH · fora do funil comercial</span></td>
+            <td>Cold-HighTicket [Tráfego → Perfil IG]</td>
+            <td class="num">R$247,28</td>
+            <td class="num">6</td>
+            <td class="num">R$41,21</td>
+            <td class="num">5,50%</td>
+            <td class="num">R$4,67</td>
+            <td><span class="badge orange">Topo de funil</span></td>
           </tr>
           <tr>
-            <td>[ABO] [TRAFEGO&gt;PERFIL IG] Posicionamento</td>
-            <td class="num">R$349,07</td>
-            <td class="num">759 cliques · 10.586 engaj.</td>
+            <td>Testado-InteresseEspecífico-HighTicket (original)</td>
+            <td class="num">R$177,20</td>
+            <td class="num">14</td>
+            <td class="num">R$12,66</td>
+            <td class="num">3,57%</td>
+            <td class="num">R$25,51</td>
+            <td><span class="badge red">Pausada (20/08)</span></td>
+          </tr>
+          <tr>
+            <td>TesteCriativo-Barbie-HighTicket</td>
+            <td class="num">R$90,10</td>
+            <td class="num">9</td>
+            <td class="num">R$10,01</td>
+            <td class="num">1,94%</td>
+            <td class="num">R$17,00</td>
+            <td><span class="badge amber">Aprendizado</span></td>
+          </tr>
+          <tr>
+            <td>TesteCriativo-Querido-HighTicket</td>
+            <td class="num">R$55,34</td>
+            <td class="num">9</td>
+            <td class="num">R$6,15</td>
+            <td class="num">1,60%</td>
+            <td class="num">R$18,05</td>
+            <td><span class="badge amber">Aprendizado</span></td>
+          </tr>
+          <tr>
+            <td>TesteCriativo-Amiga-HighTicket</td>
+            <td class="num">R$11,71</td>
+            <td class="num">0</td>
             <td class="num">—</td>
-            <td class="num">2,16%</td>
-            <td class="num">R$9,92</td>
-            <td><span class="badge amber">Branding / awareness</span></td>
-          </tr>
-          <tr>
-            <td>[CBO] [RECONHECIMENTO] Degustação Pró Brazillian</td>
-            <td class="num">R$62,14</td>
-            <td class="num">48.386 alcance</td>
-            <td class="num">—</td>
-            <td class="num">0,18%</td>
-            <td class="num">R$1,23</td>
-            <td><span class="badge red">Evento pontual (1 dia)</span></td>
-          </tr>
-          <tr>
-            <td>[CBO] [TRAFEGO&gt;PERFIL IG] Trigomar - St. Bela Vista</td>
-            <td class="num">R$59,33</td>
-            <td class="num">113 cliques</td>
-            <td class="num">—</td>
-            <td class="num">1,81%</td>
-            <td class="num">R$9,48</td>
-            <td><span class="badge amber">Escopo a confirmar</span></td>
+            <td class="num">1,05%</td>
+            <td class="num">R$24,55</td>
+            <td><span class="badge amber">Aprendizado</span></td>
           </tr>
         </tbody>
       </table>
@@ -624,240 +591,217 @@
 
     <div class="notas" style="margin-top: 18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>As duas campanhas comerciais (Goiânia e região + Rotas) somaram R$1.425,83 e 143 leads, CPA blended R$9,97 — dentro da meta de R$5–12, mas subindo em relação a julho. Rotas é a que mais preocupa: dentro dela, o conjunto Rota Rio Verde fechou o mês com CPA de R$12,26, acima do teto (detalhe no slide de Recomendações). Vagas (RH) segue fora do funil comercial — meça por conversas/candidaturas, não por CPA de lead. A campanha "Trigomar - St. Bela Vista" não segue o padrão de nomenclatura Kero+ e parece ser teste para um terceiro/parceiro — confirmar com o gestor se deve continuar rodando nesta conta.</p>
+      <p>A campanha "Testado-InteresseEspecífico-HighTicket — Cópia" segue como motor de volume e eficiência (46% do investimento do mês, melhor custo/conversa entre as campanhas de escala). A original foi pausada em 20/08 para abrir espaço de orçamento para os 3 testes de criativo novos (Amiga/Barbie/Querido). Esses 3 testes tiveram volume baixo no mês — nasceram pausados por guardrail de segurança e dependeram de ativação manual do gestor (ver registro de 20/08), o que limitou os dias reais de veiculação. "Amiga" com R$11,71 investidos e 0 conversas ainda não tem volume para conclusão — não pausar por regra de ouro (mínimo R$10 gasto, mas abaixo do necessário para decisão estatística). A campanha "Cold-HighTicket" tem objetivo de topo de funil (tráfego para o perfil do Instagram, não mensagem direta) — CPA alto é esperado e não deve ser comparado com as campanhas de conversa.</p>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 3 — TOP CRIATIVOS
-       Use .creative-grid + .creative-card (máx 5 por linha)
-       .d2-bar-fill: ajuste o width% para a taxa de conversão
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 3 — TOP CRIATIVOS -->
   <div class="slide" id="s3">
     <div class="slide-header">
       <div class="slide-tag">03 · Criativos</div>
       <div class="slide-title">Top Criativos em Performance</div>
-      <div class="slide-desc">Anúncios das campanhas comerciais (Lead Ads), ranqueados por volume de leads gerados em agosto</div>
+      <div class="slide-desc">Classificação por investimento · Barra = % de cliques que viraram conversa (sem thumbnail — mídia não anexada a este relatório)</div>
     </div>
 
     <div class="creative-grid">
       <div class="creative-card">
-        <div class="rank"># 01 · 67 leads</div>
+        <div class="rank"># 01</div>
         <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/748963336_1361315629283042_5078386240428131945_n.jpg?_nc_cat=105&amp;ccb=1-7&amp;_nc_ohc=nnuefMP93OcQ7kNvwE3-oW7&amp;_nc_oc=Adot35KkGPxfBXOe3uA_TUyXeDiSFACqvFR7iRCg2y-_huQvANpkbyU2Lr1zC1zMNwk&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=zg8yoowdi-c4HN-6v9ixNg&amp;_nc_tpa=Q5bMBQJNb66vPwtLiV_JPgnes7MoQqUsOJ-gDZ2XAknr3_uBsJ9akvlfjJuCAAHz63komwgnA2y6LnCifw&amp;stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&amp;ur=d2b52d&amp;_nc_sid=58080a&amp;oh=00_AQIDZo688Hv7jA0OHgzdSon0tVE1e2k7scFJsisDuedShA&amp;oe=6A9CD5C2" alt="Criativo 01"
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/749329865_1331964262470478_1131818186122340238_n.jpg?_nc_cat=110&ccb=1-7&_nc_ohc=_fVCPvU4yHkQ7kNvwFT7OQK&_nc_oc=Ado0Y9vzUDXV9IHpBoePFMg0AvlLBERwuxz_lMAam3Gklq_QG6f11Z9IcYJXVlHKVf4&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=WdgmiYV12V0Ng2kdw8GmWg&_nc_tpa=Q5bMBQItRq_o97fmmKHSsndNkgp9R14ax_N7YX1bh6IzDTEbSabgBza2S6Yl0GGkswuHTX1D2a4j3cUkNw&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=a7ce7f&_nc_sid=58080a&oh=00_AQJVlwNtSRG1SCJ0KoWSXyieK0nebR1Wknf2GrOKbupHFA&oe=6A9CF69B" alt="Video_Princesa"
                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
           <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
           <div class="thumb-badge">Vídeo</div>
         </div>
-        <div class="name">"[12/6] VD k+ wpp" — conjunto Goiânia e região</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">2,82%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$8,44</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$565,70</span></div>
+        <div class="name">Video_Princesa — INT_Específico IG (2 anúncios ativos)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">3,52%</span></div>
+        <div class="metric"><span class="ml">Custo/Conversa</span><span class="mv">R$5,87</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$1.109,24</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:46%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 02</div>
+        <div class="creative-thumb">
+          <img src="https://external-bos5-1.xx.fbcdn.net/emg1/v/t13/7775648921830326745?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJcQZ_QRYXTqbv7Lw5tde1NRN8qElO7_16HyFxi9Nd4-OoBk9ie7ODjk2fvZGCLhYm8K7UY_kpD1KwBg7Jni67976iQbMGfL6Goo37Fc0GQLRLM6cePyEnk0jcFMqaDfT_-jyoe_KDYqg01iEiCtNrU&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=WdgmiYV12V0Ng2kdw8GmWg&_nc_oc=AdphaZiTWASW0Ichcc7kMsrZ42KxksNqBinyEKUvonKO7tqDoC9R0KFE0oBFSlQleMk&ccb=13-1&oh=06_Q3_CAW2MSAK8zboaoiLvjo2ex0Fv9izp0eh9nR0ZfjPZJ_or&oe=6A98FE1C&_nc_sid=58080a" alt="post 14/07 carrossel"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Carrossel</div>
+        </div>
+        <div class="name">"post 14/07" — RMK_PúblicosQuentes IG</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,48%</span></div>
+        <div class="metric"><span class="ml">Custo/Conversa</span><span class="mv">R$7,70</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$231,12</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:78%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 03</div>
+        <div class="creative-thumb">
+          <img src="https://external-bos5-1.xx.fbcdn.net/emg1/v/t13/17683023413188931450?url=https%3A%2F%2Fwww.facebook.com%2Fads%2Fimage%2F%3Fd%3DAQJW6JtHZFipmxkzh5jMKOc_asq5c_YmivS-rqgQD5njOd0u_3A3jdWTLlDfRIZlsbPaJPPwagCuDVq8X0Ab3SdsJ8Wml0vLYkfy1gDW4486p1F08LKssTRcP8QDpynjTpz9E4AZm3LRxvZQqVp9-hON&fb_obo=1&utld=facebook.com&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&edm=AOgd6ZUEAAAA&_nc_gid=WdgmiYV12V0Ng2kdw8GmWg&_nc_oc=AdoJ2PCofb5KxnSNVfkhGR4twV8icRUnU0EvUZFZjyD644YzafMowCiJuzUQdfIYXPc&ccb=13-1&oh=06_Q3_CAWA-8ZhsXmwPHI8WlMoBlTNyAPtATsY0EKS3Jjq8aNGV&oe=6A98F44B&_nc_sid=58080a" alt="Carr_RinoDefinitiva_V1"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Carrossel</div>
+        </div>
+        <div class="name">Carr_RinoDefinitiva_V1 — RMK_PúblicosQuentes IG</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,14%</span></div>
+        <div class="metric"><span class="ml">Custo/Conversa</span><span class="mv">R$8,90</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$213,54</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:97%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 04</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/782208001_2366972920505782_2963690204496573448_n.jpg?_nc_cat=111&ccb=1-7&_nc_ohc=yXh32Ugzd9IQ7kNvwEMuwVV&_nc_oc=Adqf2BNFA4ihfAPUuuA1tD6owHOGmbeaFaWObb3Pqu-OhR_OkysSN5A8ALLl3sQFJDI&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=WdgmiYV12V0Ng2kdw8GmWg&_nc_tpa=Q5bMBQJLazN92i8t4YiZoDXUamAifiB745ytDb1CTJHgTOxflDXkUpHS0woJNHRQkiUrVlJW7H-5G9XhDw&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_AQLc0aq3zrODqzXS-nLSEUGgVw9EkKjTTc493QJbzP3pGA&oe=6A9CCC4F" alt="Video_Barbie_V1"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">Video_Barbie_V1 (teste novo) — INT_Específico IG</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,94%</span></div>
+        <div class="metric"><span class="ml">Custo/Conversa</span><span class="mv">R$10,01</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$90,10</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:48%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 05</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/776061501_2289863465095397_1936218055869586357_n.jpg?_nc_cat=108&ccb=1-7&_nc_ohc=NWrHotwyD4EQ7kNvwF2qvZH&_nc_oc=Adpi55PqOH7gx8HEaan9T12f8sV2eev5UVDSHzMyKfYhQB5AwB4FLvh3K38JGp1nQjE&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=WdgmiYV12V0Ng2kdw8GmWg&_nc_tpa=Q5bMBQJVNFK7IWL8AWn1bFOvnYzQFimXWHu4slRgpnPy-AqGqaYL-m1o_qXaZ0mr7fxVxghdStf4akvrLw&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=d2b52d&_nc_sid=58080a&oh=00_AQJ2C3K9_exLPo1A1ajeZF4tvhmZqJCqcq-V9R1EudFUYQ&oe=6A9CD628" alt="Video_Querido_V1"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">Video_Querido_V1 (teste novo) — INT_Específico IG</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,60%</span></div>
+        <div class="metric"><span class="ml">Custo/Conversa</span><span class="mv">R$6,15</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$55,34</span></div>
         <div class="d2-bar"><div class="d2-bar-fill" style="width:100%"></div></div>
-      </div>
-      <div class="creative-card">
-        <div class="rank"># 02 · 37 leads</div>
-        <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/748963336_1361315629283042_5078386240428131945_n.jpg?_nc_cat=105&amp;ccb=1-7&amp;_nc_ohc=nnuefMP93OcQ7kNvwE3-oW7&amp;_nc_oc=Adot35KkGPxfBXOe3uA_TUyXeDiSFACqvFR7iRCg2y-_huQvANpkbyU2Lr1zC1zMNwk&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=zg8yoowdi-c4HN-6v9ixNg&amp;_nc_tpa=Q5bMBQJNb66vPwtLiV_JPgnes7MoQqUsOJ-gDZ2XAknr3_uBsJ9akvlfjJuCAAHz63komwgnA2y6LnCifw&amp;stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&amp;ur=d2b52d&amp;_nc_sid=58080a&amp;oh=00_AQIDZo688Hv7jA0OHgzdSon0tVE1e2k7scFJsisDuedShA&amp;oe=6A9CD5C2" alt="Criativo 02"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
-          <div class="thumb-badge">Vídeo</div>
-        </div>
-        <div class="name">Reel_KeroMais_Form_RotaGoias_V1</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">2,56%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$9,58</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$354,40</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:55%"></div></div>
-      </div>
-      <div class="creative-card">
-        <div class="rank"># 03 · 28 leads</div>
-        <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/748963336_1361315629283042_5078386240428131945_n.jpg?_nc_cat=105&amp;ccb=1-7&amp;_nc_ohc=nnuefMP93OcQ7kNvwE3-oW7&amp;_nc_oc=Adot35KkGPxfBXOe3uA_TUyXeDiSFACqvFR7iRCg2y-_huQvANpkbyU2Lr1zC1zMNwk&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=zg8yoowdi-c4HN-6v9ixNg&amp;_nc_tpa=Q5bMBQJNb66vPwtLiV_JPgnes7MoQqUsOJ-gDZ2XAknr3_uBsJ9akvlfjJuCAAHz63komwgnA2y6LnCifw&amp;stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&amp;ur=d2b52d&amp;_nc_sid=58080a&amp;oh=00_AQIDZo688Hv7jA0OHgzdSon0tVE1e2k7scFJsisDuedShA&amp;oe=6A9CD5C2" alt="Criativo 03"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
-          <div class="thumb-badge">Vídeo</div>
-        </div>
-        <div class="name">Reel_KeroMais_Form_RotaRioVerde_V1</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">2,37%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$11,16</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$312,34</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:42%"></div></div>
-      </div>
-      <div class="creative-card">
-        <div class="rank"># 04 · 4 leads</div>
-        <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/786069715_953940134393350_3566909807777907785_n.jpg?_nc_cat=109&amp;ccb=1-7&amp;_nc_ohc=H2wFvOq7JQQQ7kNvwFXtpC6&amp;_nc_oc=AdrKAh_ymDUkqIVN_Z4wRp4CZokHFW3SvP3YblskSA3b3kQiXosIVz2Tp9CEclIWC5M&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=zg8yoowdi-c4HN-6v9ixNg&amp;_nc_tpa=Q5bMBQKHamTX7a70VnyYWexRs_xTkMLfMySMM3chYH1jzQxs0qZvPo8kVLxS8VAiA3LeOZeBGg4BfxcCGw&amp;stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&amp;ur=d2b52d&amp;_nc_sid=58080a&amp;oh=00_AQIqAKJz5P9_X9UmjBrwVE_jyw2q3GqoY_9iZW1Qp915GQ&amp;oe=6A9CDFC2" alt="Criativo 04"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
-          <div class="thumb-badge">Vídeo</div>
-        </div>
-        <div class="name">Reel_QualidadeCamaraFria_V1 (teste, desde 10/08)</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">2,42%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$18,82</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$75,28</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:8%"></div></div>
-      </div>
-      <div class="creative-card">
-        <div class="rank"># 05 · 4 leads</div>
-        <div class="creative-thumb">
-          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/786121620_1536015087827736_7751696959448720063_n.jpg?_nc_cat=102&amp;ccb=1-7&amp;_nc_ohc=J6dhctjopGkQ7kNvwGyq9cM&amp;_nc_oc=AdqSmp8iAFJ9-v7hlAuDnMC4DRKMe9xOpI3MVs609llm5iosh04-OVRIQJcgR2SWE28&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=zg8yoowdi-c4HN-6v9ixNg&amp;_nc_tpa=Q5bMBQJUeZqRL-5kXaMlpk-Snov_pTICQljGUyb6Ly6x2jzGZf1BIlYbe_gR1tDzCGSpQ-CwQkZwT2Cm-g&amp;stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&amp;ur=d2b52d&amp;_nc_sid=58080a&amp;oh=00_AQJ6gsOoXY8XuJbGOwTNSuHIV35hnOPywKkHEc1Vij1NRQ&amp;oe=6A9CE1FD" alt="Criativo 05"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
-          <div class="thumb-badge">Vídeo</div>
-        </div>
-        <div class="name">Reel_Qualidade_V1 - 1 (teste, Rota Rio Verde)</div>
-        <div class="metric"><span class="ml">CTR</span><span class="mv">1,86%</span></div>
-        <div class="metric"><span class="ml">CPA</span><span class="mv">R$20,01</span></div>
-        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$80,04</span></div>
-        <div class="d2-bar"><div class="d2-bar-fill" style="width:8%"></div></div>
       </div>
     </div>
 
     <div class="notas" style="margin-top: 18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>O vídeo "[12/6] VD k+ wpp" segue como o criativo mais consistente do cliente — já é o líder em julho e agosto, sempre dentro da faixa de meta de CPA. Os 3 Reels de teste sobre "qualidade do congelado" (objeção da câmara fria), subidos em 10/08 para atacar a objeção "produto congelado tem qualidade?", ainda têm volume baixo (3-4 leads cada) e CPA acima da meta — período de teste de só 3 semanas, cedo para decidir. Sem thumbnails disponíveis nesta rodada (arquivos de vídeo ficam em clientes/kero-mais-paes/criativos/, sem frame extraído).</p>
+      <p>Vídeo "Princesa" segue como o criativo mais escalado e ainda com o melhor custo absoluto por conversa (R$5,87) — validado desde julho, sem sinais de fadiga apesar do volume. Os carrosséis de remarketing ("post 14/07" e "Carr_RinoDefinitiva_V1") têm CTR mais baixo (esperado — público já quente, menos motivo pra clicar de novo) mas ótima taxa de conversa por clique, o que confirma o remarketing como etapa de fechamento, não de captação. Dos 3 vídeos de teste novos, "Querido" teve a melhor taxa de conversa por clique da conta (mesmo com volume baixo) — candidato a receber mais orçamento em setembro assim que passar de ~R$50–100 investidos para confirmar estatisticamente. Nenhuma thumbnail foi anexada a este relatório — mídia física dos criativos vive em `clientes/dra-fernanda-inoue/criativos/`.</p>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 4 — INSIGHTS / ANÁLISE (layout 2 colunas)
-       Use .two-col para dividir análise textual e visual
-       .insight-box suporta modificadores: .good / .bad / .warn
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 4 — DIAGNÓSTICO -->
   <div class="slide" id="s4">
     <div class="slide-header">
-      <div class="slide-tag">04 · Análise</div>
-      <div class="slide-title">O Que Explica os Números de Agosto</div>
-      <div class="slide-desc">Diagnóstico das campanhas comerciais (Rotas + Goiânia e região)</div>
+      <div class="slide-tag">04 · Diagnóstico</div>
+      <div class="slide-title">O que explica o resultado de agosto</div>
+      <div class="slide-desc">Leitura cruzada de campanha, criativo e conta</div>
     </div>
 
     <div class="two-col">
-      <!-- Coluna esquerda: o que funcionou -->
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funcionou</div>
         <div class="insight-box good">
-          <h4>CPM caiu 21% (R$15,15 → R$11,93)</h4>
-          <p>Com o aumento de escala, o leilão ficou mais eficiente — mais impressões pelo mesmo custo. Isso ajudou a segurar o CPA, que subiu bem menos do que o aumento de investimento (+47% de CPA vs. +57% de gasto nas campanhas comerciais).</p>
+          <h4>CPA de conversa 34% menor, gastando 29% menos</h4>
+          <p>R$7,37/conversa (meta: R$8,00) vs R$11,16 em julho — com R$860 a menos investidos e ainda assim 22 conversas a mais. Eficiência real, não só corte de verba.</p>
         </div>
         <div class="insight-box good">
-          <h4>Volume de leads comerciais cresceu (134 → 143, +6,7%)</h4>
-          <p>Mesmo com o CPA subindo, o conjunto Goiânia e região manteve o custo estável (R$8,45 → R$9,03), dentro da meta — é o pilar mais previsível da conta hoje.</p>
+          <h4>Saturação de público sob controle</h4>
+          <p>Frequência caiu de 2,79 para 2,11 (benchmark do nicho: 2–3, alerta acima de 4). CPM caiu 20% e CTR subiu 35% no mesmo período — o público está "descansando" em vez de saturar.</p>
         </div>
         <div class="insight-box good">
-          <h4>Criativo "[12/6] VD k+ wpp" segue validado</h4>
-          <p>Já é o melhor ativo por 2 meses seguidos — 67 leads a R$8,44 em agosto. Vale replicar a fórmula (depoimento/fábrica) em novas rotas ainda não testadas.</p>
+          <h4>Vídeo "Princesa" continua sendo o motor</h4>
+          <p>R$1.109 investidos, R$5,87/conversa, sem sinal de fadiga mesmo após semanas escalado. Próximo passo: manter como base e usar os 20% de escala permitidos por ciclo se a tendência seguir estável em setembro.</p>
         </div>
       </div>
 
-      <!-- Coluna direita: o que ajustar -->
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que ajustar</div>
-        <div class="insight-box bad">
-          <h4>Rota Rio Verde: CPA mais que dobrou (R$5,00 → R$12,26)</h4>
-          <p>Ficou acima do teto da meta (R$12). CTR caiu de 2,96% para 2,30% e a conversão clique→lead caiu de 9,5% para 5,8% — sinais de saturação de público ou fadiga de criativo. Priorizar criativo novo e revisão de público em setembro.</p>
-        </div>
-        <div class="insight-box bad">
-          <h4>Investimento total 42,6% acima do orçamento (R$2.851,75 vs. R$2.000)</h4>
-          <p>A campanha de Vagas (RH) consumiu R$955,38 (33% do total). Não está claro se há verba própria autorizada para recrutamento — precisa de confirmação do gestor antes de continuar no ritmo atual.</p>
-        </div>
         <div class="insight-box warn">
-          <h4>Criativos de teste "Qualidade / Câmara Fria" ainda abaixo da meta</h4>
-          <p>CPA de R$18,82–R$20,01 com apenas 3-4 leads cada — volume baixo demais para decidir (rodando há só 3 semanas). Monitorar até 15/09 antes de manter ou pausar.</p>
+          <h4>Orçamento subexecutado (86%)</h4>
+          <p>R$347,67 do orçamento mensal não foram investidos. Causa: os 3 testes de criativo novos nasceram pausados por guardrail e dependeram de ativação manual do gestor (20/08), perdendo dias de veiculação no mês.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Sem pixel instalado — mensuração por proxy</h4>
+          <p>Confirmado via API: zero pixels ativos na conta. "Conversa iniciada" é evento nativo do Meta (mensageria), não conversão on-site — e sem CRM não sabemos quantas dessas 292 conversas fecharam paciente. Janela de atribuição pode estar subestimando ou superestimando o resultado real.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Teste de criativo ainda sem vencedor estatístico</h4>
+          <p>Amiga (R$11,71/0 conversas), Barbie (R$90,10/9) e Querido (R$55,34/9) têm volume baixo demais para decisão. "Querido" tem o sinal mais promissor (melhor taxa de conversa por clique da conta) — priorizar orçamento nele em setembro.</p>
         </div>
       </div>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 5 — FUNIL DE CONVERSÃO
-       Use .funnel + .funnel-step
-       .funnel-bar: ajuste background e width% para cada etapa
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 5 — FUNIL -->
   <div class="slide" id="s5">
     <div class="slide-header">
       <div class="slide-tag">05 · Funil</div>
-      <div class="slide-title">Do Impacto ao Lead — Campanhas Comerciais</div>
-      <div class="slide-desc">Rotas + Goiânia e região, agosto/2026 — sem pixel instalado, funil vai até o lead (Meta Form)</div>
+      <div class="slide-title">Do clique à conversa no WhatsApp</div>
+      <div class="slide-desc">Barras em escala visual (não-linear) para legibilidade — percentual real de cada etapa no rótulo à direita</div>
     </div>
 
     <div class="two-col">
       <div>
-        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Funil de Captação (Lead Ads)</div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Funil de Mensageria — Agosto/2026</div>
         <div class="funnel">
-          <!-- Etapa 1: 100% -->
           <div class="funnel-step">
-            <div class="funnel-label">Impressões</div>
+            <div class="funnel-label">Cliques no link</div>
             <div class="funnel-bar-wrap">
               <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
-                <span style="font-size:11px;font-weight:700;color:white">80.313</span>
+                <span style="font-size:11px;font-weight:700;color:white">5.848</span>
               </div>
             </div>
             <div class="funnel-val">100%</div>
           </div>
-          <!-- Etapa 2 -->
           <div class="funnel-step">
-            <div class="funnel-label">Cliques no link</div>
+            <div class="funnel-label">Conexão de mensagem</div>
             <div class="funnel-bar-wrap">
-              <div class="funnel-bar" style="width:11%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
-                <span style="font-size:11px;font-weight:700;color:white">870</span>
+              <div class="funnel-bar" style="width:28%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">460</span>
               </div>
             </div>
-            <div class="funnel-val">1,1%</div>
+            <div class="funnel-val">7,9%</div>
           </div>
-          <!-- Etapa 3 (conversão final) -->
           <div class="funnel-step">
-            <div class="funnel-label">Leads (Meta Form)</div>
+            <div class="funnel-label">Conversa iniciada</div>
             <div class="funnel-bar-wrap">
-              <div class="funnel-bar" style="width:2%;background:#16a34a;">
-                <span style="font-size:11px;font-weight:700;color:white">143</span>
+              <div class="funnel-bar" style="width:20%;background:#16a34a;">
+                <span style="font-size:11px;font-weight:700;color:white">292</span>
               </div>
             </div>
-            <div class="funnel-val">0,18%</div>
+            <div class="funnel-val">5,0%</div>
           </div>
         </div>
       </div>
 
-      <!-- Coluna direita: análise do gargalo -->
       <div>
         <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Análise do Gargalo</div>
         <div class="insight-box bad">
-          <h4>Clique → Lead: 16,4% de conversão</h4>
-          <p>Dos 870 cliques no link, 143 viraram lead (16,4%) — taxa saudável para formulário nativo, mas abaixo de julho (134 leads / 699 cliques = 19,2%). A queda está concentrada na Rota Rio Verde, onde a conversão clique→lead caiu de 9,5% para 5,8% (ver slide 04).</p>
+          <h4>Clique → Conexão de mensagem é a maior queda</h4>
+          <p>Só 7,9% de quem clica chega a abrir uma conversa no WhatsApp. Sem landing page, o clique já leva direto ao app — a queda reflete decisão do usuário na hora H (abrir o WhatsApp e mandar a 1ª mensagem), não um problema técnico de funil.</p>
         </div>
         <div class="insight-box">
-          <h4>Fim de funil sem visibilidade</h4>
-          <p>A conta não tem pixel instalado — o rastreamento para depois do lead é manual (WhatsApp comercial). Não há como medir aqui quantos dos 143 leads viraram contato respondido, orçamento fechado ou venda.</p>
+          <h4>Conexão → Conversa iniciada é saudável</h4>
+          <p>63,5% das conexões de mensagem viram conversa iniciada (292 de 460) — taxa de resposta da equipe/roteiro de abertura está funcionando bem.</p>
         </div>
         <div class="insight-box good">
-          <h4>Aguardando dado comercial do gestor</h4>
-          <p>Taxa de fechamento (lead → cliente) e ticket médio por pedido não estão disponíveis nas tools de mídia — pendência para o gestor informar, para calcular CAC real e ROI da verba comercial.</p>
+          <h4>Sem visibilidade do próximo passo do funil</h4>
+          <p>Não há dado sobre quantas dessas 292 conversas viraram agendamento ou paciente fechado (sem CRM) — pendência comercial registrada no slide de recomendações.</p>
         </div>
       </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>O funil de mídia está saudável (16,4% de clique para lead). O gargalo real do mês está concentrado na Rota Rio Verde, não no funil como um todo — ver ação recomendada no próximo slide. Para enxergar o funil completo (lead → venda), falta o retorno comercial sobre os 143 leads de agosto.</p>
+      <p>O gargalo real do funil de mídia está entre clique e abertura de conversa (7,9%), esperado nesse formato sem LP. O funil interno (conexão → conversa, 63,5%) está saudável. O ponto cego é depois do funil de mídia: sem CRM ou planilha de acompanhamento, a agência não sabe quantas das 292 conversas de agosto avançaram para agendamento ou fechamento — essa é a peça que falta para calcular o CPA real por paciente (ticket médio R$10.000).</p>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 6 — COMPARATIVO (antes vs depois / mês vs mês)
-       Use .compare-row + .compare-col.before / .compare-col.after
-       Ou use a tabela comparativa abaixo
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 6 — JUL VS AGO -->
   <div class="slide" id="s6">
     <div class="slide-header">
       <div class="slide-tag">06 · Comparativo</div>
-      <div class="slide-title">Julho vs Agosto 2026 — Campanhas Comerciais</div>
-      <div class="slide-desc">Rotas + Goiânia e região (Lead Ads) — o objetivo com meta de CPA</div>
+      <div class="slide-title">Julho vs Agosto — Conta Inteira</div>
+      <div class="slide-desc">Todas as métricas em nível de conta (Meta Insights, account level)</div>
     </div>
 
-    <!-- Tabela comparativa -->
     <div class="tbl-wrap" style="margin-bottom:20px;">
       <table class="tbl">
         <thead>
@@ -871,79 +815,95 @@
         </thead>
         <tbody>
           <tr>
-            <td>Investimento (comercial)</td>
-            <td class="num">R$907,98</td>
-            <td class="num">R$1.425,83</td>
-            <td class="num">+57,0%</td>
-            <td><span class="badge orange">↑ Cresceu</span></td>
+            <td>Investimento</td>
+            <td class="num">R$3.012,42</td>
+            <td class="num">R$2.152,33</td>
+            <td class="num">-28,6%</td>
+            <td><span class="badge green">↓ Menos verba</span></td>
           </tr>
           <tr>
-            <td>Leads</td>
-            <td class="num">134</td>
-            <td class="num">143</td>
-            <td class="num">+6,7%</td>
+            <td>Conversas iniciadas</td>
+            <td class="num">270</td>
+            <td class="num">292</td>
+            <td class="num">+8,1%</td>
             <td><span class="badge green">↑ Melhorou</span></td>
           </tr>
           <tr>
-            <td>CPA</td>
-            <td class="num">R$6,78</td>
-            <td class="num">R$9,97</td>
-            <td class="num">+47,1%</td>
-            <td><span class="badge amber">Dentro da meta, subindo</span></td>
+            <td>Custo por conversa</td>
+            <td class="num">R$11,16</td>
+            <td class="num">R$7,37</td>
+            <td class="num">-34,0%</td>
+            <td><span class="badge green">↓ Reduziu</span></td>
           </tr>
           <tr>
             <td>CTR</td>
-            <td class="num">3,00%</td>
-            <td class="num">2,55%</td>
-            <td class="num">-0,45pp</td>
-            <td><span class="badge amber">Atenção</span></td>
+            <td class="num">2,67%</td>
+            <td class="num">3,61%</td>
+            <td class="num">+0,95pp</td>
+            <td><span class="badge green">↑ Melhorou</span></td>
           </tr>
           <tr>
             <td>CPM</td>
-            <td class="num">R$15,93</td>
-            <td class="num">R$17,76</td>
-            <td class="num">+11,5%</td>
-            <td><span class="badge amber">Atenção</span></td>
+            <td class="num">R$16,57</td>
+            <td class="num">R$13,30</td>
+            <td class="num">-19,7%</td>
+            <td><span class="badge green">↓ Reduziu</span></td>
+          </tr>
+          <tr>
+            <td>CPC</td>
+            <td class="num">R$0,62</td>
+            <td class="num">R$0,37</td>
+            <td class="num">-40,8%</td>
+            <td><span class="badge green">↓ Reduziu</span></td>
+          </tr>
+          <tr>
+            <td>Frequência</td>
+            <td class="num">2,79</td>
+            <td class="num">2,11</td>
+            <td class="num">-24,4%</td>
+            <td><span class="badge green">↓ Menos saturação</span></td>
+          </tr>
+          <tr>
+            <td>Alcance</td>
+            <td class="num">65.244</td>
+            <td class="num">76.874</td>
+            <td class="num">+17,8%</td>
+            <td><span class="badge green">↑ Cresceu</span></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- KPIs de destaque do comparativo -->
     <div class="kpi-row">
       <div class="kpi">
-        <div class="k-label">Variação de Custo por Lead</div>
-        <div class="k-val">+R$3,19</div>
-        <div class="k-sub">R$6,78 → R$9,97</div>
-        <div class="k-delta dn">↑ 47,1% mais caro que julho</div>
+        <div class="k-label">Economia por Conversa</div>
+        <div class="k-val">R$3,79</div>
+        <div class="k-sub">R$11,16 → R$7,37</div>
+        <div class="k-delta up">↓ 34,0% de redução de custo</div>
       </div>
       <div class="kpi">
         <div class="k-label">Crescimento de Volume</div>
-        <div class="k-val">+6,7%</div>
-        <div class="k-sub">mais leads (134 → 143)</div>
-        <div class="k-delta up">↑ ganho de volume, mas menor que o ganho de gasto</div>
+        <div class="k-val">+8,1%</div>
+        <div class="k-sub">mais conversas, com menos verba</div>
+        <div class="k-delta up">↑ eficiência de escala</div>
       </div>
       <div class="kpi">
-        <div class="k-label">Alavancagem de gasto</div>
-        <div class="k-val">57%</div>
-        <div class="k-sub">aumento de investimento comercial</div>
-        <div class="k-delta dn">retorno marginal em queda (8,5x mais gasto do que leads)</div>
+        <div class="k-label">Orçamento não executado</div>
+        <div class="k-val">R$347,67</div>
+        <div class="k-sub">86% do mensal de R$2.500 usado</div>
+        <div class="k-delta dn">↓ ritmo de teste perdido em ago</div>
       </div>
       <div class="kpi">
-        <div class="k-label">Rota mais afetada</div>
-        <div class="k-val">Rio Verde</div>
-        <div class="k-sub">CPA R$5,00 → R$12,26</div>
-        <div class="k-delta dn">acima do teto da meta (R$12)</div>
+        <div class="k-label">Meta de CPA do gestor</div>
+        <div class="k-val">R$7,37</div>
+        <div class="k-sub">Meta: R$8,00</div>
+        <div class="k-delta up">Dentro da meta pela 1ª vez desde jul</div>
       </div>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════════════════════════
-       SLIDE 7 — RECOMENDAÇÕES / PRÓXIMOS PASSOS
-       Use .region-grid para cards de ação (3 colunas)
-       Ou .insight-box para listagem de recomendações
-       ══════════════════════════════════════════════════════════ -->
+  <!-- SLIDE 7 — RECOMENDAÇÕES -->
   <!-- ══════════════════════════════════════════════════════════
        SLIDE 06B — INSTAGRAM ORGÂNICO
        ══════════════════════════════════════════════════════════ -->
@@ -951,13 +911,13 @@
     <div class="slide-header">
       <div class="slide-tag">06B · Instagram Orgânico</div>
       <div class="slide-title">Resultado do orgânico no mês</div>
-      <div class="slide-desc">Perfil @keromaispaescongelados — conteúdo não pago no Instagram (Agosto/2026).</div>
+      <div class="slide-desc">Perfil @drafernandainoue — conteúdo não pago no Instagram (Agosto/2026).</div>
     </div>
     <div class="kpi-row">
-      <div class="kpi"><div class="k-label">Seguidores</div><div class="k-val">8.048</div><div class="k-delta up">+648 (últ. 30 dias)</div></div>
-      <div class="kpi"><div class="k-label">Alcance</div><div class="k-val">116.910</div><div class="k-sub">contas únicas · 268 mil visualizações</div></div>
-      <div class="kpi"><div class="k-label">Visitas ao perfil</div><div class="k-val">3.556</div><div class="k-sub">486 cliques no link</div></div>
-      <div class="kpi"><div class="k-label">Interações</div><div class="k-val">1.907</div><div class="k-sub">86 salvam. · 125 compart.</div></div>
+      <div class="kpi"><div class="k-label">Seguidores</div><div class="k-val">11.524</div><div class="k-delta up">+960 (últ. 30 dias)</div></div>
+      <div class="kpi"><div class="k-label">Alcance</div><div class="k-val">92.949</div><div class="k-sub">contas únicas · 752 mil visualizações</div></div>
+      <div class="kpi"><div class="k-label">Visitas ao perfil</div><div class="k-val">10.891</div><div class="k-sub">195 cliques no link</div></div>
+      <div class="kpi"><div class="k-label">Interações</div><div class="k-val">10.368</div><div class="k-sub">120 salvam. · 1.070 compart.</div></div>
     </div>
     <div class="tbl-hint">← arraste para ver todas as colunas →</div>
     <div class="tbl-wrap">
@@ -968,17 +928,17 @@
           <th class="num">Salvam.</th><th class="num">Compart.</th><th class="num">Engaj.</th>
         </tr></thead>
         <tbody>
-          <tr><td>26/08</td><td>Mora no Jardim Bela Vista ou pertinho?</td><td><span class="badge orange">Reel</span></td><td class="num">1.271</td><td class="num">85</td><td class="num">11</td><td class="num">2</td><td class="num">14</td><td class="num"><b>9,0%</b></td></tr>
-          <tr><td>24/08</td><td>Cada parceiro tem uma história</td><td><span class="badge orange">Reel</span></td><td class="num">1.341</td><td class="num">89</td><td class="num">8</td><td class="num">3</td><td class="num">9</td><td class="num"><b>8,4%</b></td></tr>
-          <tr><td>07/08</td><td>POV: você descobriu o pão francês perfeito</td><td><span class="badge orange">Reel</span></td><td class="num">3.245</td><td class="num">87</td><td class="num">5</td><td class="num">2</td><td class="num">5</td><td class="num"><b>3,2%</b></td></tr>
-          <tr><td>03/08</td><td>Cada etapa se repete: da produção à entrega</td><td><span class="badge orange">Reel</span></td><td class="num">975</td><td class="num">66</td><td class="num">8</td><td class="num">2</td><td class="num">9</td><td class="num"><b>9,0%</b></td></tr>
-          <tr><td>17/08</td><td>Dia de celebrar um sabor que é tradição</td><td><span class="badge orange">Card</span></td><td class="num">1.956</td><td class="num">39</td><td class="num">2</td><td class="num">1</td><td class="num">3</td><td class="num"><b>2,4%</b></td></tr>
+          <tr><td>17/08</td><td>Sorteio de aniversário: botox masculino e feminino</td><td><span class="badge orange">Card</span></td><td class="num">2.207</td><td class="num">155</td><td class="num">259</td><td class="num">2</td><td class="num">15</td><td class="num"><b>19,7%</b></td></tr>
+          <tr><td>28/08</td><td>21 dias pós Rinomodelação Definitiva</td><td><span class="badge orange">Carrossel</span></td><td class="num">4.267</td><td class="num">145</td><td class="num">13</td><td class="num">6</td><td class="num">125</td><td class="num"><b>6,8%</b></td></tr>
+          <tr><td>20/08</td><td>Mais uma barbie — Rinomodelação Definitiva</td><td><span class="badge orange">Reel</span></td><td class="num">4.039</td><td class="num">131</td><td class="num">6</td><td class="num">5</td><td class="num">135</td><td class="num"><b>6,9%</b></td></tr>
+          <tr><td>22/08</td><td>Novos capítulos: estudar sempre pelos pacientes</td><td><span class="badge orange">Card</span></td><td class="num">2.601</td><td class="num">161</td><td class="num">29</td><td class="num">1</td><td class="num">2</td><td class="num"><b>7,4%</b></td></tr>
+          <tr><td>02/08</td><td>Dump de um mês incrível (julho)</td><td><span class="badge orange">Carrossel</span></td><td class="num">4.478</td><td class="num">140</td><td class="num">20</td><td class="num">0</td><td class="num">1</td><td class="num"><b>3,6%</b></td></tr>
         </tbody>
       </table>
     </div>
     <div class="insight-box good" style="margin-top:16px">
       <h4>Leitura do orgânico</h4>
-      <p>Os Reels de bastidores/produção e de proximidade local puxaram o engajamento (o POV do pão francês alcançou 3.245 contas). A taxa nos Reels de rotina ficou boa (~9%). +648 seguidores no período. Caminho: manter os Reels de 'como é feito' e de proximidade com o bairro, que geram compartilhamento e reforçam a marca B2B/B2C.</p>
+      <p>Mês muito forte de orgânico: o post de sorteio de aniversário (17/08) explodiu em comentários (259) e os conteúdos de Rinomodelação Definitiva sustentaram milhares de contas alcançadas por post com alto engajamento. +960 seguidores no período. Caminho: manter os antes/depois de Rinomodelação (que geram salvamento e compartilhamento) e usar dinâmicas de sorteio pontuais para picos de comentário.</p>
     </div>
     <p style="font-size:11px;color:var(--gray);margin-top:10px">Métricas de conta (alcance, visualizações e interações) incluem conteúdo impulsionado, conforme reportado pelo Instagram.</p>
   </div>
@@ -986,82 +946,49 @@
   <div class="slide" id="s7">
     <div class="slide-header">
       <div class="slide-tag">07 · Recomendações</div>
-      <div class="slide-title">Próximos Passos — Setembro 2026</div>
-      <div class="slide-desc">Ações priorizadas por impacto e urgência</div>
+      <div class="slide-title">Próximos Passos — Setembro/2026</div>
+      <div class="slide-desc">Ações priorizadas por impacto e esforço de implementação</div>
     </div>
 
     <div class="region-grid">
-      <!-- Card de ação 1 -->
       <div class="region-card">
-        <h4>🎯 Orçamento (Vagas)<span class="pop">Alta prioridade</span></h4>
-        <p>Confirmar com o gestor se a campanha de Vagas/RH tem verba própria autorizada (consumiu R$955,38 em agosto, 33% do total) ou se o ritmo de veiculação deve ser reduzido para manter o total mensal em R$2.000.</p>
-        <div class="strat">→ Alinhamento comercial antes do dia 05/09</div>
+        <h4>🎯 Garantir ritmo dos testes de criativo<span class="pop">Alta prioridade</span></h4>
+        <p>Amiga/Barbie/Querido perderam dias de veiculação por pausa de guardrail em agosto. Sem volume mínimo, não dá pra decidir vencedor.</p>
+        <div class="strat">→ Gestor: confirmar ativação manual assim que qualquer novo teste nascer pausado</div>
       </div>
-      <!-- Card de ação 2 -->
       <div class="region-card">
-        <h4>📣 Rota Rio Verde<span class="pop">Alta prioridade</span></h4>
-        <p>CPA fechou o mês em R$12,26, acima do teto da meta (R$12), com CTR e conversão clique→lead em queda — sinal de saturação de público ou fadiga de criativo.</p>
-        <div class="strat">→ Subir criativo novo + revisar público até 10/09</div>
+        <h4>📣 Escalar Video_Princesa (+20%)<span class="pop">Alta prioridade</span></h4>
+        <p>Melhor custo/conversa da conta (R$5,87) e sem sinal de fadiga. Escala respeitando o teto de +20% por ciclo (regra de ouro).</p>
+        <div class="strat">→ Confirmar com o gestor antes de qualquer ajuste de orçamento</div>
       </div>
-      <!-- Card de ação 3 -->
       <div class="region-card">
-        <h4>🧪 Teste "Qualidade / Câmara Fria"<span class="pop">Em andamento</span></h4>
-        <p>Continuar o teste dos 3 Reels que atacam a objeção "produto congelado tem qualidade?" até haver volume suficiente para decidir (mín. ~20 leads por variante).</p>
-        <div class="strat">→ Checkpoint em 15/09 — manter ou pausar</div>
+        <h4>🧪 Priorizar orçamento em "Querido"<span class="pop">Teste em curso</span></h4>
+        <p>Melhor taxa de conversa por clique entre os 3 vídeos novos, mesmo com R$55 investidos. Hipótese: hook funciona melhor que Amiga/Barbie no público INT_Específico.</p>
+        <div class="strat">→ Rodar até R$100-150 investidos antes de decidir vencedor</div>
       </div>
-      <!-- Card de ação 4 -->
       <div class="region-card">
-        <h4>💰 Orçamento (Planejamento)<span class="pop">Planejamento</span></h4>
-        <p>Distribuição sugerida para setembro: Rotas + Goiânia (comercial) ~R$1.400 · Posicionamento ~R$400 · Vagas conforme orçamento à parte a confirmar (item 1).</p>
-        <div class="strat">→ Revisar após resposta do gestor sobre Vagas</div>
+        <h4>💰 Usar 100% do orçamento mensal<span class="pop">Planejamento</span></h4>
+        <p>R$347,67 não executados em agosto por pausas de guardrail. Meta de setembro: os R$2.500/mês rodando sem gaps.</p>
+        <div class="strat">→ Distribuição: Princesa (escala) + Remarketing + 3 testes de criativo</div>
       </div>
-      <!-- Card de ação 5 -->
       <div class="region-card">
-        <h4>🎨 Criativos<span class="pop">Produção</span></h4>
-        <p>Replicar a fórmula do "[12/6] VD k+ wpp" (melhor CTR e CPA do bimestre) em formato de vídeo/depoimento para uma rota ainda não testada (ex.: Brasília ou Rio Verde).</p>
-        <div class="strat">→ Usar referência dos Reels de fábrica já gravados</div>
+        <h4>📋 Pendência comercial (não é dado de mídia)<span class="pop">Aguardando gestor</span></h4>
+        <p>Sem CRM/planilha de conversão, não sabemos quantas das 292 conversas de agosto viraram agendamento ou paciente fechado — impossível calcular CPA real por paciente (ticket R$10.000).</p>
+        <div class="strat">→ Aguardando dado comercial do gestor/clínica — controle simples de conversa→paciente</div>
       </div>
-      <!-- Card de ação 6 -->
       <div class="region-card">
-        <h4>📊 Metas<span class="pop">Setembro 2026</span></h4>
-        <p>CPA meta: R$5–R$12 · Leads comerciais: ~140-150 · Investimento comercial: R$2.000</p>
-        <div class="strat">→ Revisão tática a cada 3 dias (rotina padrão)</div>
+        <h4>📊 Metas — Setembro/2026<span class="pop">Revisão em 30/09</span></h4>
+        <p>Custo/conversa meta: ≤R$8,00 · Conversas: manter ou superar 292 · Investimento: R$2.500 (100% do orçamento)</p>
+        <div class="strat">→ Checagem tática a cada 3 dias, conforme cadência padrão</div>
       </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Agosto trouxe mais leads (+6,7%) mas com eficiência em queda (CPA +47%) e um estouro de orçamento total de 42,6% puxado pela campanha de Vagas. A prioridade para setembro é dupla: (1) alinhar com o gestor se Vagas tem verba própria, e (2) corrigir a Rota Rio Verde antes que o CPA continue subindo. O funil de mídia segue saudável — falta o retorno comercial (lead → venda) para fechar a leitura de ROI completa.</p>
+      <p>Agosto provou que dá para melhorar CPA e volume ao mesmo tempo — o próximo desafio é sustentar isso usando o orçamento completo (sem perder dias por pausa de guardrail) e finalmente decidir o vencedor entre os 3 criativos de teste. A maior lacuna não está na mídia: é a falta de visibilidade sobre quantas conversas viram paciente — essa informação depende da clínica, não da agência, e segue como pendência aberta desde a auditoria de julho.</p>
     </div>
   </div>
 
-
-  <!-- ══════════════════════════════════════════════════════════
-       [SLIDE EXTRA OPCIONAL — duplicar e customizar]
-       ══════════════════════════════════════════════════════════ -->
-  <!--
-  <div class="slide" id="sX">
-    <div class="slide-header">
-      <div class="slide-tag">0X · [Nome da seção]</div>
-      <div class="slide-title">[Título]</div>
-      <div class="slide-desc">[Descrição]</div>
-    </div>
-
-    Insira aqui o conteúdo usando os componentes do design system:
-    • .kpi-row / .kpi
-    • .tbl-wrap / .tbl
-    • .two-col
-    • .creative-grid / .creative-card
-    • .insight-box
-    • .funnel / .funnel-step
-    • .region-grid / .region-card
-    • .text-box
-    • .compare-row / .compare-col
-    • .hero-number + .hero-label
-    • .notas
-
-  </div>
-  -->
 
 </div><!-- /#slides -->
 
@@ -1106,11 +1033,11 @@
   const slideLabels = [
     'Capa',
     'Visão Geral',
-    'Performance por Campanha',
+    'Campanhas',
     'Criativos',
-    'Análise',
+    'Diagnóstico',
     'Funil',
-    'Comparativo',
+    'Jul vs Ago',
     'Instagram Orgânico',
     'Recomendações',
     // Adicione mais se criar slides extras
