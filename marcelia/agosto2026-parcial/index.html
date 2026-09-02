@@ -3,8 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatório Dra. Marcélia — Agosto 2026 (Parcial)</title>
+<title>Relatório Dra. Marcélia — Agosto 2026</title>
 <style>
+  /* ══════════════════════════════════
+     DESIGN SYSTEM — NÃO MODIFICAR
+     Cores, tipografia e tokens visuais
+     ══════════════════════════════════ */
   :root {
     --orange: #FF6B00;
     --orange-light: #FF8C3A;
@@ -22,6 +26,7 @@
   html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
   body { overflow: hidden; }
 
+  /* ── SLIDES CONTAINER ── */
   #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
   .slide {
     position: absolute; inset: 0;
@@ -34,12 +39,14 @@
   }
   .slide.active { opacity: 1; pointer-events: all; }
 
+  /* ── BARRA DE PROGRESSO ── */
   #progress-bar {
     position: fixed; top: 0; left: 0; height: 3px;
     background: var(--orange); transition: width .4s ease;
     z-index: 200;
   }
 
+  /* ── NAVEGAÇÃO ── */
   #nav {
     position: fixed; bottom: 0; left: 0; right: 0;
     height: 60px;
@@ -72,6 +79,7 @@
   }
   .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
 
+  /* ── CAPA ── */
   .cover-wrap {
     display: flex; flex-direction: column; align-items: center;
     justify-content: center; width: 100%; height: 100%; text-align: center;
@@ -95,6 +103,7 @@
   }
   .cover-divider { width: 1px; background: var(--border); }
 
+  /* ── CABEÇALHO DE SLIDE ── */
   .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
   .slide-tag {
     font-size: 11px; font-weight: 600; letter-spacing: 2px;
@@ -103,11 +112,11 @@
   .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
   .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
 
+  /* ── KPI CARDS ── */
   .kpi-row {
     display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
   }
-  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
   .kpi {
     background: white; border: 1px solid var(--border);
     border-radius: 10px; padding: 16px 18px;
@@ -117,9 +126,6 @@
     content: ''; position: absolute; top: 0; left: 0; right: 0;
     height: 3px; background: var(--orange);
   }
-  .kpi.kpi-green::before { background: var(--green); }
-  .kpi.kpi-red::before { background: var(--red); }
-  .kpi.kpi-amber::before { background: var(--amber); }
   .kpi .k-label {
     font-size: 10px; font-weight: 600; letter-spacing: .5px;
     text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
@@ -129,9 +135,14 @@
   .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
   .kpi .k-delta.up { color: var(--green); }
   .kpi .k-delta.dn { color: var(--red); }
-  .kpi .k-delta.ok { color: var(--amber); }
+  /* variação: 2 ou 3 colunas — aplique na classe inline */
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
 
+  /* ── TABELA ── */
   .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+
+  /* ── INDICADORES DE SCROLL NAS TABELAS ── */
   .tbl-hint {
     display: none; font-size: 11px; color: var(--gray);
     margin-bottom: 5px; text-align: center; letter-spacing: .3px;
@@ -159,6 +170,7 @@
   .tbl tr:last-child td { border-bottom: none; }
   .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
 
+  /* ── BADGES ── */
   .badge {
     display: inline-block; padding: 2px 10px; border-radius: 100px;
     font-size: 11px; font-weight: 600;
@@ -168,9 +180,70 @@
   .badge.amber  { background: #fef3c7; color: var(--amber); }
   .badge.orange { background: var(--orange-pale); color: var(--orange); }
 
+  /* ── LAYOUT 2 COLUNAS ── */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
   .two-col-6040 { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; width: 100%; }
 
+  /* ── LOGO ALMA ── */
+  .alma-logo-wrap {
+    position: absolute; top: 20px; right: 20px; z-index: 10;
+  }
+  .alma-logo-img {
+    height: 44px; width: auto; filter: invert(1); opacity: 0.82;
+  }
+
+  /* ── GRID DE CRIATIVOS ── */
+  .creative-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 12px; width: 100%;
+  }
+  .creative-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; background: white;
+  }
+  /* Thumbnail do criativo */
+  .creative-thumb {
+    width: 100%; aspect-ratio: 9/16;
+    border-radius: 6px; overflow: hidden;
+    background: var(--light); margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .creative-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  /* Placeholder quando sem imagem */
+  .creative-thumb .thumb-placeholder {
+    font-size: 11px; color: var(--gray); text-align: center; padding: 8px;
+  }
+  /* Badge de formato sobre a thumb */
+  .creative-thumb .thumb-badge {
+    position: absolute; bottom: 6px; left: 6px;
+    background: rgba(0,0,0,0.65); color: white;
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 100px; letter-spacing: .5px;
+  }
+  .creative-card .rank {
+    font-size: 10px; font-weight: 700; color: var(--orange);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .creative-card .name {
+    font-size: 12px; font-weight: 700; color: var(--dark);
+    margin-bottom: 8px; line-height: 1.3; min-height: 30px;
+  }
+  .creative-card .metric {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--border);
+  }
+  .creative-card .metric:last-of-type { border-bottom: none; }
+  .creative-card .metric .ml { color: var(--gray); }
+  .creative-card .metric .mv { font-weight: 600; color: var(--dark); }
+  .d2-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .d2-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--orange-light), var(--orange)); }
+
+  /* ── INSIGHT BOX ── */
   .insight-box {
     background: white; border: 1px solid var(--border);
     border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
@@ -182,21 +255,21 @@
   .insight-box.bad  { border-left-color: var(--red); }
   .insight-box.warn { border-left-color: var(--amber); }
 
-  .funnel { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  /* ── FUNIL ── */
+  .funnel { display: flex; flex-direction: column; gap: 6px; width: 100%; }
   .funnel-step { display: flex; align-items: center; gap: 10px; }
   .funnel-bar-wrap {
-    flex: 1; height: 38px; background: var(--border);
+    flex: 1; height: 34px; background: var(--border);
     border-radius: 4px; overflow: hidden; position: relative;
   }
   .funnel-bar {
     height: 100%; border-radius: 4px; display: flex;
-    align-items: center; padding-left: 12px; transition: width 1.2s ease;
-    font-size: 12px; font-weight: 700; color: white;
+    align-items: center; padding-left: 10px; transition: width 1s ease;
   }
-  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 170px; }
-  .funnel-val { font-size: 13px; color: var(--dark); white-space: nowrap; width: 70px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
-  .funnel-cvr { font-size: 10px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 160px; }
+  .funnel-val { font-size: 12px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
 
+  /* ── NOTAS DO GESTOR ── */
   .notas {
     width: 100%; margin-top: 18px; flex-shrink: 0;
     background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
@@ -208,30 +281,56 @@
   }
   .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
 
+  /* ── GRID DE REGIÕES / ITEMS ── */
   .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
   .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
   .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
-  .region-card .pop.g { color: var(--green); background: #dcfce7; }
-  .region-card .pop.r { color: var(--red); background: #fee2e2; }
-  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.6; margin-top: 6px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
   .region-card .strat {
     font-size: 11px; font-weight: 600; color: var(--dark);
     margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
   }
 
+  /* ── CAIXA DE TEXTO LIVRE ── */
+  .text-box {
+    width: 100%; background: var(--light); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px;
+  }
+  .text-box p { font-size: 14px; color: var(--dark); line-height: 1.8; }
+  .text-box ul, .text-box ol { padding-left: 20px; }
+  .text-box li { font-size: 14px; color: var(--dark); line-height: 1.8; margin-bottom: 4px; }
+
+  /* ── DESTAQUE ÚNICO (hero number) ── */
   .hero-number {
     font-size: 72px; font-weight: 900; color: var(--orange);
     line-height: 1; margin-bottom: 8px;
   }
   .hero-label { font-size: 16px; color: var(--gray); margin-bottom: 24px; }
 
-  .alma-logo-wrap { position: absolute; top: 20px; right: 20px; z-index: 10; }
-  .alma-logo-img { height: 44px; width: auto; filter: invert(1); opacity: 0.82; }
+  /* ── COMPARATIVO ANTES/DEPOIS ── */
+  .compare-row {
+    display: flex; gap: 16px; align-items: stretch; width: 100%; margin-bottom: 12px;
+  }
+  .compare-col {
+    flex: 1; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px;
+  }
+  .compare-col.before { border-top: 3px solid var(--red); }
+  .compare-col.after  { border-top: 3px solid var(--green); }
+  .compare-col .c-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .compare-col.before .c-label { color: var(--red); }
+  .compare-col.after  .c-label { color: var(--green); }
 
+  /* ── MOBILE ── */
   @media (max-width: 768px) {
     body { overflow: hidden; }
     .slide { padding: 20px 16px 72px; }
+
+    /* Capa */
     .cover-wrap { padding: 0 4px; }
     .cover-badge { font-size: 10px; padding: 4px 12px; margin-bottom: 18px; }
     .cover-title { font-size: 28px; }
@@ -240,33 +339,66 @@
     .cover-meta-item .val { font-size: 20px; }
     .cover-meta-item .lbl { font-size: 10px; }
     .cover-divider { width: 1px; height: 32px; flex-shrink: 0; }
+
+    /* Cabeçalhos */
     .slide-title { font-size: 18px; }
     .slide-desc { font-size: 12px; }
     .slide-header { margin-bottom: 16px; }
+
+    /* KPIs */
     .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
     .kpi { padding: 12px 14px; }
     .kpi .k-val { font-size: 17px; }
     .kpi .k-label { font-size: 9px; }
     .kpi .k-sub, .kpi .k-delta { font-size: 10px; }
+
+    /* Tabelas — scroll horizontal visível */
     .tbl-wrap { border-radius: 8px; }
-    .tbl { font-size: 12px; min-width: 520px; }
+    .tbl { font-size: 12px; min-width: 480px; }
     .tbl th { padding: 8px 10px; font-size: 11px; }
     .tbl td { padding: 6px 10px; }
-    .two-col, .two-col-6040 { grid-template-columns: 1fr; gap: 12px; }
+
+    /* Criativos */
+    .creative-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .creative-card { padding: 10px; }
+    .creative-card .name { font-size: 11px; min-height: 24px; }
+    .creative-card .metric { font-size: 11px; }
+
+    /* Layouts */
+    .two-col, .two-col-4060, .two-col-6040 { grid-template-columns: 1fr; gap: 12px; }
     .region-grid { grid-template-columns: 1fr; gap: 10px; }
+    .compare-row { flex-direction: column; gap: 10px; }
+
+    /* Funil */
     .funnel-label { width: 100px; font-size: 10px; }
-    .funnel-val { width: 48px; font-size: 11px; }
-    .funnel-cvr { width: 40px; font-size: 9px; }
-    .funnel-bar-wrap { height: 30px; }
+    .funnel-val { width: 40px; font-size: 10px; }
+    .funnel-bar-wrap { height: 28px; }
+
+    /* Notas */
     .notas { padding: 12px 14px; }
     .notas p { font-size: 12px; }
+
+    /* Logo */
     .alma-logo-img { height: 32px; }
     .alma-logo-wrap { top: 14px; right: 14px; }
+
+    /* Misc */
     #nav { padding: 0 12px; }
     .nav-btn { width: 36px; height: 36px; font-size: 13px; }
     #slide-label { font-size: 10px; }
     .hero-number { font-size: 48px; }
     .hero-label { font-size: 14px; }
+  }
+  @media (max-width: 480px) {
+    .slide { padding: 16px 12px 68px; }
+    .cover-title { font-size: 24px; }
+    .cover-meta { gap: 8px; }
+    .cover-meta-item .val { font-size: 18px; }
+    .kpi-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .kpi .k-val { font-size: 15px; }
+    .creative-grid { grid-template-columns: 1fr 1fr; }
+    .region-grid { grid-template-columns: 1fr; }
+    .tbl { min-width: 420px; }
   }
 </style>
 </head>
@@ -279,13 +411,13 @@
   <!-- SLIDE 0 — CAPA -->
   <div class="slide active" id="s0">
     <div class="cover-wrap">
-      <div class="cover-badge">Relatório Mensal · Tráfego Pago · Parcial (dados até 27/08)</div>
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago · Fechamento de Agosto 2026</div>
       <div class="cover-title">Dra. Marcélia</div>
-      <div class="cover-sub">Performance Meta Ads + Google Ads · Agosto 2026 (mês em andamento)</div>
+      <div class="cover-sub">Performance Meta Ads + Google Ads · Agosto 2026 vs Julho 2026</div>
       <div class="cover-meta">
         <div class="cover-meta-item">
-          <div class="val">R$ 1.429,74</div>
-          <div class="lbl">Investido (Meta)</div>
+          <div class="val">R$1.566</div>
+          <div class="lbl">Investido (Meta+Google)</div>
         </div>
         <div class="cover-divider"></div>
         <div class="cover-meta-item">
@@ -294,8 +426,8 @@
         </div>
         <div class="cover-divider"></div>
         <div class="cover-meta-item">
-          <div class="val">R$ 8,99</div>
-          <div class="lbl">Custo / Conversa</div>
+          <div class="val">R$8,99</div>
+          <div class="lbl">Custo/Conversa (meta R$15)</div>
         </div>
       </div>
     </div>
@@ -306,77 +438,77 @@
   <div class="slide" id="s1">
     <div class="slide-header">
       <div class="slide-tag">01 · Visão Geral</div>
-      <div class="slide-title">KPIs do Mês — Agosto 2026 (parcial)</div>
-      <div class="slide-desc">Período 01/08 – 27/08/2026 · faltam 4 dias para fechar o mês — números abaixo não são o total final de agosto</div>
+      <div class="slide-title">KPIs do Mês — Agosto 2026 (fechado)</div>
+      <div class="slide-desc">Meta Ads, atribuição 7d clique / 1d view · comparado com julho/2026</div>
     </div>
 
     <div class="kpi-row">
-      <div class="kpi kpi-amber">
+      <div class="kpi">
         <div class="k-label">Investimento (Meta)</div>
-        <div class="k-val">R$ 1.429,74</div>
-        <div class="k-sub">Orçamento mensal: R$ 2.000 (+ Google)</div>
-        <div class="k-delta ok">71,5% do orçamento usado, faltam R$ 570,26 e 4 dias</div>
+        <div class="k-val">R$1.429,74</div>
+        <div class="k-sub">Orçamento combinado: R$2.000/mês</div>
+        <div class="k-delta dn">↓ 31,9% vs julho — 4 dias sem veicular (saldo esgotado)</div>
       </div>
-      <div class="kpi kpi-green">
+      <div class="kpi">
         <div class="k-label">Conversas WPP</div>
         <div class="k-val">159</div>
-        <div class="k-sub">Julho (mês cheio): 250</div>
-        <div class="k-delta dn">Ritmo diário: 5,9/dia (jul: 8,1/dia) ↓ -27%</div>
+        <div class="k-sub">Meta de referência: ~133 leads/mês</div>
+        <div class="k-delta dn">↓ 36,4% vs julho (250)</div>
       </div>
-      <div class="kpi kpi-green">
-        <div class="k-label">Custo / Conversa</div>
-        <div class="k-val">R$ 8,99</div>
-        <div class="k-sub">Meta: R$ 15,00</div>
-        <div class="k-delta up">40% abaixo da meta — melhor faixa do ano</div>
+      <div class="kpi">
+        <div class="k-label">Custo / Conversa WPP</div>
+        <div class="k-val">R$8,99</div>
+        <div class="k-sub">Meta CPA: R$15,00 — 40% abaixo</div>
+        <div class="k-delta dn">↑ 7,0% vs julho (R$8,40)</div>
       </div>
-      <div class="kpi kpi-green">
-        <div class="k-label">Leads (Form)</div>
+      <div class="kpi">
+        <div class="k-label">Leads (formulário)</div>
         <div class="k-val">77</div>
-        <div class="k-sub">CPL blended: R$ 9,41</div>
-        <div class="k-delta up">Melhor CPL desde o início do histórico (jan-abr: R$18-58)</div>
+        <div class="k-sub">CPL blended: R$18,57</div>
+        <div class="k-delta dn">↓ 25,2% vs julho (103)</div>
       </div>
     </div>
 
     <div class="kpi-row">
-      <div class="kpi kpi-green">
-        <div class="k-label">CTR Médio</div>
+      <div class="kpi">
+        <div class="k-label">CPM</div>
+        <div class="k-val">R$21,10</div>
+        <div class="k-sub">Julho: R$18,36</div>
+        <div class="k-delta dn">↑ 14,9%</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
         <div class="k-val">2,73%</div>
         <div class="k-sub">Julho: 2,29%</div>
-        <div class="k-delta up">↑ +19% — melhor CTR do ano</div>
+        <div class="k-delta up">↑ 0,44pp</div>
       </div>
-      <div class="kpi kpi-amber">
-        <div class="k-label">CPM</div>
-        <div class="k-val">R$ 21,10</div>
-        <div class="k-sub">Julho: R$ 18,36</div>
-        <div class="k-delta dn">↑ +15% — leilão mais caro</div>
-      </div>
-      <div class="kpi kpi-green">
+      <div class="kpi">
         <div class="k-label">Frequência</div>
         <div class="k-val">2,33</div>
         <div class="k-sub">Julho: 2,90</div>
-        <div class="k-delta up">↓ -20% — público menos saturado</div>
+        <div class="k-delta up">↓ 19,7% (menos saturação)</div>
       </div>
-      <div class="kpi kpi-red">
-        <div class="k-label">Google Ads — Investido</div>
-        <div class="k-val">R$ 111,33</div>
-        <div class="k-sub">Julho: R$ 391,62</div>
-        <div class="k-delta dn">↓ -72% — detalhe no slide 03</div>
+      <div class="kpi">
+        <div class="k-label">Alcance</div>
+        <div class="k-val">29,1K</div>
+        <div class="k-sub">Julho: 39,5K</div>
+        <div class="k-delta dn">↓ 26,3%</div>
       </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Agosto está com a melhor eficiência do ano nas métricas de custo: custo/conversa (R$8,99) e CPL (R$9,41) seguem folgados em relação à meta de R$15, CTR é o maior do ano (2,73%) e a frequência caiu para 2,33 — sinal de que a renovação de audiência recomendada em junho funcionou. O ponto de atenção não é qualidade de mídia: é volume, que caiu de ritmo por causa de uma queda abrupta de entrega nos dias 26 e 27/08 detalhada no slide 04, e que ainda precisa ser resolvida antes do fechamento do mês.</p>
+      <p>Agosto fechou com queda de volume em quase todas as métricas absolutas — mas a causa não foi piora de targeting ou criativo: a conta ficou <b>sem saldo e zerou a entrega entre 28 e 31/08</b> (detalhes no slide 04). Onde a conta rodou, a eficiência melhorou: CTR subiu, frequência caiu (menos saturação de público) e o custo por conversa WPP seguiu 40% abaixo da meta de R$15. Prioridade de setembro é resolver o saldo antes de qualquer otimização de campanha.</p>
     </div>
   </div>
 
 
-  <!-- SLIDE 2 — PERFORMANCE POR CAMPANHA -->
+  <!-- SLIDE 2 — CAMPANHAS META -->
   <div class="slide" id="s2">
     <div class="slide-header">
       <div class="slide-tag">02 · Campanhas</div>
-      <div class="slide-title">Performance por Campanha (Meta)</div>
-      <div class="slide-desc">01/08 – 27/08/2026 — ordenado por investimento, 6 campanhas ativas no período</div>
+      <div class="slide-title">Performance por Campanha (Meta) — Agosto</div>
+      <div class="slide-desc">6 campanhas ativas no mês · janela de atribuição 7d clique / 1d view</div>
     </div>
 
     <div class="tbl-wrap">
@@ -384,76 +516,76 @@
         <thead>
           <tr>
             <th>Campanha</th>
-            <th>Tipo</th>
             <th class="num">Gasto</th>
-            <th class="num">Resultado</th>
-            <th class="num">Custo / Result.</th>
+            <th class="num">Leads</th>
+            <th class="num">Conversas WPP</th>
+            <th class="num">R$/Conversa</th>
             <th class="num">CTR</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>[Jul26] Vídeos Novos Frio</td>
-            <td><span class="badge green">Frio</span></td>
-            <td class="num">R$ 484,50</td>
-            <td class="num">68 leads + 86 conv.</td>
-            <td class="num">R$ 7,13 (lead)</td>
-            <td class="num">3,50%</td>
-            <td><span class="badge green">Destaque do mês</span></td>
-          </tr>
-          <tr>
-            <td>[Abr26] Remarketing Quente</td>
-            <td><span class="badge orange">Remarketing</span></td>
-            <td class="num">R$ 348,01</td>
-            <td class="num">47 conversas</td>
-            <td class="num">R$ 7,40</td>
-            <td class="num">1,98%</td>
-            <td><span class="badge green">Saudável</span></td>
-          </tr>
-          <tr>
             <td>[Jan26] Remarketing Vídeos Perfil (ABO)</td>
-            <td><span class="badge orange">Remarketing</span></td>
-            <td class="num">R$ 277,41</td>
-            <td class="num">11 conversas</td>
-            <td class="num">R$ 25,22</td>
+            <td class="num">R$277,41</td>
+            <td class="num">—</td>
+            <td class="num">11</td>
+            <td class="num">R$25,22</td>
             <td class="num">1,75%</td>
-            <td><span class="badge amber">Atenção</span></td>
+            <td><span class="badge amber">Criativo fatigado</span></td>
           </tr>
           <tr>
-            <td>[Ago26] Sustentavelmente Rmkt <em>(nova)</em></td>
-            <td><span class="badge orange">Remarketing</span></td>
-            <td class="num">R$ 208,56</td>
-            <td class="num">9 leads + 15 conv.</td>
-            <td class="num">R$ 23,17 (lead)</td>
-            <td class="num">2,49%</td>
-            <td><span class="badge amber">Em aquecimento</span></td>
-          </tr>
-          <tr>
-            <td>[Jul26] Audiência Única (Tráfego IG)</td>
-            <td><span class="badge green">Audiência</span></td>
-            <td class="num">R$ 79,55</td>
-            <td class="num">353 cliques perfil</td>
-            <td class="num">R$ 0,23 / clique</td>
-            <td class="num">2,97%</td>
-            <td><span class="badge green">Ativa</span></td>
+            <td>[Abr26] Remarketing Quente (CBO)</td>
+            <td class="num">R$348,01</td>
+            <td class="num">—</td>
+            <td class="num">47</td>
+            <td class="num">R$7,40</td>
+            <td class="num">1,98%</td>
+            <td><span class="badge green">Ativa · saudável</span></td>
           </tr>
           <tr>
             <td>[Abr26] Depoimentos Frio (CBO)</td>
-            <td><span class="badge amber">Frio</span></td>
-            <td class="num">R$ 31,71</td>
-            <td class="num">0 leads / conv.</td>
+            <td class="num">R$31,71</td>
+            <td class="num">0</td>
+            <td class="num">0</td>
             <td class="num">—</td>
             <td class="num">1,59%</td>
-            <td><span class="badge red">Sem conversão</span></td>
+            <td><span class="badge red">Zerada (3º mês)</span></td>
+          </tr>
+          <tr>
+            <td>[Jul26] Audiência Única (tráfego perfil IG)</td>
+            <td class="num">R$79,55</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">n/a</td>
+            <td class="num">2,97%</td>
+            <td><span class="badge orange">Objetivo: alcance/tráfego</span></td>
+          </tr>
+          <tr>
+            <td>[Jul26] Vídeos Novos Frio (CBO)</td>
+            <td class="num">R$484,50</td>
+            <td class="num">68</td>
+            <td class="num">86</td>
+            <td class="num">R$5,63</td>
+            <td class="num">3,50%</td>
+            <td><span class="badge green">Melhor da conta</span></td>
+          </tr>
+          <tr>
+            <td>[Ago26] Sustentavelmente Rmkt (CBO, nova)</td>
+            <td class="num">R$208,56</td>
+            <td class="num">9</td>
+            <td class="num">15</td>
+            <td class="num">R$13,90</td>
+            <td class="num">2,49%</td>
+            <td><span class="badge amber">Em validação</span></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="notas" style="margin-top: 16px;">
+    <div class="notas" style="margin-top: 18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p><strong>Vídeos Novos Frio</strong> é a campanha do mês: maior investimento, melhor CPL (R$7,13) e melhor CPR (R$5,63) da conta, puxando o resultado geral para baixo da meta. <strong>Depoimentos Frio</strong> repete em agosto o mesmo problema apontado em junho — segue sem gerar lead ou conversa rastreável, mesmo criativo desde então; é candidata a pausa ou reformulação total. O ABO de Vídeos Perfil (Jan26) segue caro (R$25,22/conversa) e concentrado quase inteiro em um único anúncio antigo ("ad 7/4 - dep. GMN") — precisa de criativo novo.</p>
+      <p><b>Vídeos Novos Frio</b> segue sendo o motor da conta: sozinha responde por 34% do gasto e pela maior parte dos leads e conversas, com o menor custo por resultado da conta. <b>Depoimentos Frio</b> zerou conversão pelo <b>3º mês seguido</b> (já zerada em junho e julho) — recomendo pausar e recriar com criativo novo em setembro. <b>Remarketing Vídeos Perfil</b> segue com custo subindo (R$25,22/conversa, era R$21,30 em julho) rodando praticamente com um único criativo fatigado — precisa de refresh. <b>Sustentavelmente Rmkt</b> é nova (lançada em agosto) e já entrega dentro do benchmark, mas ainda com poucos dias de dado — seguir monitorando.</p>
     </div>
   </div>
 
@@ -463,355 +595,538 @@
     <div class="slide-header">
       <div class="slide-tag">03 · Google Ads</div>
       <div class="slide-title">Google Ads — Search Endocrinologista</div>
-      <div class="slide-desc">01/08 – 27/08/2026 — apenas 1 de 4 campanhas segue entregando</div>
+      <div class="slide-desc">Única campanha ativa da conta Google (customer 9041578037) · demais 4 campanhas seguem pausadas</div>
     </div>
 
-    <div class="kpi-row kpi-row-3" style="margin-bottom: 20px;">
-      <div class="kpi kpi-red">
+    <div class="kpi-row">
+      <div class="kpi">
         <div class="k-label">Investimento</div>
-        <div class="k-val">R$ 111,33</div>
-        <div class="k-sub">Julho (mês cheio): R$ 391,62</div>
-        <div class="k-delta dn">↓ -72% (ritmo diário: -67%)</div>
+        <div class="k-val">R$136,54</div>
+        <div class="k-sub">Julho: R$391,62</div>
+        <div class="k-delta dn">↓ 65,1%</div>
       </div>
-      <div class="kpi kpi-red">
+      <div class="kpi">
         <div class="k-label">Conversões</div>
         <div class="k-val">3</div>
         <div class="k-sub">Julho: 8</div>
-        <div class="k-delta dn">↓ -63%</div>
+        <div class="k-delta dn">↓ 62,5%</div>
       </div>
-      <div class="kpi kpi-green">
-        <div class="k-label">Custo / Conversão</div>
-        <div class="k-val">R$ 37,11</div>
-        <div class="k-sub">Julho: R$ 48,95</div>
-        <div class="k-delta up">↓ -24% — melhora de eficiência</div>
+      <div class="kpi">
+        <div class="k-label">Custo/Conversão</div>
+        <div class="k-val">R$45,51</div>
+        <div class="k-sub">Julho: R$48,95</div>
+        <div class="k-delta up">↓ 7,0%</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
+        <div class="k-val">3,41%</div>
+        <div class="k-sub">Julho: 3,48% · 23 cliques / 674 impr.</div>
+        <div class="k-delta dn">↓ 0,07pp</div>
       </div>
     </div>
 
-    <div class="tbl-wrap">
-      <table class="tbl">
-        <thead>
-          <tr>
-            <th>Campanha</th>
-            <th class="num">Gasto</th>
-            <th class="num">Cliques</th>
-            <th class="num">CTR</th>
-            <th class="num">CPC médio</th>
-            <th class="num">Conversões</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>[Diabetes] Search - Endocrinologista</td>
-            <td class="num">R$ 111,33</td>
-            <td class="num">18</td>
-            <td class="num">3,20%</td>
-            <td class="num">R$ 6,18</td>
-            <td class="num">3</td>
-          </tr>
-          <tr>
-            <td>[Mp] [Search] Maximizar conversão - teste 24/2</td>
-            <td class="num">R$ 0,00</td>
-            <td class="num">0</td>
-            <td class="num">—</td>
-            <td class="num">—</td>
-            <td class="num">0</td>
-          </tr>
-          <tr>
-            <td>busca-geral - Maximizar cliques</td>
-            <td class="num">R$ 0,00</td>
-            <td class="num">0</td>
-            <td class="num">—</td>
-            <td class="num">—</td>
-            <td class="num">0</td>
-          </tr>
-          <tr>
-            <td>Performance Max-1</td>
-            <td class="num">R$ 0,00</td>
-            <td class="num">0</td>
-            <td class="num">—</td>
-            <td class="num">—</td>
-            <td class="num">0</td>
-          </tr>
-          <tr>
-            <td>busca-geral - Maximizar conversão #2</td>
-            <td class="num">R$ 0,00</td>
-            <td class="num">0</td>
-            <td class="num">—</td>
-            <td class="num">—</td>
-            <td class="num">0</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="insight-box bad">
+      <h4>25 dias praticamente sem veicular</h4>
+      <p>O gasto de agosto ficou concentrado em dois blocos: <b>R$111,33 entre 01–04/08</b> e <b>R$25,21 isolado em 31/08</b>. No intervalo de <b>05 a 30/08 (25 dias)</b> a campanha praticamente não consumiu o orçamento diário de R$25/dia (só impressões residuais sem clique em 08/08 e 10/08). A campanha está <b>ENABLED / ELIGIBLE</b> hoje (sem bloqueio de política visível) — a causa mais provável é a mesma questão de faturamento/pagamento identificada no Meta (slide 04), mas no Google isso precisa ser confirmado direto no Gerenciador (forma de pagamento, limite de fatura), pois as tools de leitura não têm visibilidade de billing do Google Ads.</p>
     </div>
 
-    <div class="notas" style="margin-top: 16px;">
+    <div class="notas" style="margin-top: 18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>O Google Ads praticamente não é o canal principal desta conta: apenas a campanha "[Diabetes] Search - Endocrinologista" entrega, com custo/conversão caindo para R$37,11 (melhor que julho). As outras 4 campanhas seguem zeradas há pelo menos dois meses — vale decidir entre reestruturar (novos grupos de anúncio, palavras-chave e orçamento dedicado) ou pausar formalmente e concentrar 100% do orçamento em Meta, que é onde o resultado está.</p>
+      <p>Google segue pequeno perto do Meta (R$136,54 de R$1.566,28 investidos no mês, ~8,7%) e concentrado numa única campanha de busca. Antes de investir em expandir Google, resolver a lacuna de veiculação é prioridade — não adianta aumentar orçamento numa campanha que não está rodando na maior parte dos dias.</p>
     </div>
   </div>
 
 
-  <!-- SLIDE 4 — ALERTA: QUEDA DE ENTREGA -->
+  <!-- SLIDE 4 — ALERTA CRÍTICO -->
   <div class="slide" id="s4">
     <div class="slide-header">
-      <div class="slide-tag">04 · Alerta Operacional</div>
-      <div class="slide-title">Queda Abrupta de Entrega — 26 e 27/08</div>
-      <div class="slide-desc">O ponto que precisa de ação antes de fechar o mês</div>
+      <div class="slide-tag">04 · Alerta Crítico</div>
+      <div class="slide-title">Conta Meta Ficou Sem Saldo — 28 a 31/08</div>
+      <div class="slide-desc">Causa confirmada via Meta: Listar Entidades (tipo=account) — não é problema de campanha ou criativo</div>
     </div>
 
-    <div class="tbl-wrap" style="margin-bottom: 16px;">
+    <div class="hero-number">R$0,06</div>
+    <div class="hero-label">Saldo disponível na conta Meta hoje (01/09/2026) — a mesma situação de agosto ainda não foi resolvida</div>
+
+    <div class="two-col">
+      <div>
+        <div class="insight-box bad">
+          <h4>Conta é pré-paga e bateu o teto</h4>
+          <p>A conta (<code>act_1032826880462892</code>) é <b>pré-paga</b> (<i>is_prepay_account</i>). O teto de gasto (<i>spend_cap</i>) é R$52.652,31 e o valor já debitado é R$52.652,36 — ou seja, o saldo <b>acabou</b>. Sem recarga, o Meta não entrega nenhum anúncio, mesmo com campanhas ativas e orçamento diário configurado.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Isso já tinha um precedente em julho</h4>
+          <p>O relatório de julho identificou o mesmo padrão em 27–28/07 (retomada após renovação de saldo). Em agosto o problema se repetiu e <b>não foi resolvido até hoje</b> — 4 dias de agosto (28 a 31/08) ficaram com R$0 de entrega e, pelo saldo atual, setembro começa no mesmo estado.</p>
+        </div>
+      </div>
+      <div>
+        <div class="insight-box warn">
+          <h4>Impacto direto no mês</h4>
+          <p>Dos R$2.000 de orçamento mensal, apenas R$1.429,74 foram utilizados no Meta (71,5%) — não por falta de demanda ou performance, mas porque a conta parou de gastar. Nos 27 dias em que rodou, a média foi R$52,95/dia, dentro do ritmo esperado.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Ação urgente — antes de qualquer otimização</h4>
+          <p><b>Recarregar o saldo pré-pago da conta Meta imediatamente</b> — é pré-requisito para que qualquer campanha volte a rodar em setembro. Recomendo também verificar a forma de pagamento cadastrada, para reduzir o risco de o saldo se esgotar de novo no meio do próximo ciclo.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Este é o achado mais importante do mês: nenhuma otimização de segmentação, criativo ou lance resolve conta sem saldo. Recomendo tratar a recarga como prioridade nº1 desta semana — enquanto isso não acontecer, o investimento de setembro continua zerado no Meta.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 5 — TOP CRIATIVOS -->
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Criativos</div>
+      <div class="slide-title">Top Criativos em Performance — Agosto</div>
+      <div class="slide-desc">Ranking por gasto · Meta Ads, nível de anúncio</div>
+    </div>
+
+    <div class="creative-grid">
+      <div class="creative-card">
+        <div class="rank"># 01</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/740215509_1515877800227256_2510003918921122697_n.jpg?_nc_cat=100&amp;ccb=1-7&amp;_nc_ohc=BfvPvxFy6NEQ7kNvwEiCQVW&amp;_nc_oc=AdpgPKfYyy5hd94J-SiBiDngNvj9eUFjTmsLk6zPr2lkt-BvVHssl42o9YlnBQeU8nA&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=KJItAPVE_hYGqq5vjNT4sg&amp;_nc_tpa=Q5bMBQLDebcoFaIqtLCq3B0mVT5htvHiq7m5gxgcXALlLb2c83EoWCeYCsZersjrGOu9B5SSM8-MnM7Ysw&amp;stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&amp;ur=d2b52d&amp;_nc_sid=58080a&amp;oh=00_AQKw2efikYQrRjvTNdGwQUCWfaEJVzl6zqqjtA0w8Lihww&amp;oe=6A9C9D0B" alt="Criativo 01"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:flex">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">Video Novo Frio - 08.07 (Vídeos Novos Frio)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">3,50%</span></div>
+        <div class="metric"><span class="ml">R$/Conversa</span><span class="mv">R$5,69</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$483,85</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:95%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 02</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/742800036_908801374825764_1611286696799550490_n.jpg?_nc_cat=109&amp;ccb=1-7&amp;_nc_ohc=Zel-2DQVq08Q7kNvwFNMmIc&amp;_nc_oc=Ado6wOIaGL6dz_hvi19hMvU_tywtlWfPyxHmtydDumzT04V0Zv47FmkYDIJrEq4cS40&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=KJItAPVE_hYGqq5vjNT4sg&amp;_nc_tpa=Q5bMBQIZv587qPVni1kZhmX6TMNAdyiX8P_NjMAy8MhUZHPaF1RcWnHfOg3OqPJQc0_40YforncpEka2nw&amp;stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&amp;ur=d2b52d&amp;_nc_sid=58080a&amp;oh=00_AQK9nANMSFyqEmXGNWGPNnQGIhpZHErmI3FT-CDW9zeJmw&amp;oe=6A9CB665" alt="Criativo 02"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:flex">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">Video Novo Quente - 08.07 (Remarketing Quente)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">2,05%</span></div>
+        <div class="metric"><span class="ml">R$/Conversa</span><span class="mv">R$7,18</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$323,02</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:70%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 03</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/688830739_1288520862836835_2093042792081068812_n.jpg?_nc_cat=104&amp;ccb=1-7&amp;_nc_ohc=6FWWDbY5Gl4Q7kNvwGV8_-V&amp;_nc_oc=AdrfSuzjaGSM3xOtGsxnBSf_pC5L_AsxOcnzYFaFFOh9dyQitHPsenJ-EVi3_eakQTA&amp;_nc_zt=23&amp;_nc_ht=scontent-bos5-1.xx&amp;edm=AOgd6ZUEAAAA&amp;_nc_gid=KJItAPVE_hYGqq5vjNT4sg&amp;_nc_tpa=Q5bMBQKE1LJtwRTKRi4gnN0g7VSQakyeDbU8CJLVTw5Vb-7P26aOpmdiQ-aPp7XTFsSCJXxlHgEIUMBIZg&amp;stp=c0.5000x0.5000f_dst-emg0_p64x64_q75_tt6&amp;ur=5fad0e&amp;_nc_sid=58080a&amp;oh=00_AQKir6EnbmUy1kjU5roWGhdxyfi1EoufytLkq6-QZJFTTA&amp;oe=6A9CAF6D" alt="Criativo 03"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:flex">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">ad 7/4 - VD - dep. GMN (RMKT Vídeos Perfil)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">1,74%</span></div>
+        <div class="metric"><span class="ml">R$/Conversa</span><span class="mv">R$24,87</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$273,59</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:30%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 04</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/762944049_1394111486007507_6005070677524550755_n.jpg?_nc_cat=109&ccb=1-7&_nc_ohc=QvdhC2GBDJEQ7kNvwE7_5uX&_nc_oc=AdrQWKXd3jfbIO6vsz-EtrQrzGp0Fg_hI2_vG0r3L6VCiBuci1187sAEosKb3ESgGF4&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=xQWiVTsVgVc5WbZoU2AC1A&_nc_tpa=Q5bMBQJR3zMbCfcYh573-8IiNhYRcvDXShv0Wu6boAO1xrbFOH0YigKCcgiI14tuT-oDvIIG_gNWQkSc8Q&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=a7ce7f&_nc_sid=58080a&oh=00_AQKQst4GyuXORC8kqLkF71svTDe6lJv1UKz6yc3lYhgCeg&oe=6A9CD162" alt="Criativo 04"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">post 04/12 - VD - Sustentavelmente</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">2,49%</span></div>
+        <div class="metric"><span class="ml">R$/Conversa</span><span class="mv">R$13,90</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$208,56</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:55%"></div></div>
+      </div>
+      <div class="creative-card">
+        <div class="rank"># 05</div>
+        <div class="creative-thumb">
+          <img src="https://scontent-bos5-1.xx.fbcdn.net/v/t15.5256-10/741918320_2114061819493912_8154042037361462806_n.jpg?_nc_cat=102&ccb=1-7&_nc_ohc=w1m0SO9dam0Q7kNvwFT3adu&_nc_oc=AdrvA1ps-N9amY57-bj_GfeRsZROjVTbYXh1YuT-4Vzh0aEVEFahnb5qnxbkcrm4fOs&_nc_zt=23&_nc_ht=scontent-bos5-1.xx&edm=AOgd6ZUEAAAA&_nc_gid=xQWiVTsVgVc5WbZoU2AC1A&_nc_tpa=Q5bMBQLqLh2e_J7fssRDrxeFQcZl0RB1tScMcgQmcQPvCzOcXksyUU-Hc9VaO85KtmscgKqJNvI5yf4dqw&stp=c0.5000x0.5000f_dst-emg0_p640x640_q75_tt6&ur=a7ce7f&_nc_sid=58080a&oh=00_AQI4C3nHeffLu6eNJWFcXH8KqVtyZBQF3pcPD94dPqyJsA&oe=6A9CD802" alt="Criativo 05"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="thumb-placeholder" style="display:none">📷 Sem imagem</div>
+          <div class="thumb-badge">Vídeo</div>
+        </div>
+        <div class="name">Reel 03/07 - mãe que treina (Audiência Única)</div>
+        <div class="metric"><span class="ml">CTR</span><span class="mv">2,97%</span></div>
+        <div class="metric"><span class="ml">Objetivo</span><span class="mv">Tráfego</span></div>
+        <div class="metric"><span class="ml">Gasto</span><span class="mv">R$79,54</span></div>
+        <div class="d2-bar"><div class="d2-bar-fill" style="width:40%"></div></div>
+      </div>
+    </div>
+
+    <div class="notas" style="margin-top: 18px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>A conta roda hoje com <b>praticamente 1 criativo por campanha</b> concentrando quase todo o gasto (26 anúncios ativos no total, mas só 5 com gasto relevante) — pouca diversidade de teste. O criativo #1 é o melhor da conta e o mais barato por conversa; o #3 é o mesmo criativo de julho, sinal de fadiga (CTR caiu e custo por conversa subiu). Recomendo produzir 3-4 variações novas de depoimento/vídeo para setembro, priorizando o padrão do #1.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 6 — FUNIL -->
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Funil</div>
+      <div class="slide-title">Funil de Conversão — Meta Ads (Agosto)</div>
+      <div class="slide-desc">Do clique ao agendamento — última etapa depende de dado comercial do consultório</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Funil WhatsApp</div>
+        <div class="funnel">
+          <div class="funnel-step">
+            <div class="funnel-label">Cliques no anúncio</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">1.852</span>
+              </div>
+            </div>
+            <div class="funnel-val">100%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Conversa iniciada WPP</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar" style="width:22%;background:linear-gradient(90deg,#FF8C3A,#FF6B00);">
+                <span style="font-size:11px;font-weight:700;color:white">159</span>
+              </div>
+            </div>
+            <div class="funnel-val">8,6%</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Consulta agendada</div>
+            <div class="funnel-bar-wrap" style="background:repeating-linear-gradient(45deg,#e5e7eb,#e5e7eb 6px,#f3f4f6 6px,#f3f4f6 12px);">
+              <div class="funnel-bar" style="width:0%;">
+                <span style="font-size:11px;font-weight:700;color:var(--gray)">?</span>
+              </div>
+            </div>
+            <div class="funnel-val">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Análise do Gargalo</div>
+        <div class="insight-box bad">
+          <h4>91,4% dos cliques não viram conversa</h4>
+          <p>De 1.852 cliques no anúncio, 159 (8,6%) resultaram em conversa iniciada no WhatsApp. Para ticket de R$800 e geo amplo (estado inteiro), parte da queda é esperada — nem todo clique é intenção imediata de compra.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Última etapa sem dado</h4>
+          <p><b>Aguardando dado comercial do gestor:</b> não há fonte de mídia para "consulta agendada" ou "consulta realizada" — essa informação vive na agenda do consultório, fora das tools de Meta/Google.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>CTR acima do benchmark do nicho</h4>
+          <p>2,73% de CTR está acima da faixa de referência para serviços locais (benchmark &gt; 1,2%) — o gargalo não está no anúncio, e sim na conversão de clique para conversa.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Sem o dado de agendamentos/consultas fechadas, não é possível fechar o funil até a venda nem calcular ROAS real. Assim que o gestor enviar a planilha comercial de agosto, atualizamos este slide com a taxa de conversão de conversa → consulta → venda.</p>
+    </div>
+  </div>
+
+
+  <!-- SLIDE 7 — COMPARATIVO AGOSTO x JULHO -->
+  <div class="slide" id="s7">
+    <div class="slide-header">
+      <div class="slide-tag">07 · Comparativo</div>
+      <div class="slide-title">Agosto vs Julho 2026 — Meta Ads</div>
+      <div class="slide-desc">Mês fechado vs mês fechado, mesma metodologia de atribuição</div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-bottom:20px;">
       <table class="tbl">
         <thead>
           <tr>
-            <th>Data</th>
-            <th class="num">Gasto</th>
-            <th class="num">Impressões</th>
-            <th class="num">Cliques</th>
+            <th>Métrica</th>
+            <th class="num">Julho</th>
+            <th class="num">Agosto</th>
+            <th class="num">Δ%</th>
+            <th>Tendência</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>23/08</td><td class="num">R$ 44,40</td><td class="num">1.659</td><td class="num">36</td></tr>
-          <tr><td>24/08</td><td class="num">R$ 60,02</td><td class="num">2.519</td><td class="num">50</td></tr>
-          <tr><td>25/08</td><td class="num">R$ 53,50</td><td class="num">2.007</td><td class="num">51</td></tr>
-          <tr><td>26/08</td><td class="num">R$ 5,91</td><td class="num">268</td><td class="num">12</td></tr>
-          <tr><td>27/08</td><td class="num">R$ 0,06</td><td class="num">9</td><td class="num">0</td></tr>
+          <tr>
+            <td>Investimento</td>
+            <td class="num">R$2.100,20</td>
+            <td class="num">R$1.429,74</td>
+            <td class="num">-31,9%</td>
+            <td><span class="badge red">↓ Conta sem saldo (28-31/08)</span></td>
+          </tr>
+          <tr>
+            <td>Conversas WPP</td>
+            <td class="num">250</td>
+            <td class="num">159</td>
+            <td class="num">-36,4%</td>
+            <td><span class="badge red">↓ Volume (efeito do saldo)</span></td>
+          </tr>
+          <tr>
+            <td>Custo/Conversa</td>
+            <td class="num">R$8,40</td>
+            <td class="num">R$8,99</td>
+            <td class="num">+7,0%</td>
+            <td><span class="badge amber">Leve piora, ainda 40% abaixo da meta</span></td>
+          </tr>
+          <tr>
+            <td>Leads (form)</td>
+            <td class="num">103</td>
+            <td class="num">77</td>
+            <td class="num">-25,2%</td>
+            <td><span class="badge red">↓ Volume</span></td>
+          </tr>
+          <tr>
+            <td>CPL blended</td>
+            <td class="num">R$20,39</td>
+            <td class="num">R$18,57</td>
+            <td class="num">-8,9%</td>
+            <td><span class="badge green">↓ Melhorou</span></td>
+          </tr>
+          <tr>
+            <td>CTR</td>
+            <td class="num">2,29%</td>
+            <td class="num">2,73%</td>
+            <td class="num">+19,2%</td>
+            <td><span class="badge green">↑ Melhorou</span></td>
+          </tr>
+          <tr>
+            <td>CPM</td>
+            <td class="num">R$18,36</td>
+            <td class="num">R$21,10</td>
+            <td class="num">+14,9%</td>
+            <td><span class="badge amber">Atenção</span></td>
+          </tr>
+          <tr>
+            <td>Frequência</td>
+            <td class="num">2,90</td>
+            <td class="num">2,33</td>
+            <td class="num">-19,7%</td>
+            <td><span class="badge green">↓ Menos saturação</span></td>
+          </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="two-col">
-      <div class="insight-box bad">
-        <h4>🔴 Entrega caiu ~90% em 2 dias, sem motivo de orçamento</h4>
-        <p>De uma média de R$50-60/dia (20-25/08), o gasto despencou para R$5,91 em 26/08 e R$0,06 em 27/08. Não é falta de verba: ainda restam R$570,26 do orçamento mensal (R$2.000) para os últimos 4 dias do mês — o dinheiro está disponível e não está sendo gasto.</p>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Dias sem veicular</div>
+        <div class="k-val">4 dias</div>
+        <div class="k-sub">28 a 31/08 — R$0 de gasto</div>
+        <div class="k-delta dn">Saldo esgotado (spend_cap atingido)</div>
       </div>
-      <div class="insight-box warn">
-        <h4>⚠ Causa ainda não identificada pelas tools de leitura</h4>
-        <p>Os dados de insights não indicam a causa (pausa manual, revisão de anúncio, problema de pagamento ou de política). Recomendo checar diretamente no Gerenciador de Anúncios: status das campanhas, status da conta e do método de pagamento, e alertas de política antes do fechamento do mês.</p>
+      <div class="kpi">
+        <div class="k-label">Ritmo nos dias ativos</div>
+        <div class="k-val">R$52,95/dia</div>
+        <div class="k-sub">27 dias com entrega em agosto</div>
+        <div class="k-delta up">Dentro do ritmo planejado (R$66,67/dia)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Google Ads</div>
+        <div class="k-val">-65,1%</div>
+        <div class="k-sub">R$136,54 vs R$391,62 em julho</div>
+        <div class="k-delta dn">25 dias quase sem entrega (05-30/08)</div>
       </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Esse é o achado mais importante do relatório: sem essa queda, agosto estaria no caminho de repetir ou superar o ritmo de julho — as métricas de eficiência (CPR, CPL, CTR, frequência) são as melhores do ano. Resolver a entrega nos últimos dias do mês é a ação de maior impacto disponível agora, mais do que qualquer otimização fina de campanha.</p>
+      <p>Se descontarmos os 4 dias sem saldo, agosto teria fechado perto de R$1.900-2.000 investidos — em linha com julho. A leitura correta do mês: <b>a eficiência melhorou</b> (CTR, frequência, CPL), mas o <b>volume caiu por um problema operacional de saldo</b>, não de estratégia.</p>
     </div>
   </div>
 
 
-  <!-- SLIDE 5 — FUNIL DE CONVERSÃO -->
-  <div class="slide" id="s5">
+  <!-- SLIDE 8 — ANÁLISE -->
+  <div class="slide" id="s8">
     <div class="slide-header">
-      <div class="slide-tag">05 · Funil</div>
-      <div class="slide-title">Funil de Conversão — Meta Ads</div>
-      <div class="slide-desc">Do alcance à conversa WPP — período 01/08 – 27/08/2026</div>
-    </div>
-
-    <div class="funnel" style="margin-bottom: 24px;">
-      <div class="funnel-step">
-        <div class="funnel-label">👁 Pessoas Alcançadas</div>
-        <div class="funnel-bar-wrap">
-          <div class="funnel-bar" style="width:100%; background: linear-gradient(90deg, #374151, #1a1a1a);">29.121</div>
-        </div>
-        <div class="funnel-val">29.121</div>
-        <div class="funnel-cvr"></div>
-      </div>
-      <div class="funnel-step">
-        <div class="funnel-label">🖱 Clicaram no Anúncio</div>
-        <div class="funnel-bar-wrap">
-          <div class="funnel-bar" style="width:6.4%; background: linear-gradient(90deg, var(--orange-light), var(--orange));">1.852</div>
-        </div>
-        <div class="funnel-val">1.852</div>
-        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">6,4%</div>
-      </div>
-      <div class="funnel-step">
-        <div class="funnel-label">🔗 Conexões Totais</div>
-        <div class="funnel-bar-wrap">
-          <div class="funnel-bar" style="width:5%; min-width: 5%; background: linear-gradient(90deg, #fb923c, var(--orange));">203</div>
-        </div>
-        <div class="funnel-val">203</div>
-        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">11,0%</div>
-      </div>
-      <div class="funnel-step">
-        <div class="funnel-label">💬 Conversas WPP Iniciadas</div>
-        <div class="funnel-bar-wrap">
-          <div class="funnel-bar" style="width:4%; min-width: 4%; background: linear-gradient(90deg, #4ade80, var(--green));">159</div>
-        </div>
-        <div class="funnel-val">159</div>
-        <div class="funnel-cvr" style="color:var(--green); font-size:10px; font-weight:700;">78,3%</div>
-      </div>
-      <div class="funnel-step">
-        <div class="funnel-label">🗂 Leads (Form)</div>
-        <div class="funnel-bar-wrap">
-          <div class="funnel-bar" style="width:2%; min-width: 2%; background: linear-gradient(90deg, #fbbf24, var(--amber));">77</div>
-        </div>
-        <div class="funnel-val">77</div>
-        <div class="funnel-cvr" style="color:var(--gray); font-size:10px;">canal separado</div>
-      </div>
-    </div>
-
-    <div class="two-col">
-      <div>
-        <div class="insight-box good">
-          <h4>✓ Alcance → Clique é o melhor do ano</h4>
-          <p>6,4% dos alcançados clicaram (era 4,7% em julho) — CTR mais alto do histórico recente, mesmo com menos gente alcançada por conta do mês parcial.</p>
-        </div>
-        <div class="insight-box good">
-          <h4>✓ Clique → Conexão saudável</h4>
-          <p>11,0% dos cliques viram conexão de mensagem, e 78,3% dessas conexões evoluem para conversa iniciada — funil de mensagem sem gargalo aparente.</p>
-        </div>
-      </div>
-      <div>
-        <div class="insight-box warn">
-          <h4>⚠ Sem dado de venda neste relatório</h4>
-          <p>Este ciclo não recebeu números comerciais (vendas/agendamentos fechados). Sem esse dado, não é possível calcular ROAS ou CVR conversa→venda como nos relatórios anteriores — recomenda-se retomar o envio mensal desse número.</p>
-        </div>
-        <div class="insight-box">
-          <h4>Leads (Form) é canal paralelo</h4>
-          <p>Os 77 leads de formulário vêm de campanhas com objetivo de captação (Vídeos Novos Frio e Sustentavelmente Rmkt) e não passam necessariamente pelo mesmo funil de conversa WPP — por isso aparecem como ramo separado, não como etapa final do funil de mensagem.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- SLIDE 6 — O QUE FUNCIONOU / AJUSTES -->
-  <div class="slide" id="s6">
-    <div class="slide-header">
-      <div class="slide-tag">06 · Análise</div>
+      <div class="slide-tag">08 · Análise</div>
       <div class="slide-title">O que Funcionou e o que Ajustar</div>
-      <div class="slide-desc">Diagnóstico do mês (parcial) — bases para a estratégia de setembro</div>
+      <div class="slide-desc">Síntese do mês fechado de agosto</div>
     </div>
 
-    <div class="two-col" style="margin-bottom: 16px;">
+    <div class="two-col">
       <div>
-        <div style="font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--green); margin-bottom:12px;">✓ O QUE FUNCIONOU</div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funcionou</div>
         <div class="insight-box good">
-          <h4>Vídeos Novos Frio — CPL R$7,13 / CPR R$5,63</h4>
-          <p>Maior investimento do mês e melhor eficiência da conta — testagem em volume de vários vídeos curtos está funcionando bem acima da meta.</p>
+          <h4>Vídeos Novos Frio segue como motor da conta</h4>
+          <p>R$5,63/conversa e R$7,12/lead — melhor custo por resultado da conta, mesmo com leve piora vs julho (R$3,82/R$5,42). Manter como prioridade de orçamento em setembro.</p>
         </div>
         <div class="insight-box good">
-          <h4>Frequência caiu para 2,33 (jul: 2,90)</h4>
-          <p>A renovação de audiência recomendada em junho surtiu efeito — público menos saturado, leilão ainda saudável.</p>
+          <h4>Eficiência subiu apesar do volume menor</h4>
+          <p>CTR (+19,2%) e frequência (-19,7%) melhoraram vs julho — sinal de que o público não está saturado e o criativo líder ainda performa bem.</p>
         </div>
         <div class="insight-box good">
-          <h4>CTR no melhor patamar do ano — 2,73%</h4>
-          <p>Criativos seguem engajando bem, especialmente os novos vídeos e o Remarketing Quente (Abr26).</p>
+          <h4>Custo/conversa WPP seguiu bem abaixo da meta</h4>
+          <p>R$8,99 vs meta de R$15,00 — 40% de folga, mesmo em um mês com 4 dias de conta parada.</p>
         </div>
       </div>
+
       <div>
-        <div style="font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--red); margin-bottom:12px;">⚡ O QUE AJUSTAR</div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que ajustar</div>
         <div class="insight-box bad">
-          <h4>Queda de entrega em 26-27/08 (slide 04)</h4>
-          <p>Prioridade máxima — resolver antes do fechamento do mês, com budget disponível parado.</p>
+          <h4>Conta sem saldo — resolver antes de tudo</h4>
+          <p>4 dias zerados em agosto e setembro já começa no mesmo estado (saldo R$0,06 hoje). Recarregar é pré-requisito para qualquer outra ação (ver slide 04).</p>
         </div>
         <div class="insight-box bad">
-          <h4>Depoimentos Frio zerada pelo 2º mês seguido</h4>
-          <p>Mesmo criativo desde junho sem gerar lead ou conversa — pausar e recriar com ângulo novo.</p>
+          <h4>Depoimentos Frio zerada há 3 meses</h4>
+          <p>Zero leads e zero conversas em agosto, repetindo junho e julho. Pausar e recriar com criativo e público novos.</p>
         </div>
         <div class="insight-box warn">
-          <h4>Google Ads com 3 de 4 campanhas zeradas</h4>
-          <p>Estrutura precisa de revisão — decidir entre reestruturar ou concentrar 100% em Meta.</p>
+          <h4>Remarketing Vídeos Perfil fatigado</h4>
+          <p>Custo por conversa subiu de R$21,30 (julho) para R$25,22 (agosto), rodando com praticamente 1 criativo. Precisa de refresh de criativo em setembro.</p>
         </div>
       </div>
     </div>
-
-    <div class="notas">
-      <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Diferente de junho, agosto não é um mês de audiência saturada — é o oposto: as métricas de qualidade (CTR, frequência, CPR, CPL) são as melhores do ano. O que está travando o resultado é operacional (queda de entrega) e estrutural (Depoimentos Frio e Google Ads parados). Resolvendo esses dois pontos, agosto tem potencial de fechar como o melhor mês desde março.</p>
-    </div>
   </div>
 
 
-  <!-- SLIDE 7 — PRÓXIMOS PASSOS -->
-  <div class="slide" id="s7">
+  <!-- SLIDE 9 — PRÓXIMOS PASSOS -->
+  <!-- ══════════════════════════════════════════════════════════
+       SLIDE 08B — INSTAGRAM ORGÂNICO
+       ══════════════════════════════════════════════════════════ -->
+  <div class="slide" id="s8b">
     <div class="slide-header">
-      <div class="slide-tag">07 · Setembro 2026</div>
-      <div class="slide-title">Próximos Passos</div>
-      <div class="slide-desc">Prioridades para fechar agosto e abrir setembro</div>
+      <div class="slide-tag">08B · Instagram Orgânico</div>
+      <div class="slide-title">Resultado do orgânico no mês</div>
+      <div class="slide-desc">Perfil @endocrinologistamarcelia — conteúdo não pago no Instagram (Agosto/2026).</div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="k-label">Seguidores</div><div class="k-val">8.608</div><div class="k-delta up">+282 (últ. 30 dias)</div></div>
+      <div class="kpi"><div class="k-label">Alcance</div><div class="k-val">50.091</div><div class="k-sub">contas únicas · 140 mil visualizações</div></div>
+      <div class="kpi"><div class="k-label">Visitas ao perfil</div><div class="k-val">1.684</div><div class="k-sub">158 cliques no link</div></div>
+      <div class="kpi"><div class="k-label">Interações</div><div class="k-val">2.581</div><div class="k-sub">120 salvam. · 213 compart.</div></div>
+    </div>
+    <div class="tbl-hint">← arraste para ver todas as colunas →</div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr>
+          <th>Data</th><th>Conteúdo</th><th>Formato</th>
+          <th class="num">Alcance</th><th class="num">Curtidas</th><th class="num">Coment.</th>
+          <th class="num">Salvam.</th><th class="num">Compart.</th><th class="num">Engaj.</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>28/08</td><td>A vida "desorganizada" x o treino organizado</td><td><span class="badge orange">Reel</span></td><td class="num">2.454</td><td class="num">142</td><td class="num">1</td><td class="num">12</td><td class="num">46</td><td class="num"><b>8,6%</b></td></tr>
+          <tr><td>13/08</td><td>Agora sim podemos começar o segundo semestre</td><td><span class="badge orange">Reel</span></td><td class="num">775</td><td class="num">51</td><td class="num">0</td><td class="num">3</td><td class="num">0</td><td class="num"><b>7,0%</b></td></tr>
+          <tr><td>24/08</td><td>Se você conhece alguém assim, já encaminha</td><td><span class="badge orange">Reel</span></td><td class="num">494</td><td class="num">20</td><td class="num">8</td><td class="num">0</td><td class="num">2</td><td class="num"><b>6,9%</b></td></tr>
+          <tr><td>03/08</td><td>Se você já pensou assim, eu preciso conversar</td><td><span class="badge orange">Reel</span></td><td class="num">390</td><td class="num">20</td><td class="num">1</td><td class="num">2</td><td class="num">1</td><td class="num"><b>6,2%</b></td></tr>
+          <tr><td>31/08</td><td>Sim, sempre há uma alternativa!</td><td><span class="badge orange">Reel</span></td><td class="num">173</td><td class="num">16</td><td class="num">2</td><td class="num">0</td><td class="num">0</td><td class="num"><b>11,0%</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight-box good" style="margin-top:16px">
+      <h4>Leitura do orgânico</h4>
+      <p>O Reel de 28/08 (vida desorganizada x treino organizado) liderou com 2.454 contas alcançadas e 212 interações. Os Reels dominam o engajamento (4 dos 5 melhores), e o perfil cresceu +282 seguidores no período. Caminho: manter a cadência de Reels de rotina/mindset, que geram salvamento e compartilhamento.</p>
+    </div>
+    <p style="font-size:11px;color:var(--gray);margin-top:10px">Métricas de conta (alcance, visualizações e interações) incluem conteúdo impulsionado, conforme reportado pelo Instagram.</p>
+  </div>
+
+  <div class="slide" id="s9">
+    <div class="slide-header">
+      <div class="slide-tag">09 · Recomendações</div>
+      <div class="slide-title">Próximos Passos — Setembro 2026</div>
+      <div class="slide-desc">Ações priorizadas por impacto e urgência</div>
     </div>
 
-    <div class="region-grid" style="margin-bottom: 20px;">
+    <div class="region-grid">
       <div class="region-card">
-        <h4>🚨 Resolver Queda de Entrega <span class="pop r">URGENTE</span></h4>
-        <p>Checar status da conta, campanhas e pagamento no Gerenciador de Anúncios — R$570 de orçamento parado nos últimos dias de agosto.</p>
-        <div class="strat">→ Ação imediata, antes de 31/08</div>
+        <h4>🚨 Recarga de saldo<span class="pop">Prioridade máxima</span></h4>
+        <p>Recarregar o saldo pré-pago da conta Meta hoje — sem isso, setembro fica zerado como os últimos 4 dias de agosto.</p>
+        <div class="strat">→ Gestor da conta / financeiro do cliente</div>
       </div>
       <div class="region-card">
-        <h4>🎨 Recriar Depoimentos Frio <span class="pop r">URGENTE</span></h4>
-        <p>Zerada há 2 meses com o mesmo criativo — testar ângulo novo (antes/depois ou rotina de consulta).</p>
-        <div class="strat">→ 1 novo criativo para teste</div>
+        <h4>💳 Checar billing do Google<span class="pop">Alta prioridade</span></h4>
+        <p>Confirmar no Gerenciador do Google Ads por que a campanha ficou 25 dias quase sem gastar (05-30/08) mesmo elegível e sem bloqueio de política.</p>
+        <div class="strat">→ Verificar forma de pagamento / limite de fatura</div>
       </div>
       <div class="region-card">
-        <h4>📈 Escalar Vídeos Novos Frio</h4>
-        <p>Melhor CPL e CPR da conta — avaliar aumento de orçamento assim que a entrega normalizar.</p>
-        <div class="strat">→ Após resolver o alerta operacional</div>
+        <h4>⏸️ Pausar/recriar Depoimentos Frio<span class="pop">Alta prioridade</span></h4>
+        <p>3º mês zerado — pausar a campanha atual e subir novo criativo de depoimento com o público de alto poder aquisitivo do perfil.md.</p>
+        <div class="strat">→ Dry run + confirmação do gestor antes de executar</div>
       </div>
       <div class="region-card">
-        <h4>🔄 Renovar ABO Vídeos Perfil (Jan26)</h4>
-        <p>Custo subiu para R$25,22/conversa, concentrado em anúncio antigo — trocar criativo.</p>
-        <div class="strat">→ Primeira semana de setembro</div>
+        <h4>🎨 Refresh de criativos<span class="pop">Próximo mês</span></h4>
+        <p>Produzir 3-4 variações no padrão do criativo #1 (Vídeos Novos Frio) para Remarketing Vídeos Perfil, hoje fatigado com CTR em queda.</p>
+        <div class="strat">→ Fonte: perfil do Instagram @endocrinologistamarcelia</div>
       </div>
       <div class="region-card">
-        <h4>🔍 Revisar Estrutura Google Ads</h4>
-        <p>3 de 4 campanhas seguem zeradas — decidir reestruturar ou concentrar budget em Meta.</p>
-        <div class="strat">→ Revisão em setembro</div>
+        <h4>💰 Orçamento de setembro<span class="pop">Planejamento</span></h4>
+        <p>Manter R$2.000/mês combinado, priorizando Vídeos Novos Frio e Sustentavelmente Rmkt (melhor custo/resultado) assim que o saldo for restabelecido.</p>
+        <div class="strat">→ Redistribuir de Remarketing Vídeos Perfil (ABO) para os dois acima</div>
       </div>
       <div class="region-card">
-        <h4>🎯 Meta de Setembro</h4>
-        <p><strong>Manter custo/conversa abaixo de R$15</strong> (agosto: R$8,99) e recuperar ritmo diário de ~R$66/dia. Retomar envio mensal do dado comercial (vendas).</p>
-        <div class="strat">→ Fechamento em 30/09</div>
+        <h4>📊 Metas de setembro<span class="pop">Setembro 2026</span></h4>
+        <p>CPA WPP meta: R$15,00 · Conversas: ~200-250 · Leads: ~90-100 · Invest: R$2.000</p>
+        <div class="strat">→ Revisão tática a cada 3 dias + fechamento em 01/10</div>
       </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Agosto entrega o melhor conjunto de métricas de eficiência do ano — o trabalho de setembro é destravar volume (entrega + Depoimentos Frio + Google Ads), não reinventar a estratégia. Vídeos Novos Frio confirma que criativos novos em maior volume é o caminho certo para este cliente agora.</p>
+      <p>Setembro só começa a valer a pena otimizar depois que o saldo da conta Meta for recarregado e o billing do Google for verificado — enquanto isso não acontecer, qualquer ajuste de segmentação ou criativo não terá efeito prático. Pendência comercial: aguardando dado do consultório sobre consultas agendadas/realizadas em agosto para fechar o funil completo e calcular ROAS real.</p>
     </div>
   </div>
 
-</div><!-- /slides -->
+</div><!-- /#slides -->
 
 
-<!-- NAVEGAÇÃO -->
+<!-- NAVEGAÇÃO — não modificar -->
 <div id="nav">
-  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)">&#8592;</button>
+  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)" aria-label="Slide anterior">&#8592;</button>
   <div id="nav-center">
-    <div id="slide-label">CAPA</div>
+    <div id="slide-label">Capa</div>
     <div id="nav-track"></div>
   </div>
-  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)">&#8594;</button>
+  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)" aria-label="Próximo slide">&#8594;</button>
 </div>
 
 <script>
-  const logoUrl = 'https://almaagenciadigital.com.br/wp-content/uploads/2024/01/logo-alma-branca.png';
-  document.querySelectorAll('.slide').forEach(slide => {
-    const wrap = document.createElement('div');
-    wrap.className = 'alma-logo-wrap';
-    const img = document.createElement('img');
-    img.className = 'alma-logo-img';
-    img.src = logoUrl;
-    img.alt = 'Alma Agência';
-    img.onerror = () => wrap.remove();
-    wrap.appendChild(img);
-    slide.insertBefore(wrap, slide.firstChild);
+  /* ══════════════════════════════════════════════════════════
+     LOGO DA ALMA — injetada automaticamente em todos os slides
+     (exceto a capa). Não precisa repetir nos HTMLs dos slides.
+     ══════════════════════════════════════════════════════════ */
+  const ALMA_LOGO_SRC = "data:image/jpeg;base64,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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2gAMAwEAAgADAAAAIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAACAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAADAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAKAAAAAAAAAAABBCAAABBCAAAAABCDACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAANAAAAKAAAAIAAACPBAAMCAEIAEFAAAACIBAILAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAACAAAKAAAAAAAAKAEKAADAAAAAEIAIAACECAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAKAAAAAAAAKAAIAAAAAAAAAJEAAAIFKAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAFAAAKAAAAAAAAKAAAAAAAAAAAAAEJAGAFKAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAKAAAAAAAAKAAAAAAAAAAAAAAENLDFKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAKAAAAAAAAKAAAAAAAAAAAAAAEIFAFKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAEAAKAAAAAAAAKAAAAAAAAAAAAACIACAFKAAAAACBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAANAKAAAAAAAAKAAAAAAAAAAAAAOAAKAFKAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAACKAAAAAAAAKAAAAAAAAAAAAAKAAJAFKAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAJKAAAAAAAAKAAAAAAAAAAAAAICAAJHKAAAAJAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAIIAAAAAAAAAEAAAAAAEAALAIEIAAEAMIAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIABCAAAACDAAACBCDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFNLDDIEAHFIAPIEHFBBFGCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIEMMIIMEIIAIMMAEAEEMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/9oADAMBAAIAAwAAABDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzRzzzzzzywwwzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyxzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzjTzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyzTzzzzzzzzzzzzzzzzzzzTTTTzzzzzDzzzzzzDDjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxDzzyjzzzzzzzzwwwwzyTjyzjzzDTyxDzzyzDxTxxDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyzzzzzTzzzzzzzzzzzzzyzTzzjzwzzzzShzyzzzzyzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxTzzyDzzzzzzzzzzzzzzxzzzjzyjzzwyjzzxzhTzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxjzzzzTzzzzzzzzzzzzzzzzzzzyjzzyjxTyByhTzzjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyjzzzxjzzzzzzzzzzzzzzzzzzzyjzzyjzwjzChTzyjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxjzzzjzzzzzzzzzzzzzzzzzzzyjzzyjzAzjyhTzyjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxDCDTzzzzzzzzzzzzzzzzzzzzzzyjzzyjxzwzyhTzyjzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzTzzwjzzzzzzzzzzzzzzzzzzyjzzyjTzzzyhTzyjzTyzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyhzzzzzzzzzzzzzzzzzzyjzzyjTzxTyhTzyjzzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyhTzzxjzzzzzzzzzzzzzzzzzyjzzyhzTzxCBTzyixjzgzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyxzzzxzzzzxzzxzzzzzyzzzyzwyAwzzzzzzzxhxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzDTzDzTzzzzTTzDzTDTDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzywwQTjCzTzzyzARTzwhTDTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzywzzzyyzzzwwywyzzzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz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";
+
+  // Injeta o logo em todos os slides (exceto o de capa, id="s0")
+  document.querySelectorAll('.slide:not(#s0)').forEach(slide => {
+    if (!slide.querySelector('.alma-logo-wrap')) {
+      const wrap = document.createElement('div');
+      wrap.className = 'alma-logo-wrap';
+      const img = document.createElement('img');
+      img.src = ALMA_LOGO_SRC;
+      img.alt = 'Alma.';
+      img.className = 'alma-logo-img';
+      wrap.appendChild(img);
+      slide.insertBefore(wrap, slide.firstChild);
+    }
   });
 
+  /* ── LABELS DOS SLIDES ── */
   const slideLabels = [
     'Capa',
     'Visão Geral',
-    'Campanhas',
+    'Campanhas Meta',
     'Google Ads',
-    'Alerta Operacional',
+    'Alerta Crítico',
+    'Top Criativos',
     'Funil',
+    'Comparativo Ago×Jul',
     'Análise',
+    'Instagram Orgânico',
     'Próximos Passos',
   ];
 
+  /* ── ENGINE DE NAVEGAÇÃO — não modificar ── */
   const slides   = document.querySelectorAll('.slide');
   const label    = document.getElementById('slide-label');
   const track    = document.getElementById('nav-track');
   const progress = document.getElementById('progress-bar');
   let current    = 0;
 
+  // Cria os dots de navegação
   slides.forEach((_, i) => {
     const d = document.createElement('div');
     d.className = 'dot' + (i === 0 ? ' active' : '');
@@ -828,12 +1143,21 @@
     track.querySelectorAll('.dot')[current].classList.add('active');
     label.textContent = slideLabels[current] || `Slide ${current + 1}`;
     progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+    // Re-inicializa indicadores de scroll ao trocar de slide
     setTimeout(initTableScrollHints, 60);
   }
 
+  /* ── INDICADORES DE SCROLL NAS TABELAS ──
+     • Injeta hint "↔ deslize para ver mais" acima de cada tabela
+     • Injeta fade gradiente na borda direita
+     • Some automaticamente ao rolar até o fim
+     • Some imediatamente se a tabela couber na tela
+     • Re-inicializa ao trocar de slide (chamado no goTo)
+  ── */
   function initTableScrollHints() {
     const activeSlide = slides[current];
     activeSlide.querySelectorAll('.tbl-wrap').forEach(wrap => {
+      // Hint text: cria uma vez e reutiliza
       let hint = wrap.previousElementSibling;
       if (!hint || !hint.classList.contains('tbl-hint')) {
         hint = document.createElement('div');
@@ -841,12 +1165,14 @@
         hint.textContent = '↔ deslize para ver mais';
         wrap.parentNode.insertBefore(hint, wrap);
       }
+      // Fade: cria dentro do tbl-wrap uma vez
       let fade = wrap.querySelector('.tbl-fade');
       if (!fade) {
         fade = document.createElement('div');
         fade.className = 'tbl-fade';
         wrap.appendChild(fade);
       }
+      // Função de atualização
       function update() {
         const hasOverflow = wrap.scrollWidth > wrap.clientWidth + 2;
         const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
@@ -854,20 +1180,24 @@
         hint.classList.toggle('show', show);
         fade.classList.toggle('show', show);
       }
+      // Remove listener antigo e registra novo (evita duplicatas ao trocar slides)
       if (wrap._scrollHandler) wrap.removeEventListener('scroll', wrap._scrollHandler);
       wrap._scrollHandler = update;
       wrap.addEventListener('scroll', update, { passive: true });
-      update();
+      update(); // Avalia imediatamente
     });
   }
 
+  // Inicializa ao carregar
   setTimeout(initTableScrollHints, 100);
 
+  // Navegação por teclado
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
     if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
   });
 
+  // Navegação por swipe (mobile)
   let touchStartX = 0;
   document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, { passive: true });
   document.addEventListener('touchend', e => {
