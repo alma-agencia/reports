@@ -574,6 +574,33 @@
       </div>
     </div>
 
+    <div class="kpi-row" style="margin-top:14px;">
+      <div class="kpi kpi-green">
+        <div class="k-label">Receita Estimada</div>
+        <div class="k-val">R$ 167.400</div>
+        <div class="k-sub">29 consultas × R$600 + 15 tratamentos × R$10.000</div>
+        <div class="k-delta ok">Projeção sobre ticket médio, não faturamento confirmado</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">ROAS Estimado</div>
+        <div class="k-val">8,27x</div>
+        <div class="k-sub">Receita ÷ investimento total (R$ 20.230,80)</div>
+        <div class="k-delta dn">Julho na mesma base: 9,92x (↓ 16,6%)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Ticket Médio — Consulta</div>
+        <div class="k-val">R$ 600</div>
+        <div class="k-sub">Valor informado pelo consultório</div>
+        <div class="k-delta dn">Abaixo do custo por paciente novo (R$ 697,61)</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">Ticket Médio — Tratamento</div>
+        <div class="k-val">R$ 10.000</div>
+        <div class="k-sub">Valor informado pelo consultório</div>
+        <div class="k-delta up">7,4x o custo de aquisição do tratamento</div>
+      </div>
+    </div>
+
     <div class="tbl-wrap" style="margin-top:16px;">
       <table class="tbl">
         <thead>
@@ -625,14 +652,14 @@
         <p>Investimento total de <strong>R$ 20.230,80</strong> em agosto (Meta R$ 18.142,20 nas duas contas + Google Ads R$ 2.088,60) dividido pelos <strong>29 pacientes novos</strong> que chegaram ao consultório. Considerando só os 15 que fecharam tratamento, o custo por tratamento fechado é de <strong>R$ 1.348,72</strong>.</p>
       </div>
       <div class="insight-box warn">
-        <h4>Falta o valor para calcular o retorno</h4>
-        <p>A planilha de agosto trouxe os nomes e o status de cada paciente, mas <strong>não trouxe valores</strong> — nem ticket do tratamento, nem faturamento do mês. Por isso este relatório apresenta custo de aquisição, mas <strong>não calcula ROAS</strong>: seria necessário estimar o ticket, e a regra da agência é não estimar métrica sem fonte.</p>
+        <h4>Quem fecha tratamento é quem sustenta a conta</h4>
+        <p>A consulta de <strong>R$ 600</strong> não cobre sozinha o custo de trazer um paciente novo (<strong>R$ 697,61</strong>) — a operação só fica positiva por causa dos <strong>15 que fecharam tratamento</strong>, cada um custando R$ 1.348,72 para gerar R$ 10.000. É por isso que a taxa de fechamento de 51,7% é o número mais importante deste relatório: se ela cair, o ROAS cai junto e rápido.</p>
       </div>
     </div>
 
     <div class="notas" style="margin-top:18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Agosto fecha com <strong>15 tratamentos fechados a partir de 29 pacientes novos</strong> — taxa de 51,7%, ou seja, mais da metade de quem chega ao consultório fecha. Esse é o número mais importante do mês: mostra que o problema não está no atendimento, e sim no volume que chega. Euclides da Cunha, com estrutura muito menor, converteu 60% (3 de 5) contra 50% de Feira de Santana. Para o próximo ciclo, o dado que falta é o <strong>valor do tratamento</strong>: com ele, o custo de R$ 1.348,72 por tratamento fechado deixa de ser um número isolado e passa a dizer se a operação é lucrativa e quanto podemos escalar.</p>
+      <p>Agosto fecha com <strong>15 tratamentos fechados a partir de 29 pacientes novos</strong> — taxa de 51,7%, ou seja, mais da metade de quem chega ao consultório fecha. Esse é o número mais importante do mês: mostra que o problema não está no atendimento, e sim no volume que chega. Euclides da Cunha, com estrutura muito menor, converteu 60% (3 de 5) contra 50% de Feira de Santana. Com os tickets informados pelo consultório (R$ 600 na consulta e R$ 10.000 no tratamento), agosto fecha com <strong>R$ 167.400 de receita estimada e ROAS de 8,27x</strong>. Recalculando julho com os mesmos tickets, o mês anterior teria dado 9,92x — a queda de 16,6% acompanha o aumento do custo por tratamento (R$ 1.115 → R$ 1.348,72). Como a consulta sozinha não paga a aquisição, a alavanca de escala é a taxa de fechamento, não o volume bruto de conversas.</p>
     </div>
   </div>
 
@@ -988,7 +1015,7 @@
         </tbody>
       </table>
     </div>
-    <p style="font-size:11px;color:var(--gray);margin:-10px 0 20px;">Comparativo comercial: julho fechou com custo por tratamento de <strong>R$1.115</strong>; agosto fechou em <strong>R$1.348,72</strong> (+21,0%). Receita e ROAS de julho (R$214.550 / 14,8x) não têm par em agosto porque a planilha do consultório deste mês trouxe nomes e status, mas não trouxe valores — e a regra da agência é não estimar métrica sem fonte.</p>
+    <p style="font-size:11px;color:var(--gray);margin:-10px 0 20px;">Comparativo comercial: custo por tratamento fechado passou de <strong>R$1.115</strong> (julho) para <strong>R$1.348,72</strong> (agosto), +21,0%. <strong>Sobre o ROAS:</strong> o relatório de julho foi publicado com tickets de R$850/consulta e R$15.000/tratamento (ROAS 14,8x); os valores atualizados pelo consultório são R$600 e R$10.000. Recalculando julho com os tickets atuais, o mês teria fechado em <strong>9,92x</strong> — essa é a comparação válida contra os <strong>8,27x</strong> de agosto (↓ 16,6%). Ambos são projeção sobre ticket médio, não faturamento confirmado.</p>
 
     <!-- KPIs de destaque do comparativo -->
     <div class="kpi-row">
@@ -1115,9 +1142,9 @@
     <div class="region-grid">
       <!-- Card de ação 1 -->
       <div class="region-card">
-        <h4>💰 Valor do tratamento<span class="pop">Alta prioridade</span></h4>
-        <p>A planilha de agosto trouxe nomes e status, mas não trouxe valores. Com o ticket dos 15 tratamentos fechados, o custo de R$1.348,72 por fechamento deixa de ser um número isolado e passa a dizer se a operação é lucrativa e quanto dá para escalar.</p>
-        <div class="strat">→ Incluir a coluna de valor na planilha do próximo ciclo</div>
+        <h4>🎯 Taxa de fechamento<span class="pop">Alta prioridade</span></h4>
+        <p>A consulta (R$600) não cobre o custo de aquisição (R$697,61) — quem paga a conta são os 15 tratamentos fechados. Subir a taxa de 51,7% vale mais que qualquer ganho de CPA: cada fechamento a mais adiciona R$10.000 de receita sobre um custo de R$1.348,72.</p>
+        <div class="strat">→ Comparar abordagem de Euclides (60%) vs Feira (50%)</div>
       </div>
       <!-- Card de ação 2 -->
       <div class="region-card">
