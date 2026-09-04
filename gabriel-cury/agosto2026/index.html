@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Dr. Gabriel Cury — Agosto 2026</title>
+<style>
+  :root{--orange:#FF6B00;--orange-light:#FF8C3A;--orange-pale:#FFF0E6;--dark:#1a1a1a;--gray:#6b7280;--light:#f9fafb;--white:#fff;--border:#e5e7eb;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:#fff;}
+  body{overflow:hidden;}
+  #slides{position:relative;width:100%;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:48px 64px 80px;opacity:0;pointer-events:none;transition:opacity .4s ease;overflow-y:auto;}
+  .slide.active{opacity:1;pointer-events:all;}
+  #progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--orange);transition:width .4s ease;z-index:200;}
+  #nav{position:fixed;bottom:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-top:1px solid var(--border);z-index:100;}
+  .nav-btn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark);font-size:16px;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .nav-btn:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-pale);}
+  #nav-center{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+  #slide-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);}
+  #nav-track{display:flex;align-items:center;gap:5px;}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s;}
+  .dot.active{background:var(--orange);transform:scale(1.6);width:14px;border-radius:3px;}
+  .cover-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;text-align:center;}
+  .cover-badge{background:var(--orange-pale);color:var(--orange);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:28px;}
+  .cover-title{font-size:52px;font-weight:800;color:var(--dark);line-height:1.1;margin-bottom:12px;}
+  .cover-sub{font-size:18px;color:var(--gray);margin-bottom:40px;}
+  .cover-meta{display:flex;gap:32px;justify-content:center;align-items:center;}
+  .cover-meta-item{text-align:center;}
+  .cover-meta-item .val{font-size:28px;font-weight:800;color:var(--orange);}
+  .cover-meta-item .lbl{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+  .cover-divider{width:1px;height:48px;background:var(--border);}
+  .slide-header{width:100%;margin-bottom:24px;flex-shrink:0;}
+  .slide-tag{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+  .slide-title{font-size:28px;font-weight:800;color:var(--dark);line-height:1.15;}
+  .slide-desc{font-size:14px;color:var(--gray);margin-top:6px;}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;margin-bottom:20px;flex-shrink:0;}
+  .kpi-row-3{grid-template-columns:repeat(3,1fr);}
+  .kpi{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--orange);}
+  .kpi .k-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);margin-bottom:5px;}
+  .kpi .k-val{font-size:22px;font-weight:800;color:var(--dark);line-height:1;}
+  .kpi .k-sub{font-size:11px;color:var(--gray);margin-top:4px;}
+  .kpi .k-delta{font-size:11px;font-weight:600;margin-top:4px;}
+  .kpi .k-delta.up{color:var(--green);}
+  .kpi .k-delta.dn{color:var(--red);}
+  .tbl-wrap{width:100%;overflow-x:auto;}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;}
+  .tbl th{background:var(--dark);color:white;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;}
+  .tbl th:first-child{border-radius:6px 0 0 6px;}
+  .tbl th:last-child{border-radius:0 6px 6px 0;}
+  .tbl td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--dark);vertical-align:middle;}
+  .tbl tr:hover td{background:var(--orange-pale);}
+  .tbl tr:last-child td{border-bottom:none;}
+  .tbl .num{text-align:right;font-variant-numeric:tabular-nums;}
+  .tbl .total-row td{font-weight:700;background:var(--light);}
+  .badge{display:inline-block;padding:2px 10px;border-radius:100px;font-size:11px;font-weight:600;}
+  .badge.green{background:#dcfce7;color:var(--green);}
+  .badge.red{background:#fee2e2;color:var(--red);}
+  .badge.amber{background:#fef3c7;color:var(--amber);}
+  .badge.orange{background:var(--orange-pale);color:var(--orange);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;}
+  .insight-box{background:white;border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:10px;}
+  .insight-box h4{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+  .insight-box p{font-size:13px;color:var(--gray);line-height:1.5;}
+  .insight-box.good{border-left-color:var(--green);}
+  .insight-box.warn{border-left-color:var(--amber);}
+  .insight-box.bad{border-left-color:var(--red);}
+  .notas{width:100%;background:var(--dark);border-radius:8px;padding:14px 18px;margin-top:16px;}
+  .notas .notas-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+  .notas p{font-size:12px;color:#9ca3af;line-height:1.6;}
+  .notas ol,.notas ul{padding-left:16px;margin-top:4px;}
+  .notas li{font-size:12px;color:#9ca3af;line-height:1.7;}
+  .compare-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-bottom:20px;}
+  .compare-col{border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+  .compare-col .cc-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-bottom:10px;}
+  .compare-col .cc-val{font-size:20px;font-weight:800;color:var(--dark);}
+  .compare-col .cc-label{font-size:11px;color:var(--gray);margin-top:2px;}
+  .compare-col.highlight{background:var(--orange-pale);border-color:var(--orange);}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="slides">
+
+  <!-- SLIDE 0: CAPA -->
+  <div class="slide active" data-label="Agosto 2026">
+    <div class="cover-wrap">
+      <div class="cover-badge">Google Ads · Agosto 2026</div>
+      <div class="cover-title">Dr. Gabriel Cury</div>
+      <div class="cover-sub">Ortopedista e Traumatologista · Goiânia – GO</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item"><div class="val">R$ 2.699,67</div><div class="lbl">Investido</div></div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item"><div class="val">133</div><div class="lbl">Contatos gerados</div></div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item"><div class="val">R$ 20,30</div><div class="lbl">CPA médio</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1: VISÃO GERAL -->
+  <div class="slide" data-label="Visão Geral">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Agosto 2026</div>
+      <div class="slide-title">Visão Geral do Mês</div>
+      <div class="slide-desc">Dados reais — Google Ads API, campanha "*[mp] [Search] [Leads] Ortopedista" (única campanha ativa da conta)</div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$ 2.699,67</div>
+        <div class="k-sub">Teto mensal: R$ 2.500</div>
+        <div class="k-delta up">↑ +22,9% vs Julho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Contatos (conversões)</div>
+        <div class="k-val">133</div>
+        <div class="k-sub">132 Botão Agendar + 1 Ligação</div>
+        <div class="k-delta up">↑ +25,5% vs Julho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPA médio</div>
+        <div class="k-val">R$ 20,30</div>
+        <div class="k-sub">Meta interna: R$ 20,00 (confirmada 04/08)</div>
+        <div class="k-delta up">↑ 2,0% melhor que Julho</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
+        <div class="k-val">4,52%</div>
+        <div class="k-sub">Benchmark serviços locais: &gt;1,2%</div>
+        <div class="k-delta up">↑ +1,54 p.p. vs Julho</div>
+      </div>
+    </div>
+    <div class="kpi-row kpi-row-3">
+      <div class="kpi">
+        <div class="k-label">Cliques</div>
+        <div class="k-val">1.062</div>
+        <div class="k-sub">CPC médio: R$ 2,54</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Impressões</div>
+        <div class="k-val">23.473</div>
+        <div class="k-sub">-10,7% vs Julho (público mais qualificado)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Taxa clique → contato</div>
+        <div class="k-val">12,5%</div>
+        <div class="k-sub">133 contatos / 1.062 cliques</div>
+      </div>
+    </div>
+    <div class="notas">
+      <div class="notas-title">Nota do Gestor</div>
+      <p>Única campanha ativa na conta (Search — Ortopedista Geral). As outras 16 campanhas seguem pausadas. Mês fechado sem incidentes de conta — orçamento consumido normalmente ao longo dos 31 dias, sem períodos de pausa por esgotamento de budget.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: COMPARATIVO AGO x JUL -->
+  <div class="slide" data-label="Comparativo">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Comparativo Mensal</div>
+      <div class="slide-title">Agosto vs Julho 2026</div>
+      <div class="slide-desc">Mesma campanha, mesma conta — variação mês a mês</div>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl">
+        <thead>
+          <tr><th>Métrica</th><th class="num">Julho</th><th class="num">Agosto</th><th class="num">Δ%</th><th>Tendência</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Investimento</td><td class="num">R$ 2.196,68</td><td class="num">R$ 2.699,67</td><td class="num">+22,9%</td><td><span class="badge amber">Gasto subiu</span></td></tr>
+          <tr><td>Contatos (conversões)</td><td class="num">106</td><td class="num">133</td><td class="num">+25,5%</td><td><span class="badge green">Melhorou</span></td></tr>
+          <tr><td>CPA médio</td><td class="num">R$ 20,72</td><td class="num">R$ 20,30</td><td class="num">-2,0%</td><td><span class="badge green">Melhorou</span></td></tr>
+          <tr><td>CTR</td><td class="num">2,98%</td><td class="num">4,52%</td><td class="num">+51,7%</td><td><span class="badge green">Melhorou</span></td></tr>
+          <tr><td>CPC médio</td><td class="num">R$ 2,81</td><td class="num">R$ 2,54</td><td class="num">-9,6%</td><td><span class="badge green">Melhorou</span></td></tr>
+          <tr><td>Cliques</td><td class="num">782</td><td class="num">1.062</td><td class="num">+35,8%</td><td><span class="badge green">Melhorou</span></td></tr>
+          <tr><td>Impressões</td><td class="num">26.288</td><td class="num">23.473</td><td class="num">-10,7%</td><td><span class="badge orange">Público mais qualificado</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="insight-box good">
+      <h4>✅ Menos impressões, mais cliques e mais contatos</h4>
+      <p>Agosto teve 10,7% menos impressões que Julho, mas 35,8% mais cliques e 25,5% mais contatos — sinal de tráfego mais qualificado, não apenas mais volume. CTR quase dobrou (2,98% → 4,52%).</p>
+    </div>
+    <div class="insight-box warn">
+      <h4>⚠️ Gasto real segue acima do budget documentado</h4>
+      <p>Média diária real de Agosto: R$ 87,08/dia. Média de Julho: R$ 70,86/dia. O perfil do cliente registra budget diário de R$ 40,00/dia (~R$1.200/mês) — o gasto real está rodando a mais do dobro disso, e o total de Agosto (R$ 2.699,67) já ultrapassa o teto mensal de R$ 2.500 informado no roster. Recomenda-se checar a configuração real do budget diário na conta Google Ads.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: EVOLUÇÃO SEMANAL -->
+  <div class="slide" data-label="Evolução Semanal">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Detalhamento</div>
+      <div class="slide-title">Evolução semana a semana</div>
+      <div class="slide-desc">Julho começou fraco e se recuperou; Agosto manteve o patamar bom o mês inteiro</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Julho — recuperação ao longo do mês</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Semana</th><th class="num">Contatos</th><th class="num">CPA</th><th class="num">CTR</th></tr></thead>
+            <tbody>
+              <tr><td>01–07/07</td><td class="num">1</td><td class="num">R$ 198,41</td><td class="num">1,39%</td></tr>
+              <tr><td>08–14/07</td><td class="num">18</td><td class="num">R$ 16,28</td><td class="num">1,66%</td></tr>
+              <tr><td>15–21/07</td><td class="num">34</td><td class="num">R$ 21,53</td><td class="num">4,37%</td></tr>
+              <tr><td>22–28/07</td><td class="num">37</td><td class="num">R$ 18,76</td><td class="num">4,68%</td></tr>
+              <tr><td>29–31/07</td><td class="num">16</td><td class="num">R$ 17,45</td><td class="num">4,21%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Agosto — patamar estável</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Semana</th><th class="num">Contatos</th><th class="num">CPA</th><th class="num">CTR</th></tr></thead>
+            <tbody>
+              <tr><td>01–07/08</td><td class="num">36</td><td class="num">R$ 18,39</td><td class="num">4,44%</td></tr>
+              <tr><td>08–14/08</td><td class="num">33</td><td class="num">R$ 23,58</td><td class="num">4,51%</td></tr>
+              <tr><td>15–21/08</td><td class="num">37</td><td class="num">R$ 18,34</td><td class="num">4,78%</td></tr>
+              <tr><td>22–28/08</td><td class="num">20</td><td class="num">R$ 23,52</td><td class="num">4,49%</td></tr>
+              <tr><td>29–31/08</td><td class="num">7</td><td class="num">R$ 15,81</td><td class="num">3,99%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="insight-box" style="border-left-color:var(--orange);margin-top:14px;">
+      <h4>📊 Explicação da sazonalidade: aprendizado do 2º RSA</h4>
+      <p>A 1ª semana de Julho teve CPA de R$198,41 (praticamente sem contatos) — coincide com a criação do 2º anúncio responsivo (RSA) em 06/07 registrada no histórico do cliente, que entra em fase de aprendizado do Google. A partir de 13/07 a performance estabiliza no patamar de CTR ~4-5% e CPA ~R$17-24, que se manteve durante todo Agosto.</p>
+    </div>
+    <div class="insight-box warn">
+      <h4>⚠️ Dia de pico de custo isolado (10/08)</h4>
+      <p>10/08 teve o maior gasto do mês (R$ 199,31) com apenas 4 conversões — CPA de R$ 49,83 nesse dia isolado, bem acima da média mensal. Não se repetiu nos dias seguintes; monitorar se volta a ocorrer.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: O QUE FUNCIONOU / O QUE AJUSTAR -->
+  <div class="slide" data-label="Insights">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Diagnóstico</div>
+      <div class="slide-title">O que funcionou e o que ajustar</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funcionou</div>
+        <div class="insight-box good">
+          <h4>Rotação de RSA + call asset (04/08)</h4>
+          <p>Pausa do RSA de pior CTR/conversão, criação de novo anúncio reforçando "consulta particular" e adição de asset de chamada telefônica — resultado: 1 conversão via "Calls from ads" (canal novo, inexistente em Julho) e CTR sustentado acima de 4,4% até o fim do mês.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Negativação de 20 termos fora de escopo (04/08)</h4>
+          <p>Remoção de buscas de outras especialidades (quiropraxia, fisiatra) e convênios não atendidos (Unimed, Bradesco, SulAmérica, Ipasgo, IMAS) — CPA de Agosto (R$20,30) ficou em linha com a meta interna de R$20, mesmo com o aumento de 22,9% no investimento.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Meta atual de CPA está sendo cumprida</h4>
+          <p>A meta de R$20,00/contato, confirmada em 04/08/2026, foi praticamente atingida em Agosto (R$20,30, 1,5% acima) e também em Julho (R$20,72) — indício de que R$20 é um alvo realista para manter.</p>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que ajustar</div>
+        <div class="insight-box warn">
+          <h4>Budget real descolado do documentado</h4>
+          <p>Gasto médio real (~R$87/dia em Agosto) segue muito acima do R$40/dia registrado no perfil do cliente, e o total do mês já passou do teto de R$2.500. Reconciliar a configuração de budget diário na conta com o valor documentado, ou atualizar o perfil se o aumento foi intencional.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Ações de conversão sem uso aparente</h4>
+          <p>Das 3 ações de conversão documentadas no perfil (Botão Agendar, Botão WhatsApp, Whatsapp ivepem), apenas "Botão Agendar" (+ "Calls from ads" a partir de Agosto) registrou conversões em Jul/Ago. Verificar se "Botão WhatsApp" e "Whatsapp ivepem" ainda existem/fazem sentido ou devem ser arquivadas.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Keywords 100% em BROAD match</h4>
+          <p>Todas as 5 keywords ativas seguem em correspondência ampla — risco de tráfego fora do funil ainda presente mesmo após a negativação de 04/08. Testar migração da keyword de maior volume ("ortopedista goiania", ~59% do gasto) para PHRASE, mantendo BROAD nas demais como rede de segurança.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: PLANO DE AÇÃO + NOTAS -->
+  <div class="slide" data-label="Plano de Ação">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Próximos Passos</div>
+      <div class="slide-title">Plano de ação — Setembro 2026</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Ações propostas</div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>1. Reconciliar budget diário real vs documentado</h4>
+          <p>Confirmar no Google Ads o valor configurado do orçamento diário da campanha e decidir, com o gestor, se mantém o patamar atual (~R$85-90/dia) ou ajusta para caber no teto de R$2.500/mês (~R$80,60/dia).</p>
+        </div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>2. Sincronizar meta de CPA no roster</h4>
+          <p>Atualizar o campo cpa_meta do roster (hoje "a definir") para R$20,00, já confirmado em perfil.md em 04/08/2026 e validado pelo resultado real de Jul/Ago.</p>
+        </div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>3. Testar PHRASE na keyword de maior volume</h4>
+          <p>Migrar "ortopedista goiania" para PHRASE match mantendo orçamento e lances, comparando CPA/CTR nas 2 semanas seguintes antes de estender às demais.</p>
+        </div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>4. Auditar ações de conversão e campanhas pausadas</h4>
+          <p>Verificar utilidade de "Botão WhatsApp"/"Whatsapp ivepem" e revisar as 16 campanhas pausadas para arquivar as sem uso — organização de conta.</p>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Próxima rotação de RSA</div>
+        <div class="insight-box good">
+          <h4>Janela prevista: 03-04/09/2026</h4>
+          <p>Seguindo a cadência de substituição a cada 30 dias adotada desde 06/07, a próxima rotação do RSA de pior CTR/conversão está prevista para o início de Setembro.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>💰 Resultado comercial de agosto: R$4.250,00 (ROI 1,57x)</h4>
+          <p>5 pacientes fechados no mês, dado enviado pelo gestor:</p>
+          <table class="tbl" style="margin:8px 0;">
+            <thead><tr><th>Data</th><th>Paciente</th><th>Procedimento</th><th class="num">Valor</th></tr></thead>
+            <tbody>
+              <tr><td>08/08</td><td>Emival Borges</td><td>Consulta</td><td class="num">R$500,00</td></tr>
+              <tr><td>08/08</td><td>Madson Silva</td><td>Consulta</td><td class="num">R$500,00</td></tr>
+              <tr><td>10/08</td><td>Fabricio Nascimento</td><td>Consulta</td><td class="num">R$500,00</td></tr>
+              <tr><td>17/08</td><td>Kelton Corrêa</td><td>Consulta</td><td class="num">R$500,00</td></tr>
+              <tr><td>18/08</td><td>Cleonice Bezerra</td><td>Consulta + Infiltração</td><td class="num">R$2.250,00</td></tr>
+            </tbody>
+          </table>
+          <p><b>Receita total: R$4.250,00</b> sobre investimento de R$2.699,67 → <b>ROI 1,57x</b>. Custo por paciente fechado: R$539,93 (5 pacientes / 133 contatos = 3,8% de conversão contato→paciente).</p>
+        </div>
+      </div>
+    </div>
+    <div class="notas">
+      <div class="notas-title">Nota do Gestor</div>
+      <p>Agosto fechou com melhora consistente de eficiência frente a Julho: CTR quase dobrou, CPA levemente abaixo da meta de R$20 e 25,5% mais contatos, mesmo com 22,9% mais investimento. Com o dado comercial recebido, o mês fechou com <b>ROI de 1,57x</b> (R$4.250,00 em receita sobre R$2.699,67 investidos) — positivo, mas com margem pequena para uma clínica; vale acompanhar se o ticket médio sobe nos próximos meses. O ponto de atenção administrativo segue o mesmo: o gasto diário efetivo está bem acima do valor de R$40/dia documentado no perfil do cliente, e o teto mensal de R$2.500 já foi ultrapassado — vale alinhar com o cliente se o aumento de budget foi autorizado e atualizar a documentação interna.</p>
+    </div>
+  </div>
+
+</div>
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <div id="nav-center"><div id="slide-label"></div><div id="nav-track"></div></div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</div>
+<script>
+  const slides=document.querySelectorAll('.slide'),labels=Array.from(slides).map(s=>s.dataset.label||''),total=slides.length;
+  let cur=0;
+  const track=document.getElementById('nav-track'),slideLabel=document.getElementById('slide-label'),pb=document.getElementById('progress-bar');
+  labels.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',()=>go(i));track.appendChild(d);});
+  function go(n){slides[cur].classList.remove('active');track.children[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');track.children[cur].classList.add('active');slideLabel.textContent=labels[cur];pb.style.width=((cur+1)/total*100)+'%';}
+  document.getElementById('btn-prev').addEventListener('click',()=>go(cur-1));
+  document.getElementById('btn-next').addEventListener('click',()=>go(cur+1));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);});
+  let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)go(dx<0?cur+1:cur-1);});
+  go(0);
+</script>
+</body>
+</html>
