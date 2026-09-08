@@ -601,6 +601,77 @@
       <p>Todas as campanhas rodam no mesmo público (Montes Claros e região, 23+ anos) — ainda não há teste de segmentação. Duas campanhas com gasto na semana já estão pausadas ("22 motivos" e "bolsonaristas"); vale confirmar se foi decisão de mídia ou se o conteúdo saiu de pauta.</p>
     </div>
   </div>
+
+  <!-- SLIDE 2B — LOCAL E REGIÃO (segmentação geográfica configurada no adset) -->
+  <div class="slide" id="s2b">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Local e Região</div>
+      <div class="slide-title">Onde e para quem os anúncios estão indo</div>
+      <div class="slide-desc">Segmentação real configurada no conjunto de anúncios (mesma para todas as campanhas ativas)</div>
+    </div>
+
+    <div class="insight-box bad">
+      <h4>⚠ O nome do conjunto não bate com a segmentação real</h4>
+      <p>O conjunto se chama <b>"[Montes Claros e região] Aberto acima de 23 anos"</b> — mas a configuração real é bem mais restrita: só <b>mulheres</b>, 19 a 65 anos, <b>casadas</b>, com interesse em família/filhos/casa. Não é um público "aberto". Importante você confirmar se essa restrição foi intencional da sua equipe.</p>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Idade</div>
+        <div class="k-val" style="font-size:18px">19–65 anos</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Gênero</div>
+        <div class="k-val" style="font-size:18px">Feminino</div>
+        <div class="k-sub">apenas mulheres</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Estado civil</div>
+        <div class="k-val" style="font-size:18px">Casado(a)</div>
+        <div class="k-sub">código Meta 3 — confirmar no Ads Manager</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Plataforma</div>
+        <div class="k-val" style="font-size:18px">Instagram</div>
+        <div class="k-sub">feed, stories, reels, explorar</div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:14px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Cidades e raio configurados</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Cidade</th><th>Estado</th><th class="num">Raio</th></tr></thead>
+            <tbody>
+              <tr><td>Montes Claros</td><td>Minas Gerais</td><td class="num">80 km</td></tr>
+              <tr><td>Januária</td><td>Minas Gerais</td><td class="num">80 km</td></tr>
+              <tr><td>Salinas</td><td>Minas Gerais</td><td class="num">80 km</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Interesses usados para restringir</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Interesse</th></tr></thead>
+            <tbody>
+              <tr><td>Criação de filhos (crianças e paternidade)</td></tr>
+              <tr><td>Lar (casa e jardim)</td></tr>
+              <tr><td>Família (conceito social)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas" style="margin-top:14px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Somando os 3 raios de 80km (Montes Claros, Januária, Salinas), a cobertura geográfica é ampla dentro do norte de Minas Gerais — mas dentro dela o público é filtrado por gênero, estado civil e interesse, o que reduz bastante o alcance possível. Vale uma conversa rápida pra confirmar se a candidata quer manter essa restrição ou abrir para um público mais amplo (ex: todos os gêneros/estados civis).</p>
+    </div>
+  </div>
+
   <!-- ══════════════════════════════════════════════════════════
        SLIDE 4 — INSIGHTS / ANÁLISE (layout 2 colunas)
        Use .two-col para dividir análise textual e visual
@@ -608,7 +679,7 @@
        ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s4">
     <div class="slide-header">
-      <div class="slide-tag">03 · Insights</div>
+      <div class="slide-tag">04 · Insights</div>
       <div class="slide-title">O que já dá pra aprender em 5 dias</div>
       <div class="slide-desc">Leitura da primeira semana de veiculação (03–07/09)</div>
     </div>
@@ -654,7 +725,7 @@
        ══════════════════════════════════════════════════════════ -->
   <div class="slide" id="s7">
     <div class="slide-header">
-      <div class="slide-tag">04 · Recomendações</div>
+      <div class="slide-tag">05 · Recomendações</div>
       <div class="slide-title">Próximos Passos — até o fim de Setembro</div>
       <div class="slide-desc">Ações priorizadas para o restante do trabalho (contrato até 30/09/2026)</div>
     </div>
@@ -770,6 +841,7 @@
     'Capa',
     'Visão Geral',
     'Campanhas',
+    'Local e Região',
     'Insights',
     'Recomendações',
     // Adicione mais se criar slides extras
