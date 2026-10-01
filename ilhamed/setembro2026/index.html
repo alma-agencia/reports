@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  TEMPLATE DE RELATÓRIO — AGÊNCIA PROSPECT                        ║
+  ║                                                                  ║
+  ║  COMO USAR:                                                      ║
+  ║  1. Duplique este arquivo para a pasta do cliente                ║
+  ║     Ex: TRAFEGO_PAGO/clientes/[cliente]/Relatorio_[Mes][Ano].html ║
+  ║  2. Substitua os placeholders marcados com [COLCHETES]           ║
+  ║  3. Adicione/remova slides conforme a demanda                    ║
+  ║  4. Faça upload no subdomínio:                                   ║
+  ║     report.almaagenciadigital.com.br/[cliente]/[slug]            ║
+  ║     Ex: report.almaagenciadigital.com.br/tempo/maio2026          ║
+  ║                                                                  ║
+  ║  COMPONENTES DISPONÍVEIS (exemplificados nos slides):            ║
+  ║  • .kpi-row + .kpi       → Cards de métricas (4 colunas)        ║
+  ║  • .tbl + .tbl-wrap      → Tabela com hover laranja              ║
+  ║  • .badge.(green|red|amber|orange) → Badges de status           ║
+  ║  • .two-col              → Layout 2 colunas                      ║
+  ║  • .creative-grid + .creative-card → Grid de criativos          ║
+  ║  • .insight-box          → Caixa de insight com borda laranja    ║
+  ║  • .funnel               → Funil de conversão com barras         ║
+  ║  • .notas                → Rodapé escuro com notas do gestor     ║
+  ║  • .region-grid          → Grid 3 colunas para regiões/items     ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<title>Relatório Ilhamed Hospitalar — Setembro 2026</title>
+<style>
+  /* ══════════════════════════════════
+     DESIGN SYSTEM — NÃO MODIFICAR
+     Cores, tipografia e tokens visuais
+     ══════════════════════════════════ */
+  :root {
+    --orange: #FF6B00;
+    --orange-light: #FF8C3A;
+    --orange-pale: #FFF0E6;
+    --dark: #1a1a1a;
+    --gray: #6b7280;
+    --light: #f9fafb;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: #fff; }
+  body { overflow: hidden; }
+
+  /* ── SLIDES CONTAINER ── */
+  #slides { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-start; align-items: flex-start;
+    padding: 48px 64px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* ── BARRA DE PROGRESSO ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: var(--orange); transition: width .4s ease;
+    z-index: 200;
+  }
+
+  /* ── NAVEGAÇÃO ── */
+  #nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(255,255,255,0.97);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid var(--border); background: white;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); font-size: 16px; transition: all .2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-pale); }
+  #nav-center { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  #slide-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--orange);
+  }
+  #nav-track { display: flex; align-items: center; gap: 5px; }
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--border); cursor: pointer;
+    transition: all .3s;
+  }
+  .dot.active { background: var(--orange); transform: scale(1.6); width: 14px; border-radius: 3px; }
+
+  /* ── CAPA ── */
+  .cover-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; width: 100%; height: 100%; text-align: center;
+  }
+  .cover-badge {
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+  }
+  .cover-title {
+    font-size: 52px; font-weight: 800; color: var(--dark);
+    line-height: 1.1; text-align: center; margin-bottom: 12px;
+  }
+  .cover-sub { font-size: 18px; color: var(--gray); text-align: center; margin-bottom: 40px; }
+  .cover-meta { display: flex; gap: 32px; justify-content: center; }
+  .cover-meta-item { text-align: center; }
+  .cover-meta-item .val { font-size: 28px; font-weight: 800; color: var(--orange); }
+  .cover-meta-item .lbl {
+    font-size: 11px; color: var(--gray); text-transform: uppercase;
+    letter-spacing: 1px; margin-top: 2px;
+  }
+  .cover-divider { width: 1px; background: var(--border); }
+
+  /* ── CABEÇALHO DE SLIDE ── */
+  .slide-header { width: 100%; margin-bottom: 24px; flex-shrink: 0; }
+  .slide-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--orange); margin-bottom: 6px;
+  }
+  .slide-title { font-size: 28px; font-weight: 800; color: var(--dark); line-height: 1.15; }
+  .slide-desc { font-size: 14px; color: var(--gray); margin-top: 6px; }
+
+  /* ── KPI CARDS ── */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 14px; width: 100%; margin-bottom: 20px; flex-shrink: 0;
+  }
+  .kpi {
+    background: white; border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    position: relative; overflow: hidden;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--orange);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--gray); margin-bottom: 5px;
+  }
+  .kpi .k-val { font-size: 22px; font-weight: 800; color: var(--dark); line-height: 1; }
+  .kpi .k-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .kpi .k-delta { font-size: 11px; font-weight: 600; margin-top: 4px; }
+  .kpi .k-delta.up { color: var(--green); }
+  .kpi .k-delta.dn { color: var(--red); }
+  /* variação: 2 ou 3 colunas — aplique na classe inline */
+  .kpi-row-2 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* ── TABELA ── */
+  .tbl-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; position: relative; }
+
+  /* ── INDICADORES DE SCROLL NAS TABELAS ── */
+  .tbl-hint {
+    display: none; font-size: 11px; color: var(--gray);
+    margin-bottom: 5px; text-align: center; letter-spacing: .3px;
+  }
+  .tbl-hint.show { display: block; }
+  .tbl-fade {
+    display: none; position: absolute; top: 0; right: 0;
+    width: 52px; height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,.97));
+    pointer-events: none; z-index: 2; border-radius: 0 6px 6px 0;
+  }
+  .tbl-fade.show { display: block; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .tbl th {
+    background: var(--dark); color: white; padding: 10px 12px;
+    text-align: left; font-weight: 600; font-size: 12px; letter-spacing: .3px;
+  }
+  .tbl th:first-child { border-radius: 6px 0 0 6px; }
+  .tbl th:last-child { border-radius: 0 6px 6px 0; }
+  .tbl td {
+    padding: 8px 12px; border-bottom: 1px solid var(--border);
+    color: var(--dark); vertical-align: middle;
+  }
+  .tbl tr:hover td { background: var(--orange-pale); }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: #dcfce7; color: var(--green); }
+  .badge.red    { background: #fee2e2; color: var(--red); }
+  .badge.amber  { background: #fef3c7; color: var(--amber); }
+  .badge.orange { background: var(--orange-pale); color: var(--orange); }
+
+  /* ── LAYOUT 2 COLUNAS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+  .two-col-4060 { display: grid; grid-template-columns: 2fr 3fr; gap: 24px; width: 100%; }
+  .two-col-6040 { display: grid; grid-template-columns: 3fr 2fr; gap: 24px; width: 100%; }
+
+  /* ── LOGO ALMA ── */
+  .alma-logo-wrap {
+    position: absolute; top: 20px; right: 20px; z-index: 10;
+  }
+  .alma-logo-img {
+    height: 44px; width: auto; filter: invert(1); opacity: 0.82;
+  }
+
+  /* ── GRID DE CRIATIVOS ── */
+  .creative-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 12px; width: 100%;
+  }
+  .creative-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; background: white;
+  }
+  /* Thumbnail do criativo */
+  .creative-thumb {
+    width: 100%; aspect-ratio: 9/16;
+    border-radius: 6px; overflow: hidden;
+    background: var(--light); margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .creative-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  /* Placeholder quando sem imagem */
+  .creative-thumb .thumb-placeholder {
+    font-size: 11px; color: var(--gray); text-align: center; padding: 8px;
+  }
+  /* Badge de formato sobre a thumb */
+  .creative-thumb .thumb-badge {
+    position: absolute; bottom: 6px; left: 6px;
+    background: rgba(0,0,0,0.65); color: white;
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 100px; letter-spacing: .5px;
+  }
+  .creative-card .rank {
+    font-size: 10px; font-weight: 700; color: var(--orange);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .creative-card .name {
+    font-size: 12px; font-weight: 700; color: var(--dark);
+    margin-bottom: 8px; line-height: 1.3; min-height: 30px;
+  }
+  .creative-card .metric {
+    display: flex; justify-content: space-between;
+    font-size: 12px; padding: 3px 0; border-bottom: 1px solid var(--border);
+  }
+  .creative-card .metric:last-of-type { border-bottom: none; }
+  .creative-card .metric .ml { color: var(--gray); }
+  .creative-card .metric .mv { font-weight: 600; color: var(--dark); }
+  .d2-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .d2-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--orange-light), var(--orange)); }
+
+  /* ── INSIGHT BOX ── */
+  .insight-box {
+    background: white; border: 1px solid var(--border);
+    border-left: 4px solid var(--orange); border-radius: 0 8px 8px 0;
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .insight-box h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+  .insight-box p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+  .insight-box.good { border-left-color: var(--green); }
+  .insight-box.bad  { border-left-color: var(--red); }
+  .insight-box.warn { border-left-color: var(--amber); }
+
+  /* ── FUNIL ── */
+  .funnel { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .funnel-step { display: flex; align-items: center; gap: 10px; }
+  .funnel-bar-wrap {
+    flex: 1; height: 34px; background: var(--border);
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .funnel-bar {
+    height: 100%; border-radius: 4px; display: flex;
+    align-items: center; padding-left: 10px; transition: width 1s ease;
+  }
+  .funnel-label { font-size: 12px; color: var(--dark); font-weight: 600; white-space: nowrap; width: 160px; }
+  .funnel-val { font-size: 12px; color: var(--gray); white-space: nowrap; width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ── NOTAS DO GESTOR ── */
+  .notas {
+    width: 100%; margin-top: 18px; flex-shrink: 0;
+    background: #1a1a1a; border-radius: 10px; padding: 16px 20px;
+  }
+  .notas-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #FF6B00; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notas p { font-size: 13px; color: #d1d5db; line-height: 1.7; margin: 0; }
+
+  /* ── GRID DE REGIÕES / ITEMS ── */
+  .region-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+  .region-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: white; }
+  .region-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .region-card .pop { font-size: 10px; color: var(--orange); background: var(--orange-pale); padding: 2px 8px; border-radius: 100px; }
+  .region-card p { font-size: 12px; color: var(--gray); line-height: 1.5; margin-top: 4px; }
+  .region-card .strat {
+    font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+
+  /* ── CAIXA DE TEXTO LIVRE ── */
+  .text-box {
+    width: 100%; background: var(--light); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px;
+  }
+  .text-box p { font-size: 14px; color: var(--dark); line-height: 1.8; }
+  .text-box ul, .text-box ol { padding-left: 20px; }
+  .text-box li { font-size: 14px; color: var(--dark); line-height: 1.8; margin-bottom: 4px; }
+
+  /* ── DESTAQUE ÚNICO (hero number) ── */
+  .hero-number {
+    font-size: 72px; font-weight: 900; color: var(--orange);
+    line-height: 1; margin-bottom: 8px;
+  }
+  .hero-label { font-size: 16px; color: var(--gray); margin-bottom: 24px; }
+
+  /* ── COMPARATIVO ANTES/DEPOIS ── */
+  .compare-row {
+    display: flex; gap: 16px; align-items: stretch; width: 100%; margin-bottom: 12px;
+  }
+  .compare-col {
+    flex: 1; border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px;
+  }
+  .compare-col.before { border-top: 3px solid var(--red); }
+  .compare-col.after  { border-top: 3px solid var(--green); }
+  .compare-col .c-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .compare-col.before .c-label { color: var(--red); }
+  .compare-col.after  .c-label { color: var(--green); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    body { overflow: hidden; }
+    .slide { padding: 20px 16px 72px; }
+
+    /* Capa */
+    .cover-wrap { padding: 0 4px; }
+    .cover-badge { font-size: 10px; padding: 4px 12px; margin-bottom: 18px; }
+    .cover-title { font-size: 28px; }
+    .cover-sub { font-size: 13px; margin-bottom: 22px; }
+    .cover-meta { gap: 12px; flex-wrap: nowrap; justify-content: center; align-items: center; }
+    .cover-meta-item .val { font-size: 20px; }
+    .cover-meta-item .lbl { font-size: 10px; }
+    .cover-divider { width: 1px; height: 32px; flex-shrink: 0; }
+
+    /* Cabeçalhos */
+    .slide-title { font-size: 18px; }
+    .slide-desc { font-size: 12px; }
+    .slide-header { margin-bottom: 16px; }
+
+    /* KPIs */
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
+    .kpi { padding: 12px 14px; }
+    .kpi .k-val { font-size: 17px; }
+    .kpi .k-label { font-size: 9px; }
+    .kpi .k-sub, .kpi .k-delta { font-size: 10px; }
+
+    /* Tabelas — scroll horizontal visível */
+    .tbl-wrap { border-radius: 8px; }
+    .tbl { font-size: 12px; min-width: 480px; }
+    .tbl th { padding: 8px 10px; font-size: 11px; }
+    .tbl td { padding: 6px 10px; }
+
+    /* Criativos */
+    .creative-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .creative-card { padding: 10px; }
+    .creative-card .name { font-size: 11px; min-height: 24px; }
+    .creative-card .metric { font-size: 11px; }
+
+    /* Layouts */
+    .two-col, .two-col-4060, .two-col-6040 { grid-template-columns: 1fr; gap: 12px; }
+    .region-grid { grid-template-columns: 1fr; gap: 10px; }
+    .compare-row { flex-direction: column; gap: 10px; }
+
+    /* Funil */
+    .funnel-label { width: 100px; font-size: 10px; }
+    .funnel-val { width: 40px; font-size: 10px; }
+    .funnel-bar-wrap { height: 28px; }
+
+    /* Notas */
+    .notas { padding: 12px 14px; }
+    .notas p { font-size: 12px; }
+
+    /* Logo */
+    .alma-logo-img { height: 32px; }
+    .alma-logo-wrap { top: 14px; right: 14px; }
+
+    /* Misc */
+    #nav { padding: 0 12px; }
+    .nav-btn { width: 36px; height: 36px; font-size: 13px; }
+    #slide-label { font-size: 10px; }
+    .hero-number { font-size: 48px; }
+    .hero-label { font-size: 14px; }
+  }
+  @media (max-width: 480px) {
+    .slide { padding: 16px 12px 68px; }
+    .cover-title { font-size: 24px; }
+    .cover-meta { gap: 8px; }
+    .cover-meta-item .val { font-size: 18px; }
+    .kpi-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .kpi .k-val { font-size: 15px; }
+    .creative-grid { grid-template-columns: 1fr 1fr; }
+    .region-grid { grid-template-columns: 1fr; }
+    .tbl { min-width: 420px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar" style="width:0%"></div>
+
+<div id="slides">
+
+  <div class="slide active" id="s0">
+    <div class="cover-wrap">
+      <div class="cover-badge">Relatório Mensal · Tráfego Pago · Setembro 2026</div>
+      <div class="cover-title">Ilhamed Hospitalar</div>
+      <div class="cover-sub">Performance Meta Ads + Google Ads · Setembro 2026</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="val">R$2.773,09</div>
+          <div class="lbl">Investido (Meta+Google)</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">299</div>
+          <div class="lbl">Conversas WhatsApp (Meta)</div>
+        </div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item">
+          <div class="val">R$8,98</div>
+          <div class="lbl">CPA WPP (meta R$8,00)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="slide" id="s1">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Visão Geral</div>
+      <div class="slide-title">Investimento e Resultados — Setembro 2026</div>
+      <div class="slide-desc">Meta Ads (conversas no WhatsApp) + Google Ads (Performance Max — visitas à loja). Fechado 01/09 a 30/09.</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento Total</div>
+        <div class="k-val">R$2.773,09</div>
+        <div class="k-sub">Orçamento combinado cadastrado: R$2.000/mês</div>
+        <div class="k-delta dn">↑ +38,3% vs agosto — acima do orçamento cadastrado (+38,7%)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Meta Ads — Investido</div>
+        <div class="k-val">R$2.685,69</div>
+        <div class="k-sub">Conversas iniciadas: 299</div>
+        <div class="k-delta dn">↑ +40,9% vs agosto</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Meta Ads — CPA (conversa)</div>
+        <div class="k-val">R$8,98</div>
+        <div class="k-sub">Meta do cliente: R$8,00</div>
+        <div class="k-delta up">↓ -10,9% vs agosto (melhorou)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Google Ads — Investido</div>
+        <div class="k-val">R$87,40</div>
+        <div class="k-sub">Conversões (visitas/estim.): 6,0</div>
+        <div class="k-delta dn">↓ -11,4% vs agosto · entrega retomada em 23/09</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">CPM (Meta)</div>
+        <div class="k-val">R$17,77</div>
+        <div class="k-sub">vs R$13,10 em agosto</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR (Meta)</div>
+        <div class="k-val">1,5%</div>
+        <div class="k-sub">vs 1,4% em agosto</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Frequência (Meta)</div>
+        <div class="k-val">1,90</div>
+        <div class="k-sub">vs 2,11 em agosto</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Alcance (Meta)</div>
+        <div class="k-val">79,7K</div>
+        <div class="k-sub">vs 68,9K em agosto</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Setembro foi o melhor mês do semestre em volume: <b>299 conversas iniciadas no WhatsApp</b> (+58,2% vs agosto e 49,5% acima da referência de 200 conversas/mês), com o CPA caindo de R$10,08 para <b>R$8,98</b> — a 12,3% da meta de R$8,00. O resultado veio com mais investimento: R$2.773,09 somando Meta e Google, +38,7% sobre o orçamento mensal cadastrado de R$2.000, concentrado na segunda quinzena (após o lançamento da campanha Cadeira AVD reclinável, em 16/09, o gasto diário passou de R$85–130 para R$150–270). A veiculação teve duas janelas sem entrega — de 05 a 08/09 (incluindo o feriado de 07/09) e de 23 a 28/09 —, de modo que a conta entregou em 20 dos 30 dias. Os indicadores de qualidade seguiram saudáveis: CTR em 1,5%, frequência em 1,90 (menor que agosto) e alcance 15,6% maior (79,7 mil contas). O CPM subiu de R$13,10 para R$17,77 (+35,7%), efeito de leilão mais disputado nos dias de maior verba, mas foi mais que compensado pela taxa de conversa.</p>
+    </div>
+  </div>
+
+
+  <div class="slide" id="s2">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Campanhas</div>
+      <div class="slide-title">Performance por Campanha — Meta Ads</div>
+      <div class="slide-desc">Resultados = conversas iniciadas no WhatsApp (onsite_conversion.total_messaging_connection). Período: 01–30/09. Status = efetivo na conta em 01/10 (pode ter mudado após o fechamento do mês). A soma das campanhas (298 conversas) difere em 1 do total da conta (299) por critério de atribuição da Meta.</div>
+    </div>
+
+    <div class="tbl-hint show">→ Role a tabela para o lado para ver todas as colunas</div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Campanha</th>
+            <th class="num">Gasto</th>
+            <th class="num">Conversas</th>
+            <th class="num">CPA</th>
+            <th class="num">CTR</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>[Loja] Cadeira AVD reclinável (lançada em 16/09)</td>
+            <td class="num">R$1.041,80</td>
+            <td class="num">139</td>
+            <td class="num">R$7,50</td>
+            <td class="num">1,8%</td>
+            <td><span class="badge green">Ativa · abaixo da meta</span></td>
+          </tr>
+          <tr>
+            <td>[Loja] Cadeira de Banho D60</td>
+            <td class="num">R$448,77</td>
+            <td class="num">50</td>
+            <td class="num">R$8,98</td>
+            <td class="num">1,3%</td>
+            <td><span class="badge amber">Pausada em 30/09</span></td>
+          </tr>
+          <tr>
+            <td>[Loja] Andador D10</td>
+            <td class="num">R$380,12</td>
+            <td class="num">28</td>
+            <td class="num">R$13,58</td>
+            <td class="num">1,0%</td>
+            <td><span class="badge amber">Pausada em 30/09</span></td>
+          </tr>
+          <tr>
+            <td>[Loja] Inalador respiração bebê</td>
+            <td class="num">R$291,50</td>
+            <td class="num">11</td>
+            <td class="num">R$26,50</td>
+            <td class="num">0,7%</td>
+            <td><span class="badge red">Pausada · CPA alto</span></td>
+          </tr>
+          <tr>
+            <td>[17/08] Boost post → WhatsApp</td>
+            <td class="num">R$143,42</td>
+            <td class="num">20</td>
+            <td class="num">R$7,17</td>
+            <td class="num">1,2%</td>
+            <td><span class="badge amber">Pausada em 16/09</span></td>
+          </tr>
+          <tr>
+            <td>[RMK] Tráfego → Perfil IG (Ago26)</td>
+            <td class="num">R$100,09</td>
+            <td class="num">1</td>
+            <td class="num">R$100,09</td>
+            <td class="num">2,3%</td>
+            <td><span class="badge amber">Pausada · substituída</span></td>
+          </tr>
+          <tr>
+            <td>Engajamento de post (New Engajamento)</td>
+            <td class="num">R$63,45</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">1,3%</td>
+            <td><span class="badge amber">Pausada em 16/09</span></td>
+          </tr>
+          <tr>
+            <td>[09/09] Boost post → WhatsApp</td>
+            <td class="num">R$49,29</td>
+            <td class="num">10</td>
+            <td class="num">R$4,93</td>
+            <td class="num">2,0%</td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr>
+            <td>Post &quot;Estudante da área da saúde&quot; (v2)</td>
+            <td class="num">R$48,87</td>
+            <td class="num">8</td>
+            <td class="num">R$6,11</td>
+            <td class="num">3,6%</td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+          <tr>
+            <td>[11/09] Boost post → WhatsApp</td>
+            <td class="num">R$39,38</td>
+            <td class="num">28</td>
+            <td class="num">R$1,41</td>
+            <td class="num">5,7%</td>
+            <td><span class="badge green">Ativa · destaque</span></td>
+          </tr>
+          <tr>
+            <td>Post IG &quot;Você sente as pernas muito...&quot;</td>
+            <td class="num">R$30,80</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">1,7%</td>
+            <td><span class="badge amber">Ativa · sem conversa</span></td>
+          </tr>
+          <tr>
+            <td>[Loja] Out/26 — 3 criativos high ticket (início 30/09)</td>
+            <td class="num">R$21,25</td>
+            <td class="num">1</td>
+            <td class="num">R$21,25</td>
+            <td class="num">2,1%</td>
+            <td><span class="badge green">Ativa · em início</span></td>
+          </tr>
+          <tr>
+            <td>[Loja] Out/26 — Lojas (início 30/09)</td>
+            <td class="num">R$18,54</td>
+            <td class="num">2</td>
+            <td class="num">R$9,27</td>
+            <td class="num">2,0%</td>
+            <td><span class="badge green">Ativa · em início</span></td>
+          </tr>
+          <tr>
+            <td>[RMK] Tráfego → Perfil IG (Set26, início 30/09)</td>
+            <td class="num">R$4,99</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">1,8%</td>
+            <td><span class="badge green">Ativa · em início</span></td>
+          </tr>
+          <tr>
+            <td>Post &quot;Estudante da área da saúde&quot; (v1)</td>
+            <td class="num">R$3,42</td>
+            <td class="num">0</td>
+            <td class="num">—</td>
+            <td class="num">3,3%</td>
+            <td><span class="badge green">Ativa</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="notas" style="margin-top: 18px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>A campanha <b>Cadeira AVD reclinável</b>, lançada em 16/09, foi a grande protagonista: R$1.041,80 investidos, 139 conversas e CPA de <b>R$7,50</b> — abaixo da meta de R$8 — respondendo por 46,5% das conversas do mês com 38,8% do investimento. Entre as campanhas de produto já existentes, <b>Cadeira de Banho D60</b> ficou em R$8,98 (melhor que os R$11,93 de agosto), enquanto <b>Andador D10</b> piorou (R$9,05 → R$13,58) e <b>Inalador respiração bebê</b> (campanha nova, CTR 0,7%) teve o pior retorno do mês: R$291,50 para 11 conversas (R$26,50). Os três foram pausados em 30/09 como parte da reestruturação para outubro, que também abriu duas novas campanhas de lojas (uma delas com 3 criativos de ticket alto) e substituiu o remarketing de perfil de agosto por uma versão enxuta (Set26). No remarketing de agosto, R$100,09 geraram 1 conversa — esperado, já que o objetivo é levar tráfego ao perfil do Instagram, não conversa. As campanhas de impulsionamento de post somaram R$315,18 e 66 conversas (CPA médio R$4,78), com destaque para o boost de 11/09: R$39,38, 28 conversas, CPA R$1,41 e CTR de 5,7%.</p>
+    </div>
+  </div>
+
+
+  <div class="slide" id="s3">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Google Ads</div>
+      <div class="slide-title">Performance Max — Visitas à Loja</div>
+      <div class="slide-desc">Única campanha da conta Google Ads (customer 2838595327). Período: 01–30/09 vs 01–31/08.</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investido</div>
+        <div class="k-val">R$87,40</div>
+        <div class="k-sub">vs R$98,63 em agosto</div>
+        <div class="k-delta up">↓ -11,4% vs agosto</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Conversões (estim. Google)</div>
+        <div class="k-val">6,0</div>
+        <div class="k-sub">vs 14,0 em agosto</div>
+        <div class="k-delta dn">↓ -57,1% vs agosto</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CPA</div>
+        <div class="k-val">R$14,57</div>
+        <div class="k-sub">vs R$7,05 em agosto</div>
+        <div class="k-delta dn">↑ +106,8% vs agosto (piorou)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
+        <div class="k-val">8,8%</div>
+        <div class="k-sub">vs 7,5% em agosto</div>
+        <div class="k-delta up">↑ +1,3pp vs agosto</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr><th>Métrica</th><th class="num">Agosto</th><th class="num">Setembro</th><th class="num">Δ%</th></tr></thead>
+        <tbody>
+          <tr><td>Investimento</td><td class="num">R$98,63</td><td class="num">R$87,40</td><td class="num">-11,4%</td></tr>
+          <tr><td>Cliques</td><td class="num">225</td><td class="num">63</td><td class="num">-72,0%</td></tr>
+          <tr><td>Impressões</td><td class="num">2.998</td><td class="num">713</td><td class="num">-76,2%</td></tr>
+          <tr><td>CPC médio</td><td class="num">R$0,44</td><td class="num">R$1,39</td><td class="num">+216,5%</td></tr>
+          <tr><td>Conversões</td><td class="num">14,0</td><td class="num">6,0</td><td class="num">-57,1%</td></tr>
+          <tr><td>Dias com entrega</td><td class="num">até 20/08</td><td class="num">8/30 (retomou em 23/09)</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="insight-box warn" style="margin-top:14px;">
+      <h4>A campanha ficou sem entrega até 22/09</h4>
+      <p>A Performance Max esteve ativa na conta durante todo o mês, mas sem veiculação de 21/08 a 22/09: zero impressões e zero gasto nesse intervalo. A entrega voltou a partir de 23/09, já a cerca de R$10/dia (o dobro do orçamento diário de R$5 configurado, patamar que o Google permite em dias de maior oportunidade). Todo o investimento de setembro (R$87,40) e as 6 conversões vieram, portanto, dos 8 últimos dias do mês. O valor de conversão reportado pelo Google (R$6,00) é estimativa de visita à loja, não faturamento.</p>
+    </div>
+
+    <div class="notas" style="margin-top:14px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Os números de setembro refletem uma campanha que passou três semanas parada e só voltou a veicular no fim do mês — por isso as comparações com agosto (-76,2% de impressões, CPA +106,8%) não representam a eficiência da campanha em operação normal. Nos 8 dias de retomada, o CPA ficou em R$14,57 (R$87,40 para 6 conversões), acima dos R$7,05 de agosto. Prioridade para outubro: entender o que interrompeu a entrega entre 21/08 e 22/09 (faturamento, aprovação de ativos ou sinal de conversão), garantir que não se repita e só então decidir sobre verba.</p>
+    </div>
+  </div>
+
+
+  <div class="slide" id="s4">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Insights</div>
+      <div class="slide-title">O Que Funcionou e o Que Ajustar</div>
+      <div class="slide-desc">Com base nas métricas de mídia (Meta Insights + Google Ads) de setembro/2026 vs agosto/2026.</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">✅ O que funcionou</div>
+        <div class="insight-box good">
+          <h4>Cadeira AVD reclinável: a primeira campanha estruturada abaixo da meta</h4>
+          <p>Lançada em 16/09: R$1.041,80 → 139 conversas, CPA de R$7,50 (meta R$8,00) e CTR de 1,8%. Entregou 46,5% das conversas do mês com 38,8% do investimento — e em apenas 15 dias de veiculação.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Volume recorde com CPA menor</h4>
+          <p>299 conversas (+58,2% vs agosto) e CPA de R$10,08 para R$8,98 (-10,9%). O volume superou em 49,5% a referência de 200 conversas/mês, e o alcance cresceu 15,6% (79,7 mil contas) com a frequência em queda (2,11 → 1,90).</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Boosts de post seguem como o formato mais barato</h4>
+          <p>6 campanhas de impulsionamento somaram R$315,18 e 66 conversas (CPA médio R$4,78). Destaque para o boost de 11/09: R$39,38, 28 conversas, CPA de R$1,41 e CTR de 5,7%.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Conversas de boa qualidade</h4>
+          <p>53,8% das conversas chegaram à 2ª mensagem enviada pelo cliente (161 de 299), quase o dobro da referência de 30% do perfil, e 81,3% receberam a primeira resposta da loja.</p>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">⚠️ O que ajustar</div>
+        <div class="insight-box bad">
+          <h4>Investimento 38,7% acima do orçamento cadastrado</h4>
+          <p>R$2.773,09 (Meta + Google) contra R$2.000/mês, com gasto diário de R$150–270 na segunda quinzena. O resultado compensou, mas é preciso formalizar a verba que sustenta esse ritmo — ou desacelerá-lo.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Dez dias sem veiculação no Meta</h4>
+          <p>A conta ficou sem entrega de 05 a 08/09 (incluindo o feriado de 07/09) e de 23 a 28/09 — entregou em 20 dos 30 dias (29 de 31 em agosto). Continuidade da veiculação é a principal alavanca de volume para outubro.</p>
+        </div>
+        <div class="insight-box bad">
+          <h4>Inalador e Andador D10 com retorno fraco</h4>
+          <p>Inalador respiração bebê: R$291,50 para 11 conversas (R$26,50, CTR 0,7%). Andador D10: CPA subiu de R$9,05 para R$13,58. Ambos pausados em 30/09.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Google Ads parado até 22/09</h4>
+          <p>Sem entrega de 21/08 a 22/09; só 6 conversas e CPA de R$14,57 nos 8 dias de retomada. Investigar a causa antes de qualquer decisão de verba.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>CPM +35,7% (R$13,10 → R$17,77)</h4>
+          <p>Leilão mais caro nos dias de maior verba. Acompanhar nas campanhas novas de outubro para garantir que o custo por conversa continue na meta.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="slide" id="s5">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Comparativo</div>
+      <div class="slide-title">Agosto vs Setembro — Meta Ads e Google Ads</div>
+      <div class="slide-desc">Mês fechado vs mês fechado anterior, mesmos critérios de captura (Meta Insights + GAQL, nível conta/campanha).</div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl">
+        <thead>
+          <tr><th>Métrica</th><th class="num">Agosto</th><th class="num">Setembro</th><th class="num">Δ%</th><th>Tendência</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Investimento (Meta)</td><td class="num">R$1.905,75</td><td class="num">R$2.685,69</td><td class="num">+40,9%</td><td><span class="badge orange">↑ Aumentou</span></td></tr>
+          <tr><td>Conversas iniciadas (Meta)</td><td class="num">189</td><td class="num">299</td><td class="num">+58,2%</td><td><span class="badge green">↑ Cresceu</span></td></tr>
+          <tr><td>CPA (por conversa)</td><td class="num">R$10,08</td><td class="num">R$8,98</td><td class="num">-10,9%</td><td><span class="badge green">↓ Melhorou</span></td></tr>
+          <tr><td>CTR (Meta)</td><td class="num">1,4%</td><td class="num">1,5%</td><td class="num">+0,1pp</td><td><span class="badge green">↑ Melhorou</span></td></tr>
+          <tr><td>CPM (Meta)</td><td class="num">R$13,10</td><td class="num">R$17,77</td><td class="num">+35,7%</td><td><span class="badge red">↑ Piorou</span></td></tr>
+          <tr><td>CPC (Meta, todos os cliques)</td><td class="num">R$0,91</td><td class="num">R$1,15</td><td class="num">+26,9%</td><td><span class="badge red">↑ Piorou</span></td></tr>
+          <tr><td>Frequência (Meta)</td><td class="num">2,11</td><td class="num">1,90</td><td class="num">-10,2%</td><td><span class="badge green">↓ Melhorou</span></td></tr>
+          <tr><td>Alcance (Meta)</td><td class="num">68.922</td><td class="num">79.691</td><td class="num">+15,6%</td><td><span class="badge green">↑ Cresceu</span></td></tr>
+          <tr><td>Investimento (Google)</td><td class="num">R$98,63</td><td class="num">R$87,40</td><td class="num">-11,4%</td><td><span class="badge orange">↓ Reduziu</span></td></tr>
+          <tr><td>Google Ads — CPA</td><td class="num">R$7,05</td><td class="num">R$14,57</td><td class="num">+106,8%</td><td><span class="badge red">↑ Piorou</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Volume de Conversas (Meta)</div>
+        <div class="k-val">+110</div>
+        <div class="k-sub">189 → 299 no mês</div>
+        <div class="k-delta up">↑ +58,2%</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Economia por Conversa</div>
+        <div class="k-val">R$1,10</div>
+        <div class="k-sub">de R$10,08 para R$8,98</div>
+        <div class="k-delta up">↓ -10,9% mais barato</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Dias com veiculação (Meta)</div>
+        <div class="k-val">20/30</div>
+        <div class="k-sub">vs 29/31 em agosto</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Investimento Combinado</div>
+        <div class="k-val">R$2.773,09</div>
+        <div class="k-sub">vs R$2.004,38 em agosto</div>
+        <div class="k-delta dn">↑ +38,3%</div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="slide" id="s6">
+    <div class="slide-header">
+      <div class="slide-tag">06 · Resultado Comercial</div>
+      <div class="slide-title">Meta de ROAS (20x) — Setembro</div>
+      <div class="slide-desc">O acordo com o cliente inclui uma meta de ROAS de 20x, além do CPA de R$8 por conversa no WhatsApp.</div>
+    </div>
+
+    <div class="insight-box warn">
+      <h4>Resultado comercial de setembro: em consolidação</h4>
+      <p>O fechamento comercial de setembro (vendas identificadas como originadas de anúncio) será incorporado em uma atualização deste relatório, assim que a planilha de atendimento do mês estiver consolidada. Como referência do último fechamento, agosto registrou ROAS de 6,06x sobre 6 vendas marcadas como "veio de anúncio" (de 74 no mês).</p>
+    </div>
+
+    <div class="two-col" style="margin-top:14px;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Funil de conversa no WhatsApp (Meta Ads)</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Etapa</th><th class="num">Agosto</th><th class="num">Setembro</th></tr></thead>
+            <tbody>
+              <tr><td>Conversas iniciadas</td><td class="num">189</td><td class="num">299</td></tr>
+              <tr><td>Primeira resposta da loja</td><td class="num">158 (83,6%)</td><td class="num">243 (81,3%)</td></tr>
+              <tr><td>Cliente enviou 2+ mensagens</td><td class="num">114 (60,3%)</td><td class="num">161 (53,8%)</td></tr>
+              <tr><td>Investimento Meta</td><td class="num">R$1.905,75</td><td class="num">R$2.685,69</td></tr>
+              <tr><td>CPA por conversa</td><td class="num">R$10,08</td><td class="num">R$8,98</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;">Para fechar o ROAS de setembro</div>
+        <div class="insight-box good">
+          <h4>O que precisamos da operação</h4>
+          <p>Planilha de atendimentos e vendas de setembro, com a coluna de origem ("veio de anúncio") preenchida em toda venda. Com ela, calculamos receita atribuída, ROAS e custo por venda sobre o investimento de R$2.773,09 do mês.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="notas" style="margin-top:14px;">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Do lado da mídia, setembro entregou 299 conversas (+58,2% vs agosto) e 161 delas evoluíram para 2 ou mais mensagens do cliente — um bom sinal de intenção de compra. A fatia que vira venda só pode ser medida com o dado comercial do mês, por isso não estimamos ROAS aqui. Em agosto, só 6 de 74 vendas vieram marcadas com origem anúncio e uma única venda de R$10.350 respondeu por 85% do faturamento atribuído; padronizar a marcação de origem no atendimento das 3 lojas é o que dará um ROAS de setembro confiável.</p>
+    </div>
+  </div>
+
+
+  <div class="slide" id="s7">
+    <div class="slide-header">
+      <div class="slide-tag">07 · Recomendações</div>
+      <div class="slide-title">Próximos Passos — Outubro 2026</div>
+      <div class="slide-desc">Ações priorizadas por impacto: verba e continuidade, escala do que funcionou, Google Ads e dado comercial.</div>
+    </div>
+
+    <div class="region-grid">
+      <div class="region-card">
+        <h4>💰 Alinhar a verba mensal ao ritmo que entregou resultado<span class="pop">Alta prioridade</span></h4>
+        <p>Setembro rodou a R$2.773,09 contra R$2.000 cadastrados (+38,7%) e entregou o melhor volume do semestre. Definir com o cliente a verba de outubro: formalizar o ritmo atual ou desacelerar. Conferir também o saldo e o limite de gastos da conta, que tem folga de apenas R$1.679,68 — para evitar nova pausa por limite.</p>
+        <div class="strat">→ Decisão do cliente na primeira semana de outubro</div>
+      </div>
+      <div class="region-card">
+        <h4>📈 Escalar a Cadeira AVD reclinável e replicar a estrutura<span class="pop">Alta prioridade</span></h4>
+        <p>CPA de R$7,50 em 15 dias. Subir orçamento em etapas de até 20% e levar a mesma estrutura (vídeo + mensagem personalizada por produto, por loja) às campanhas Out/26 de lojas e de produtos de ticket alto, lançadas em 30/09.</p>
+        <div class="strat">→ Revisão do CPA das campanhas Out/26 após 7 dias</div>
+      </div>
+      <div class="region-card">
+        <h4>🧪 Escalar os boosts de post vencedores<span class="pop">Alta prioridade</span></h4>
+        <p>Boosts somaram R$315,18 e 66 conversas (CPA R$4,78); o de 11/09 chegou a R$1,41. Repetir o formato com os posts de melhor resposta (especialmente "Estudante da área da saúde") e cortar boosts sem conversa, como o post "Você sente as pernas muito...".</p>
+        <div class="strat">→ Definir com o time de conteúdo os posts a turbinar em outubro</div>
+      </div>
+      <div class="region-card">
+        <h4>⏱ Garantir continuidade de veiculação<span class="pop">Alta prioridade</span></h4>
+        <p>Foram 10 dias sem entrega no Meta (05–08/09 e 23–28/09). Manter saldo/recarga e teto de gasto da conta alinhados à verba aprovada para que a veiculação seja contínua ao longo de outubro.</p>
+        <div class="strat">→ Acompanhamento semanal de saldo e entrega</div>
+      </div>
+      <div class="region-card">
+        <h4>🔍 Estabilizar e auditar o Google Ads<span class="pop">Próximo mês</span></h4>
+        <p>A campanha ficou sem entrega de 21/08 a 22/09 e voltou com CPA de R$14,57. Investigar a causa (faturamento, ativos, sinal de conversão), acompanhar a estabilidade por 2 semanas e só então avaliar a verba.</p>
+        <div class="strat">→ Indicado: auditoria de tracking antes de decidir sobre orçamento do Google</div>
+      </div>
+      <div class="region-card">
+        <h4>📊 Fechar o ROAS e padronizar a origem da venda<span class="pop">Planejamento</span></h4>
+        <p>Enviar a planilha de setembro para fechar o ROAS e tornar obrigatória, no atendimento das 3 lojas, a pergunta "como nos encontrou?". Sem a marcação, o ROAS segue subestimado.</p>
+        <div class="strat">→ Responsável: equipe de atendimento + gestão Ilhamed</div>
+      </div>
+    </div>
+
+    <div class="notas">
+      <div class="notas-label">✍ Notas do Gestor</div>
+      <p>Setembro fechou com o melhor volume do semestre (299 conversas) e CPA em R$8,98 — 12,3% acima da meta de R$8,00, mas já com uma campanha abaixo dela (Cadeira AVD, R$7,50) — ao custo de investimento 38,7% acima do orçamento cadastrado. Metas para outubro: <b>CPA ≤ R$8,00</b>, <b>250+ conversas</b> (condicionado à verba aprovada), veiculação contínua nos 31 dias e ROAS de setembro fechado e acompanhado em direção aos 20x combinados. A reestruturação de 30/09 (pausa de Inalador, Andador D10 e Cadeira de Banho D60; entrada das campanhas Out/26) já abre o mês com foco no que funcionou.</p>
+    </div>
+  </div>
+
+
+</div><!-- /#slides -->
+
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" onclick="goTo(current-1)" aria-label="Slide anterior">&#8592;</button>
+  <div id="nav-center">
+    <div id="slide-label">Capa</div>
+    <div id="nav-track"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="goTo(current+1)" aria-label="Próximo slide">&#8594;</button>
+</div>
+
+<script>
+  /* ══════════════════════════════════════════════════════════
+     LOGO DA ALMA — injetada automaticamente em todos os slides
+     (exceto a capa). Não precisa repetir nos HTMLs dos slides.
+     ══════════════════════════════════════════════════════════ */
+  const ALMA_LOGO_SRC = "data:image/jpeg;base64,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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB//2gAMAwEAAgADAAAAIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAACAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANAADAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAKAAAAAAAAAAABBCAAABBCAAAAABCDACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAANAAAAKAAAAIAAACPBAAMCAEIAEFAAAACIBAILAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAACAAAKAAAAAAAAKAEKAADAAAAAEIAIAACECAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAKAAAAAAAAKAAIAAAAAAAAAJEAAAIFKAAFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAFAAAKAAAAAAAAKAAAAAAAAAAAAAEJAGAFKAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAKAAAAAAAAKAAAAAAAAAAAAAAENLDFKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAKAAAAAAAAKAAAAAAAAAAAAAAEIFAFKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAEAAKAAAAAAAAKAAAAAAAAAAAAACIACAFKAAAAACBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAANAKAAAAAAAAKAAAAAAAAAAAAAOAAKAFKAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAACKAAAAAAAAKAAAAAAAAAAAAAKAAJAFKAAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAJKAAAAAAAAKAAAAAAAAAAAAAICAAJHKAAAAJAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAIIAAAAAAAAAEAAAAAAEAALAIEIAAEAMIAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIABCAAAACDAAACBCDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFNLDDIEAHFIAPIEHFBBFGCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIEMMIIMEIIAIMMAEAEEMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/9oADAMBAAIAAwAAABDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzRzzzzzzywwwzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyxzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzjzzDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzjTzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyzTzzzzzzzzzzzzzzzzzzzTTTTzzzzzDzzzzzzDDjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxDzzyjzzzzzzzzwwwwzyTjyzjzzDTyxDzzyzDxTxxDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyzzzzzTzzzzzzzzzzzzzyzTzzjzwzzzzShzyzzzzyzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxTzzyDzzzzzzzzzzzzzzxzzzjzyjzzwyjzzxzhTzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxjzzzzTzzzzzzzzzzzzzzzzzzzyjzzyjxTyByhTzzjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyjzzzxjzzzzzzzzzzzzzzzzzzzyjzzyjzwjzChTzyjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxjzzzjzzzzzzzzzzzzzzzzzzzyjzzyjzAzjyhTzyjzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzxDCDTzzzzzzzzzzzzzzzzzzzzzzyjzzyjxzwzyhTzyjzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzTzzwjzzzzzzzzzzzzzzzzzzyjzzyjTzzzyhTzyjzTyzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyhzzzzzzzzzzzzzzzzzzyjzzyjTzxTyhTzyjzzzzTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyhTzzxjzzzzzzzzzzzzzzzzzyjzzyhzTzxCBTzyixjzgzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzyxzzzxzzzzxzzxzzzzzyzzzyzwyAwzzzzzzzxhxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzDTzDzTzzzzTTzDzTDTDzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzywwQTjCzTzzyzARTzwhTDTzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzywzzzyyzzzwwywyzzzxzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz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";
+
+  // Injeta o logo em todos os slides (exceto o de capa, id="s0")
+  document.querySelectorAll('.slide:not(#s0)').forEach(slide => {
+    if (!slide.querySelector('.alma-logo-wrap')) {
+      const wrap = document.createElement('div');
+      wrap.className = 'alma-logo-wrap';
+      const img = document.createElement('img');
+      img.src = ALMA_LOGO_SRC;
+      img.alt = 'Alma.';
+      img.className = 'alma-logo-img';
+      wrap.appendChild(img);
+      slide.insertBefore(wrap, slide.firstChild);
+    }
+  });
+
+  /* ── LABELS DOS SLIDES
+     Ajuste o array abaixo com os títulos curtos de cada slide
+     (aparece no centro da navegação inferior)
+  ── */
+  const slideLabels = [
+    'Capa',
+    'Visão Geral',
+    'Campanhas (Meta)',
+    'Google Ads',
+    'Insights',
+    'Ago vs Set',
+    'Resultado Comercial',
+    'Próximos Passos',
+  ];
+
+  /* ── ENGINE DE NAVEGAÇÃO — não modificar ── */
+  const slides   = document.querySelectorAll('.slide');
+  const label    = document.getElementById('slide-label');
+  const track    = document.getElementById('nav-track');
+  const progress = document.getElementById('progress-bar');
+  let current    = 0;
+
+  // Cria os dots de navegação
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => goTo(i);
+    track.appendChild(d);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    track.querySelectorAll('.dot')[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    slides[current].scrollTop = 0;
+    track.querySelectorAll('.dot')[current].classList.add('active');
+    label.textContent = slideLabels[current] || `Slide ${current + 1}`;
+    progress.style.width = ((current / (slides.length - 1)) * 100) + '%';
+    // Re-inicializa indicadores de scroll ao trocar de slide
+    setTimeout(initTableScrollHints, 60);
+  }
+
+  /* ── INDICADORES DE SCROLL NAS TABELAS ──
+     • Injeta hint "↔ deslize para ver mais" acima de cada tabela
+     • Injeta fade gradiente na borda direita
+     • Some automaticamente ao rolar até o fim
+     • Some imediatamente se a tabela couber na tela
+     • Re-inicializa ao trocar de slide (chamado no goTo)
+  ── */
+  function initTableScrollHints() {
+    const activeSlide = slides[current];
+    activeSlide.querySelectorAll('.tbl-wrap').forEach(wrap => {
+      // Hint text: cria uma vez e reutiliza
+      let hint = wrap.previousElementSibling;
+      if (!hint || !hint.classList.contains('tbl-hint')) {
+        hint = document.createElement('div');
+        hint.className = 'tbl-hint';
+        hint.textContent = '↔ deslize para ver mais';
+        wrap.parentNode.insertBefore(hint, wrap);
+      }
+      // Fade: cria dentro do tbl-wrap uma vez
+      let fade = wrap.querySelector('.tbl-fade');
+      if (!fade) {
+        fade = document.createElement('div');
+        fade.className = 'tbl-fade';
+        wrap.appendChild(fade);
+      }
+      // Função de atualização
+      function update() {
+        const hasOverflow = wrap.scrollWidth > wrap.clientWidth + 2;
+        const atEnd = wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 4;
+        const show = hasOverflow && !atEnd;
+        hint.classList.toggle('show', show);
+        fade.classList.toggle('show', show);
+      }
+      // Remove listener antigo e registra novo (evita duplicatas ao trocar slides)
+      if (wrap._scrollHandler) wrap.removeEventListener('scroll', wrap._scrollHandler);
+      wrap._scrollHandler = update;
+      wrap.addEventListener('scroll', update, { passive: true });
+      update(); // Avalia imediatamente
+    });
+  }
+
+  // Inicializa ao carregar
+  setTimeout(initTableScrollHints, 100);
+
+  // Navegação por teclado
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  // Navegação por swipe (mobile)
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => touchStartX = e.touches[0].clientX, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+</script>
+</body>
+</html>
