@@ -196,6 +196,9 @@
   }
 
 
+  /* Tabelas nunca encolhem: o slide rola em vez de cortar a tabela */
+  .slide .tbl-wrap { flex-shrink: 0; }
+
   /* Miniatura de criativo na tabela */
   .th-cell { display:flex; align-items:center; gap:10px; }
   .th { width:48px; height:48px; flex:0 0 48px; border-radius:6px; object-fit:cover; border:1px solid var(--border); background:var(--light); display:block; }

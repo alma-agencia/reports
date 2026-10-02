@@ -193,6 +193,9 @@
     height: 44px; width: auto; filter: invert(1); opacity: 0.82;
   }
 
+  /* Tabelas nunca encolhem: o slide rola em vez de cortar a tabela */
+  .slide .tbl-wrap { flex-shrink: 0; }
+
   /* Miniatura de criativo na tabela */
   .th-cell { display:flex; align-items:center; gap:10px; }
   .th { width:48px; height:48px; flex:0 0 48px; border-radius:6px; object-fit:cover; border:1px solid var(--border); background:var(--light); display:block; }
@@ -533,7 +536,8 @@
       </table>
     </div>
 
-    <div class="tbl-wrap" style="margin-top:16px">
+    <div class="two-col-6040" style="margin-top:16px;align-items:start">
+      <div class="tbl-wrap">
       <table class="tbl">
         <thead>
           <tr>
@@ -576,16 +580,16 @@
         </tbody>
       </table>
     </div>
-
-    <div class="insight-box warn" style="margin-top:16px">
-      <h4>Entrega concentrada na segunda quinzena</h4>
-      <p>As campanhas de agosto foram encerradas em 03/09 e a conta ficou sem veiculação de 04 a 15/09 (12 dias). As duas novas campanhas entraram no ar em 16/09 e, em apenas 14 dias, usaram 95% da verba do mês — cerca de R$100 por dia, o dobro do equivalente diário do orçamento (R$50). Nesse ritmo, o custo por clique foi subindo: de R$0,25 nos primeiros dias para R$0,37 na última semana.</p>
+      <div class="insight-box warn" style="margin:0">
+        <h4>Entrega concentrada na segunda quinzena</h4>
+        <p>As campanhas de agosto acabaram em 03/09 e a conta ficou 12 dias sem veiculação (04 a 15/09). As duas novas campanhas entraram em 16/09 e usaram 95% da verba do mês em 14 dias (cerca de R$100 por dia, o dobro do ritmo de R$50). O custo por clique subiu de R$0,25 nos primeiros dias para R$0,37 na última semana.</p>
+      </div>
     </div>
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p><strong>Diagnóstico:</strong> o mês fechou com R$1.435,55 investidos (95,7% do orçamento, contra 69% em agosto) e 4.479 cliques, 7,5% a mais que em agosto. A contrapartida foi o custo: o CPC médio ficou em R$0,32, cerca de 7% acima da meta de R$0,30 (R$0,25 em agosto). Dois fatores explicam isso. Primeiro, a verba foi gasta em um intervalo curto (16 a 30/09), com CPM 77% mais alto que em agosto e sinais de saturação do público (25 a 55 anos, empresas de Feira de Santana) ao longo das semanas. Segundo, o anúncio "Riscos psicossociais" custou R$0,44 por clique e consumiu 47% da verba, enquanto "Nem sempre o sofrimento emocional é visível" entregou 2.662 cliques a R$0,26, com CTR de 2,12%, o melhor da conta.</p>
-      <p><strong>Plano de ação:</strong> manter veiculação contínua ao longo de outubro (cerca de R$50/dia, em vez de blocos concentrados), priorizar criativos com CTR acima de 2% e renovar o anúncio quando o CPC ultrapassar R$0,35. As duas campanhas de outubro (Outubro Rosa e "estão de saúde ocupacional") já foram ativadas em 01/10 com R$15/dia cada; o ritmo será reavaliado nos primeiros dias para usar o orçamento integral sem perder eficiência.</p>
+      <p><strong>Diagnóstico:</strong> o mês fechou com R$1.435,55 investidos (95,7% do orçamento, contra 69% em agosto) e 4.479 cliques (+7,5%). O CPC médio ficou em R$0,32, cerca de 7% acima da meta de R$0,30: a verba foi gasta entre 16 e 30/09, com CPM 77% mais alto que em agosto e sinais de saturação do público (25 a 55 anos, empresas de Feira de Santana). "Riscos psicossociais" custou R$0,44 por clique e consumiu 47% da verba; "Nem sempre o sofrimento emocional é visível" entregou 2.662 cliques a R$0,26, com CTR de 2,12%, o melhor da conta.</p>
+      <p><strong>Plano de ação:</strong> veiculação contínua em outubro (cerca de R$50/dia), priorizar criativos com CTR acima de 2% e renovar o anúncio quando o CPC passar de R$0,35. As duas campanhas de outubro (Outubro Rosa e "estão de saúde ocupacional") estão ativas desde 01/10, com R$15/dia cada.</p>
     </div>
   </div>
   <!-- ══════════════════════════════════════════════════════════
