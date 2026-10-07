@@ -505,41 +505,118 @@
     <div class="slide-header">
       <div class="slide-tag">01B · Dados Comerciais</div>
       <div class="slide-title">Retorno Comercial do Consultório — Setembro 2026</div>
-      <div class="slide-desc">Atendimentos, pacientes novos e fechamentos informados pelo comercial</div>
+      <div class="slide-desc">Atendimentos, pacientes novos e fechamentos informados pelo consultório (Feira de Santana e Euclides da Cunha)</div>
     </div>
 
-    <div class="text-box" style="border-left:4px solid var(--orange);">
-      <p><strong>Resultado comercial de setembro: em consolidação — será incorporado em uma atualização deste relatório.</strong></p>
-      <p style="margin-top:10px;font-size:13px;color:var(--gray);line-height:1.6;">Assim que a planilha de atendimentos do consultório (Feira de Santana e Euclides da Cunha) for consolidada, este slide passa a mostrar pacientes novos, tratamentos fechados, custo por paciente e retorno sobre o investimento do mês. Até lá, não projetamos receita nem retorno de setembro para não antecipar um número que ainda não foi confirmado.</p>
-    </div>
-
-    <div style="font-size:13px;font-weight:700;color:var(--dark);margin:22px 0 10px;">Referência — último fechamento comercial (agosto/2026)</div>
     <div class="kpi-row">
       <div class="kpi">
         <div class="k-label">Atendimentos Totais</div>
-        <div class="k-val">82</div>
-        <div class="k-sub">Feira de Santana 69 + Euclides da Cunha 13</div>
+        <div class="k-val">96</div>
+        <div class="k-sub">Feira de Santana 87 + Euclides da Cunha 9</div>
+        <div class="k-delta up">↑ 17,1% vs agosto (82)</div>
       </div>
-      <div class="kpi">
+      <div class="kpi kpi-amber">
         <div class="k-label">Pacientes Novos</div>
-        <div class="k-val">29</div>
-        <div class="k-sub">24 em Feira + 5 em Euclides</div>
+        <div class="k-val">21</div>
+        <div class="k-sub">17 em Feira + 4 em Euclides</div>
+        <div class="k-delta dn">↓ 27,6% vs agosto (29) · custo por paciente novo: R$955,43</div>
       </div>
-      <div class="kpi">
+      <div class="kpi kpi-green">
         <div class="k-label">Fecharam Tratamento</div>
         <div class="k-val">15</div>
         <div class="k-sub">12 em Feira + 3 em Euclides</div>
+        <div class="k-delta up">Igual a agosto (15) · custo por tratamento: R$1.337,60</div>
       </div>
-      <div class="kpi">
+      <div class="kpi kpi-green">
         <div class="k-label">Taxa de Fechamento</div>
-        <div class="k-val">51,7%</div>
-        <div class="k-sub">15 fecharam de 29 pacientes novos</div>
+        <div class="k-val">71,4%</div>
+        <div class="k-sub">15 fecharam de 21 pacientes novos</div>
+        <div class="k-delta up">↑ 19,7 p.p. vs agosto (51,7%)</div>
       </div>
     </div>
 
-    <div class="notas">
+    <div class="kpi-row" style="margin-top:14px;">
+      <div class="kpi kpi-green">
+        <div class="k-label">Receita Estimada</div>
+        <div class="k-val">R$237.600</div>
+        <div class="k-sub">21 consultas × R$600 + 15 tratamentos × R$15.000</div>
+        <div class="k-delta ok">Projeção sobre ticket médio, não faturamento confirmado</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">ROAS Estimado</div>
+        <div class="k-val">11,84x</div>
+        <div class="k-sub">Receita ÷ investimento total (R$20.064,04)</div>
+        <div class="k-delta ok">Agosto: 11,98x (-1,2%)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Ticket Médio — Consulta</div>
+        <div class="k-val">R$ 600</div>
+        <div class="k-sub">Valor informado pelo consultório</div>
+        <div class="k-delta dn">Abaixo do custo por paciente novo (R$955,43)</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="k-label">Ticket Médio — Tratamento</div>
+        <div class="k-val">R$ 15.000</div>
+        <div class="k-sub">Valor informado pelo consultório</div>
+        <div class="k-delta up">11,2x o custo de aquisição do tratamento</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap" style="margin-top:16px;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Unidade</th>
+            <th class="num">Atendidos</th>
+            <th class="num">Pacientes novos</th>
+            <th class="num">Fecharam tratamento</th>
+            <th class="num">Não iniciaram</th>
+            <th class="num">Taxa de fechamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Feira de Santana</strong></td>
+            <td class="num">87</td>
+            <td class="num">17</td>
+            <td class="num"><strong>12</strong></td>
+            <td class="num">5</td>
+            <td class="num">70,6%</td>
+          </tr>
+          <tr>
+            <td><strong>Euclides da Cunha</strong></td>
+            <td class="num">9</td>
+            <td class="num">4</td>
+            <td class="num"><strong>3</strong></td>
+            <td class="num">1</td>
+            <td class="num">75,0%</td>
+          </tr>
+          <tr style="background:#f9fafb;font-weight:700">
+            <td><strong>TOTAL</strong></td>
+            <td class="num"><strong>96</strong></td>
+            <td class="num"><strong>21</strong></td>
+            <td class="num"><strong>15</strong></td>
+            <td class="num">6</td>
+            <td class="num"><strong>71,4%</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="two-col" style="margin-top:16px;">
+      <div class="insight-box warn">
+        <h4>Custo por paciente novo: R$955,43</h4>
+        <p>Investimento total de <strong>R$20.064,04</strong> em setembro (Meta R$17.900,52 nas duas contas + Google Ads R$2.163,52) dividido pelos <strong>21 pacientes novos</strong>. Em agosto eram R$697,61 (37,0%), porque chegaram menos pacientes novos com verba praticamente igual. Considerando só os 15 que fecharam tratamento, o custo por tratamento fechado é de <strong>R$1.337,60</strong> — estável frente a agosto (R$1.348,72).</p>
+      </div>
+      <div class="insight-box good">
+        <h4>Menos conversas, mesmos tratamentos fechados</h4>
+        <p>As conversas caíram 34,5% (1.384 contra 2.113) e os pacientes novos caíram 27,6%, mas os <strong>15 tratamentos fechados repetiram agosto</strong>, com taxa de fechamento de <strong>71,4%</strong> (agosto: 51,7%). De cada 100 conversas, <strong>1,5</strong> viraram paciente novo (agosto: 1,4) — o que sugere que o público dentro da área de atendimento chega mais qualificado (hipótese a seguir validando).</p>
+      </div>
+    </div>
+
+    <div class="notas" style="margin-top:18px;">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Os números de agosto aparecem aqui apenas como referência de leitura — setembro será comparado a eles quando o dado comercial chegar. O que já dá para antecipar pelo lado da mídia: em setembro entraram <strong>1.384 conversas contra 2.113 em agosto</strong>, em boa parte porque o remarketing passou a ser entregue só dentro da área de atendimento. Em agosto, de cada 100 conversas, cerca de 1,4 viraram paciente novo; o impacto da mudança de público nessa taxa é o principal ponto que o dado de setembro vai responder.</p>
+      <p>Setembro fecha com <strong>15 tratamentos fechados a partir de 21 pacientes novos</strong> e <strong>96 atendimentos</strong> nas duas unidades. Com os tickets informados pelo consultório (R$ 600 na consulta e R$ 15.000 no tratamento), o mês soma <strong>R$237.600 de receita estimada e ROAS de 11,84x</strong>, praticamente no patamar de agosto (-1,2%). Feira de Santana converteu 70,6% (12 de 17) e Euclides da Cunha 75,0% (3 de 4). Um dos 5 pacientes novos de Feira que não iniciaram começou o tratamento e desistiu. Os valores de receita são estimativa sobre ticket médio, não faturamento confirmado.</p>
     </div>
   </div>
 
@@ -971,7 +1048,7 @@
     <div class="slide-header">
       <div class="slide-tag">05 · Funil</div>
       <div class="slide-title">Da Conversa ao Fechamento — Setembro 2026</div>
-      <div class="slide-desc">Etapas de mídia com dado real (Meta) · etapas comerciais em consolidação</div>
+      <div class="slide-desc">Etapas de mídia com dado real (Meta) · paciente novo e fechamento com dado do consultório</div>
     </div>
 
     <div class="two-col">
@@ -1016,12 +1093,12 @@
           </div>
           <div class="funnel-step">
             <div class="funnel-label">Paciente novo / fechamento</div>
-            <div class="funnel-bar-wrap" style="background:var(--light);border:1px dashed var(--border);">
+            <div class="funnel-bar-wrap" style="background:var(--light);border:1px solid var(--border);">
               <div class="funnel-bar" style="width:100%;background:transparent;">
-                <span style="font-size:11px;font-weight:600;color:var(--gray)">em consolidação</span>
+                <span style="font-size:11px;font-weight:700;color:var(--dark)">21 pacientes novos · 15 fecharam</span>
               </div>
             </div>
-            <div class="funnel-val">—</div>
+            <div class="funnel-val">1,5%</div>
           </div>
         </div>
       </div>
@@ -1038,7 +1115,7 @@
         </div>
         <div class="insight-box">
           <h4>O que o Meta não enxerga</h4>
-          <p>A passagem de conversa para consulta agendada, paciente novo e fechamento acontece no atendimento da SDR/consultório. Essas etapas entram na atualização do relatório assim que o dado comercial de setembro for consolidado.</p>
+          <p>A passagem de conversa para consulta agendada, paciente novo e fechamento acontece no atendimento da SDR/consultório. Com a planilha do consultório, setembro fecha com <strong>21 pacientes novos e 15 tratamentos fechados</strong> (1,5% das conversas viraram paciente novo). A etapa de consulta agendada segue sem rastreio por frase inicial.</p>
         </div>
       </div>
     </div>
@@ -1125,10 +1202,59 @@
             <td class="num">-18,2%</td>
             <td><span class="badge green">Melhorou</span></td>
           </tr>
-        </tbody>
+                  <tr>
+            <td>Pacientes novos (consultório)</td>
+            <td class="num">29</td>
+            <td class="num">21</td>
+            <td class="num">-27,6%</td>
+            <td><span class="badge red">↓ Caiu</span></td>
+          </tr>
+          <tr>
+            <td>Tratamentos fechados</td>
+            <td class="num">15</td>
+            <td class="num">15</td>
+            <td class="num">0,0%</td>
+            <td><span class="badge green">≈ Estável</span></td>
+          </tr>
+          <tr>
+            <td>Taxa de fechamento</td>
+            <td class="num">51,7%</td>
+            <td class="num">71,4%</td>
+            <td class="num">+19,7 p.p.</td>
+            <td><span class="badge green">↑ Melhorou</span></td>
+          </tr>
+          <tr>
+            <td>Custo por paciente novo</td>
+            <td class="num">R$697,61</td>
+            <td class="num">R$955,43</td>
+            <td class="num">+37,0%</td>
+            <td><span class="badge amber">Subiu</span></td>
+          </tr>
+          <tr>
+            <td>Custo por tratamento fechado</td>
+            <td class="num">R$1.348,72</td>
+            <td class="num">R$1.337,60</td>
+            <td class="num">-0,8%</td>
+            <td><span class="badge green">≈ Estável</span></td>
+          </tr>
+          <tr>
+            <td>Receita estimada</td>
+            <td class="num">R$242.400</td>
+            <td class="num">R$237.600</td>
+            <td class="num">-2,0%</td>
+            <td><span class="badge green">≈ Estável</span></td>
+          </tr>
+          <tr>
+            <td>ROAS estimado</td>
+            <td class="num">11,98x</td>
+            <td class="num">11,84x</td>
+            <td class="num">-1,2%</td>
+            <td><span class="badge green">≈ Estável</span></td>
+          </tr>
+</tbody>
       </table>
     </div>
-    <p style="font-size:11px;color:var(--gray);margin:-10px 0 20px;">Agosto recalculado com os dados consolidados das duas contas Meta e do Google; CPM, CTR, frequência e alcance de agosto diferem levemente do relatório de agosto por essa recontagem. Comparativo comercial (pacientes novos, fechamentos, ROAS): aguardando a consolidação do dado de setembro.</p>
+    <p style="font-size:11px;color:var(--gray);margin:-10px 0 20px;">Agosto recalculado com os dados consolidados das duas contas Meta e do Google; CPM, CTR, frequência e alcance de agosto diferem levemente do relatório de agosto por essa recontagem. Comparativo comercial (pacientes novos, fechamentos, ROAS) com base nos números informados pelo consultório; receita e ROAS são estimados sobre ticket médio (consulta R$600, tratamento R$15.000), não faturamento confirmado.</p>
 
     <div class="kpi-row">
       <div class="kpi">
@@ -1260,8 +1386,8 @@
       </div>
       <div class="region-card">
         <h4>📊 Fechar o funil comercial<span class="pop">Alta prioridade</span></h4>
-        <p>A etapa de pacientes novos e fechamento de setembro depende do dado do consultório. A rastreabilidade por frase inicial (pendente desde 17/09) liga cada frente ao agendamento e permite medir custo por agendamento.</p>
-        <div class="strat">→ Receber a planilha de setembro e implantar a rastreabilidade</div>
+        <p>Pacientes novos e fechamentos de setembro já estão no relatório (planilha do consultório). Falta ligar cada frente ao agendamento: a rastreabilidade por frase inicial (pendente desde 17/09) permite medir custo por consulta agendada e por paciente novo em cada frente.</p>
+        <div class="strat">→ Implantar a rastreabilidade por frase inicial</div>
       </div>
       <div class="region-card">
         <h4>🎯 Acompanhar o RMK com área restrita<span class="pop">Médio prazo</span></h4>
@@ -1282,7 +1408,7 @@
 
     <div class="notas">
       <div class="notas-label">✍ Notas do Gestor</div>
-      <p>Setembro foi um mês de ajuste de qualidade: a conta voltou a trabalhar dentro da área de atendimento, o que encareceu a conversa mas deve elevar a aderência do lead. A mídia fechou o mês dentro do teto de CPA, porém com a 2ª quinzena acima dele e o investimento acima do combinado — os dois pontos são os focos de outubro. O resultado comercial de setembro (pacientes novos e fechamentos) entra em uma atualização deste relatório assim que o consultório consolidar os dados; é ele que vai dizer se menos conversas, porém mais qualificadas, mantêm o número de pacientes que chegam ao consultório.</p>
+      <p>Setembro foi um mês de ajuste de qualidade: a conta voltou a trabalhar dentro da área de atendimento, o que encareceu a conversa mas deve elevar a aderência do lead. A mídia fechou o mês dentro do teto de CPA, porém com a 2ª quinzena acima dele e o investimento acima do combinado — os dois pontos são os focos de outubro. No consultório, menos conversas não significaram menos tratamentos: chegaram 21 pacientes novos (contra 29) e os mesmos 15 tratamentos fechados de agosto, com taxa de fechamento de 71,4% (51,7% em agosto). O custo por paciente novo subiu para R$955,43, mas o custo por tratamento fechado ficou estável (R$1.337,60) e o ROAS estimado em 11,84x.</p>
     </div>
   </div>
 
