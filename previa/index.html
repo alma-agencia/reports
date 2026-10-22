@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Prévia do relatório</title>
+<style>
+  body{margin:0;font-family:Inter,system-ui,sans-serif;background:#fff;color:#1a1a1a;display:flex;align-items:center;justify-content:center;min-height:100vh}
+  .box{text-align:center;padding:24px;max-width:420px}
+  .box b{color:#FF6B00}
+  .small{color:#6b7280;font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="box" id="msg"><b>Carregando prévia…</b><div class="small">Se demorar, recarregue a página.</div></div>
+<script>
+(function () {
+  var code = new URLSearchParams(location.search).get('c') || '';
+  var msg = document.getElementById('msg');
+  if (!/^[a-z0-9]{8,40}$/.test(code)) { msg.innerHTML = '<b>Link inválido.</b><div class="small">Peça um novo link na tarefa do ClickUp.</div>'; return; }
+  fetch('https://alma.n8n.almaconvert.com.br/webhook/organico-preview?c=' + encodeURIComponent(code))
+    .then(function (r) { return r.json(); })
+    .then(function (j) {
+      if (!j || !j.html) { msg.innerHTML = '<b>Prévia não encontrada.</b><div class="small">O relatório pode ter sido substituído. Veja o link mais recente na tarefa.</div>'; return; }
+      var bar = '<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#FF6B00;color:#fff;font:600 12px Inter,system-ui,sans-serif;text-align:center;padding:5px 8px;letter-spacing:.04em">PRÉVIA INTERNA — NÃO PUBLICADO · aprove na tarefa do ClickUp</div>';
+      var html = String(j.html).replace(/<body[^>]*>/i, function (m) { return m + bar; });
+      document.open(); document.write(html); document.close();
+    })
+    .catch(function () { msg.innerHTML = '<b>Não foi possível carregar.</b><div class="small">Tente novamente em instantes.</div>'; });
+})();
+</script>
+</body>
+</html>
