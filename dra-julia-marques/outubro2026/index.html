@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Dra. Júlia Marques — Outubro 2026</title>
+<style>
+  :root{--orange:#FF6B00;--orange-light:#FF8C3A;--orange-pale:#FFF0E6;--dark:#1a1a1a;--gray:#6b7280;--light:#f9fafb;--white:#fff;--border:#e5e7eb;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:#fff;}
+  body{overflow:hidden;}
+  #slides{position:relative;width:100%;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:48px 64px 80px;opacity:0;pointer-events:none;transition:opacity .4s ease;overflow-y:auto;}
+  .slide.active{opacity:1;pointer-events:all;}
+  #progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--orange);transition:width .4s ease;z-index:200;}
+  #nav{position:fixed;bottom:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-top:1px solid var(--border);z-index:100;}
+  .nav-btn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark);font-size:16px;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .nav-btn:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-pale);}
+  #nav-center{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+  #slide-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);}
+  #nav-track{display:flex;align-items:center;gap:5px;}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s;}
+  .dot.active{background:var(--orange);transform:scale(1.6);width:14px;border-radius:3px;}
+  .cover-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;text-align:center;}
+  .cover-badge{background:var(--orange-pale);color:var(--orange);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:28px;}
+  .cover-title{font-size:52px;font-weight:800;color:var(--dark);line-height:1.1;margin-bottom:12px;}
+  .cover-sub{font-size:18px;color:var(--gray);margin-bottom:40px;}
+  .cover-meta{display:flex;gap:32px;justify-content:center;align-items:center;}
+  .cover-meta-item{text-align:center;}
+  .cover-meta-item .val{font-size:28px;font-weight:800;color:var(--orange);}
+  .cover-meta-item .lbl{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+  .cover-divider{width:1px;height:48px;background:var(--border);}
+  .slide-header{width:100%;margin-bottom:24px;flex-shrink:0;}
+  .slide-tag{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+  .slide-title{font-size:28px;font-weight:800;color:var(--dark);line-height:1.15;}
+  .slide-desc{font-size:14px;color:var(--gray);margin-top:6px;}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;margin-bottom:20px;flex-shrink:0;}
+  .kpi-row-3{grid-template-columns:repeat(3,1fr);}
+  .kpi{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--orange);}
+  .kpi .k-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);margin-bottom:5px;}
+  .kpi .k-val{font-size:22px;font-weight:800;color:var(--dark);line-height:1;}
+  .kpi .k-sub{font-size:11px;color:var(--gray);margin-top:4px;}
+  .kpi .k-delta{font-size:11px;font-weight:600;margin-top:4px;}
+  .kpi .k-delta.up{color:var(--green);}
+  .kpi .k-delta.dn{color:var(--red);}
+  .tbl-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative;}
+  /* Tabelas nunca encolhem: o slide rola em vez de cortar a tabela */
+  .slide .tbl-wrap{flex-shrink:0;}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;}
+  .tbl th{background:var(--dark);color:white;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;}
+  .tbl th:first-child{border-radius:6px 0 0 6px;}
+  .tbl th:last-child{border-radius:0 6px 6px 0;}
+  .tbl td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--dark);vertical-align:middle;}
+  .tbl tr:hover td{background:var(--orange-pale);}
+  .tbl tr:last-child td{border-bottom:none;}
+  .tbl .num{text-align:right;font-variant-numeric:tabular-nums;}
+  .tbl .total-row td{font-weight:700;background:var(--light);}
+  .tbl.compact td{padding:7px 10px;font-size:12px;}
+  .tbl.compact th{padding:8px 10px;font-size:11px;}
+  .th-sub{font-size:11px;color:var(--gray);}
+  .th-note{font-size:11px;color:var(--gray);margin-top:8px;}
+  .badge{display:inline-block;padding:2px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap;}
+  .badge.green{background:#dcfce7;color:var(--green);}
+  .badge.red{background:#fee2e2;color:var(--red);}
+  .badge.amber{background:#fef3c7;color:var(--amber);}
+  .badge.orange{background:var(--orange-pale);color:var(--orange);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;}
+  .insight-box{background:white;border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:10px;}
+  .insight-box h4{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+  .insight-box p{font-size:13px;color:var(--gray);line-height:1.5;}
+  .insight-box.good{border-left-color:var(--green);}
+  .insight-box.warn{border-left-color:var(--amber);}
+  .insight-box.bad{border-left-color:var(--red);}
+  .notas{width:100%;background:var(--dark);border-radius:8px;padding:14px 18px;margin-top:16px;}
+  .notas .notas-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+  .notas p{font-size:12px;color:#9ca3af;line-height:1.6;}
+  .notas ol,.notas ul{padding-left:16px;margin-top:4px;}
+  .notas li{font-size:12px;color:#9ca3af;line-height:1.7;}
+  .compare-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-bottom:20px;}
+  .compare-col{border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+  .compare-col .cc-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-bottom:10px;}
+  .compare-col .cc-val{font-size:20px;font-weight:800;color:var(--dark);}
+  .compare-col .cc-label{font-size:11px;color:var(--gray);margin-top:2px;}
+  .compare-col.highlight{background:var(--orange-pale);border-color:var(--orange);}
+  .timeline{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+  .tl-item{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:white;}
+  .tl-item .tl-date{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+  .tl-item .tl-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+  .tl-item p{font-size:12px;color:var(--gray);line-height:1.5;}
+  .sec-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;}
+  .slide > * { flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="slides">
+
+  <!-- SLIDE 0: CAPA -->
+  <div class="slide active" data-label="Outubro 2026">
+    <div class="cover-wrap">
+      <div class="cover-badge">Google Ads · Outubro 2026 · Primeiro relatório</div>
+      <div class="cover-title">Dra. Júlia Marques</div>
+      <div class="cover-sub">Cardiologista · Alpha Medical Center (Alphaville) · Salvador – BA</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item"><div class="val">R$ 130,71</div><div class="lbl">Investido (26–30/10)</div></div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item"><div class="val">10</div><div class="lbl">Contatos (cliques no WhatsApp)</div></div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item"><div class="val">R$ 13,07</div><div class="lbl">Custo por contato</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 1: VISÃO GERAL -->
+  <div class="slide" data-label="Visão Geral">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Outubro 2026</div>
+      <div class="slide-title">Primeira semana no ar</div>
+      <div class="slide-desc">Dados reais — Google Ads API, conta 299-262-6137. A campanha de Pesquisa "Cardiologia-Salvador" entrou no ar em 26/10 (segunda-feira) e veiculou de segunda a sexta, das 7h às 18h, em Salvador e Lauro de Freitas. Este relatório cobre 5 dias de veiculação (26 a 30/10); não há mês anterior para comparar.</div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="k-label">Investimento</div>
+        <div class="k-val">R$ 130,71</div>
+        <div class="k-sub">Teto mensal: R$ 1.000 (13,1% utilizado)</div>
+        <div class="k-delta">R$ 26,14 por dia de veiculação (orçamento diário: R$ 33)</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Contatos (conversões)</div>
+        <div class="k-val">10</div>
+        <div class="k-sub">Cliques no botão de WhatsApp do site (conversão "Contato")</div>
+        <div class="k-delta">Todos entre 26 e 28/10</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Custo por contato</div>
+        <div class="k-val">R$ 13,07</div>
+        <div class="k-sub">Meta: R$ 20,00 por conversa</div>
+        <div class="k-delta up">↑ 34,6% abaixo da meta</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">CTR</div>
+        <div class="k-val">8,27%</div>
+        <div class="k-sub">58 cliques em 701 impressões</div>
+        <div class="k-delta up">↑ Acima do benchmark de serviços locais (&gt;1,2%)</div>
+      </div>
+    </div>
+    <div class="kpi-row kpi-row-3">
+      <div class="kpi">
+        <div class="k-label">Cliques</div>
+        <div class="k-val">58</div>
+        <div class="k-sub">CPC médio: R$ 2,25 · 100% em celular</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Participação nos leilões</div>
+        <div class="k-val">31,6%</div>
+        <div class="k-sub">60,0% das exibições possíveis perdidas por orçamento · 8,3% por classificação</div>
+      </div>
+      <div class="kpi">
+        <div class="k-label">Taxa clique → contato</div>
+        <div class="k-val">17,2%</div>
+        <div class="k-sub">10 contatos / 58 cliques</div>
+      </div>
+    </div>
+    <div class="notas">
+      <div class="notas-title">Nota do Gestor</div>
+      <p>A campanha nasceu em 26/10 com R$ 33/dia e, nos três primeiros dias, gastou o orçamento inteiro todos os dias: 50 cliques e 10 contatos a R$ 11,28 cada. O número é bom na planilha, mas o retorno da clínica mostrou o problema real: parte das pessoas que clicavam procurava outra clínica de cardiologia (buscas pelo nome de concorrentes estavam acionando o anúncio) ou queria atendimento por plano de saúde. Em 28/10 cortamos essas buscas e restringimos a campanha a termos diretos — a qualidade subiu, mas o volume caiu a um terço (29 e 30/10: R$ 17,91, 8 cliques, nenhum contato). O mês fechou com R$ 130,71 investidos (13% do teto), 10 contatos e custo de R$ 13,07 por contato, abaixo da meta de R$ 20. O trabalho de novembro é recuperar o volume sem trazer de volta o público errado.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: DIA A DIA -->
+  <div class="slide" data-label="Dia a Dia">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Detalhamento</div>
+      <div class="slide-title">Dia a dia da primeira semana</div>
+      <div class="slide-desc">Dois momentos distintos: 26 a 28/10 com palavras-chave em correspondência de frase (volume alto, público misto) e 29 a 30/10 só com correspondência exata e negativas de marca (volume baixo, público direto). Sábado 31/10 sem veiculação por agenda (segunda a sexta).</div>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl">
+        <thead>
+          <tr><th>Dia</th><th class="num">Invest.</th><th class="num">Impressões</th><th class="num">Cliques</th><th class="num">CTR</th><th class="num">Contatos</th><th class="num">Custo/contato</th><th class="num">Exibições perdidas por orçamento</th><th>Contexto</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>26/10 (seg)</td><td class="num">R$ 41,39</td><td class="num">226</td><td class="num">12</td><td class="num">5,31%</td><td class="num">4</td><td class="num">R$ 10,35</td><td class="num">61,4%</td><td><span class="badge orange">Campanha e anúncios no ar</span></td></tr>
+          <tr><td>27/10 (ter)</td><td class="num">R$ 37,02</td><td class="num">209</td><td class="num">20</td><td class="num">9,57%</td><td class="num">3</td><td class="num">R$ 12,34</td><td class="num">67,7%</td><td><span class="badge green">Melhor dia em cliques</span></td></tr>
+          <tr><td>28/10 (qua)</td><td class="num">R$ 34,39</td><td class="num">182</td><td class="num">18</td><td class="num">9,89%</td><td class="num">3</td><td class="num">R$ 11,46</td><td class="num">60,9%</td><td><span class="badge amber">Negativas de marca + só exata (à tarde)</span></td></tr>
+          <tr><td>29/10 (qui)</td><td class="num">R$ 6,88</td><td class="num">44</td><td class="num">3</td><td class="num">6,82%</td><td class="num">0</td><td class="num">—</td><td class="num">0%</td><td><span class="badge red">Volume caiu a 1/5</span></td></tr>
+          <tr><td>30/10 (sex)</td><td class="num">R$ 11,03</td><td class="num">40</td><td class="num">5</td><td class="num">12,50%</td><td class="num">0</td><td class="num">—</td><td class="num">0%</td><td><span class="badge red">Sem contato</span></td></tr>
+          <tr><td>31/10 (sáb)</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td><span class="badge orange">Sem veiculação (agenda seg–sex)</span></td></tr>
+          <tr class="total-row"><td>Total (5 dias)</td><td class="num">R$ 130,71</td><td class="num">701</td><td class="num">58</td><td class="num">8,27%</td><td class="num">10</td><td class="num">R$ 13,07</td><td class="num">60,0%</td><td><span class="badge green">Meta R$ 20</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="compare-row">
+      <div class="compare-col highlight">
+        <div class="cc-title">26 a 28/10 — frase, antes das negativas de marca</div>
+        <div class="cc-val">10 contatos · R$ 11,28 cada</div>
+        <div class="cc-label">R$ 112,80 · 617 impressões · 50 cliques (CTR 8,10%) · orçamento esgotado nos 3 dias, perdendo 61% a 68% das exibições possíveis</div>
+      </div>
+      <div class="compare-col">
+        <div class="cc-title">29 a 30/10 — só exata + negativas de marca</div>
+        <div class="cc-val">0 contatos · R$ 17,91</div>
+        <div class="cc-label">84 impressões · 8 cliques (CTR 9,52%) · orçamento sobrando: participação nos leilões subiu para 59% a 70%, mas a demanda direta é pequena (40 a 70 exibições/dia)</div>
+      </div>
+    </div>
+    <div class="insight-box warn">
+      <h4>⚠️ O que o dia a dia mostra</h4>
+      <p>Com correspondência de frase, "cardiologista em salvador" casava com buscas pelo nome de clínicas e institutos de cardiologia da cidade — por isso o volume era alto e o orçamento acabava cedo. Ao restringir para correspondência exata, o anúncio passou a aparecer só para quem digita "cardiologista salvador" e variações diretas: público certo, mas pouca gente. O ajuste de 03/11 (slide 05) reabre a frase com as negativas de marca já no lugar.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: ANÚNCIOS E PALAVRAS-CHAVE -->
+  <div class="slide" data-label="Anúncios e Palavras-chave">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Estrutura da Campanha</div>
+      <div class="slide-title">Resultados por anúncio, palavra-chave e termo de busca</div>
+      <div class="slide-desc">Campanha de Pesquisa com 2 grupos ativos em outubro: G1 "Cardiologista Salvador-Alphaville" (todo o investimento) e G2 "Cardiologista Particular" (19 impressões, sem clique). Os 6 anúncios responsivos foram aprovados pelo Google com CRM-BA e RQE nos textos.</div>
+    </div>
+
+    <div class="sec-title">Anúncios responsivos (RSA)</div>
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl compact">
+        <thead>
+          <tr><th>Anúncio</th><th>Grupo</th><th class="num">Invest.</th><th class="num">% da verba</th><th class="num">Impr.</th><th class="num">Cliques</th><th class="num">CTR</th><th class="num">Contatos</th><th class="num">Custo/contato</th><th>Status vs meta</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>G1-C · Agendamento facilitado <span class="th-sub">· força: Média</span></td><td>G1</td><td class="num">R$ 52,93</td><td class="num">40,5%</td><td class="num">314</td><td class="num">24</td><td class="num">7,64%</td><td class="num">4</td><td class="num">R$ 13,23</td><td><span class="badge green">Dentro da meta</span></td></tr>
+          <tr><td>G1-A · Direto/local <span class="th-sub">· força: Média</span></td><td>G1</td><td class="num">R$ 47,51</td><td class="num">36,3%</td><td class="num">226</td><td class="num">19</td><td class="num">8,41%</td><td class="num">3</td><td class="num">R$ 15,84</td><td><span class="badge green">Dentro da meta</span></td></tr>
+          <tr><td>G1-B · Acolhimento/cuidado integral <span class="th-sub">· força: Média</span></td><td>G1</td><td class="num">R$ 30,27</td><td class="num">23,2%</td><td class="num">142</td><td class="num">15</td><td class="num">10,56%</td><td class="num">3</td><td class="num">R$ 10,09</td><td><span class="badge green">Melhor custo e CTR</span></td></tr>
+          <tr><td>G2-A, G2-B e G2-C · Cardiologista particular <span class="th-sub">· 3 anúncios</span></td><td>G2</td><td class="num">R$ 0,00</td><td class="num">0,0%</td><td class="num">19</td><td class="num">0</td><td class="num">0,00%</td><td class="num">0</td><td class="num">—</td><td><span class="badge orange">Quase sem demanda</span></td></tr>
+          <tr class="total-row"><td>Total da campanha</td><td></td><td class="num">R$ 130,71</td><td class="num">100%</td><td class="num">701</td><td class="num">58</td><td class="num">8,27%</td><td class="num">10</td><td class="num">R$ 13,07</td><td><span class="badge green">Meta R$ 20</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec-title">Palavras-chave com exibição em outubro</div>
+    <div class="tbl-wrap" style="margin-bottom:20px;">
+      <table class="tbl compact">
+        <thead>
+          <tr><th>Palavra-chave</th><th>Correspondência</th><th>Situação</th><th class="num">Invest.</th><th class="num">% verba</th><th class="num">Impr.</th><th class="num">Cliques</th><th class="num">CTR</th><th class="num">Contatos</th><th class="num">Custo/contato</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>cardiologista em salvador</td><td>frase</td><td><span class="th-sub">pausada 28/10 · reativada 03/11</span></td><td class="num">R$ 109,72</td><td class="num">83,9%</td><td class="num">588</td><td class="num">48</td><td class="num">8,16%</td><td class="num">10</td><td class="num">R$ 10,97</td></tr>
+          <tr><td>cardiologistas em salvador</td><td>exata</td><td><span class="th-sub">criada 28/10</span></td><td class="num">R$ 5,12</td><td class="num">3,9%</td><td class="num">6</td><td class="num">2</td><td class="num">33,3%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr><td>cardiologista perto de mim</td><td>frase</td><td><span class="th-sub">pausada 28/10</span></td><td class="num">R$ 3,08</td><td class="num">2,4%</td><td class="num">14</td><td class="num">2</td><td class="num">14,3%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr><td>cardiologista em salvador</td><td>exata</td><td><span class="th-sub">criada 28/10</span></td><td class="num">R$ 2,77</td><td class="num">2,1%</td><td class="num">16</td><td class="num">1</td><td class="num">6,3%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr><td>cardiologista salvador</td><td>exata</td><td><span class="th-sub">criada 28/10</span></td><td class="num">R$ 2,76</td><td class="num">2,1%</td><td class="num">32</td><td class="num">1</td><td class="num">3,1%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr><td>consulta com cardiologista em salvador</td><td>exata</td><td><span class="th-sub">criada 28/10</span></td><td class="num">R$ 2,74</td><td class="num">2,1%</td><td class="num">4</td><td class="num">1</td><td class="num">25,0%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr><td>melhor cardiologista de salvador</td><td>exata</td><td><span class="th-sub">criada 28/10</span></td><td class="num">R$ 2,34</td><td class="num">1,8%</td><td class="num">8</td><td class="num">1</td><td class="num">12,5%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr><td>cardiologista perto de mim</td><td>exata</td><td><span class="th-sub">criada 28/10</span></td><td class="num">R$ 2,18</td><td class="num">1,7%</td><td class="num">14</td><td class="num">2</td><td class="num">14,3%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr><td>cardiologista particular · consulta cardiologica particular</td><td>exata</td><td><span class="th-sub">G2 · ativas</span></td><td class="num">R$ 0,00</td><td class="num">0,0%</td><td class="num">19</td><td class="num">0</td><td class="num">0,0%</td><td class="num">0</td><td class="num">—</td></tr>
+          <tr class="total-row"><td>Total da campanha</td><td></td><td></td><td class="num">R$ 130,71</td><td class="num">100%</td><td class="num">701</td><td class="num">58</td><td class="num">8,27%</td><td class="num">10</td><td class="num">R$ 13,07</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec-title">Termos de busca com maior investimento (o que as pessoas digitaram no Google)</div>
+    <div class="tbl-wrap" style="margin-bottom:16px;">
+      <table class="tbl compact">
+        <thead>
+          <tr><th>Termo de busca</th><th class="num">Invest.</th><th class="num">Impr.</th><th class="num">Cliques</th><th class="num">Contatos</th><th>Leitura</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>cardioprev itaigara</td><td class="num">R$ 9,82</td><td class="num">18</td><td class="num">4</td><td class="num">0</td><td><span class="badge red">Nome de outra clínica — negativado em 28/10</span></td></tr>
+          <tr><td>melhor cardiologista de salvador</td><td class="num">R$ 8,98</td><td class="num">4</td><td class="num">2</td><td class="num">0</td><td><span class="badge amber">Clique caro (R$ 4,49)</span></td></tr>
+          <tr><td>cardiologista salvador</td><td class="num">R$ 8,18</td><td class="num">47</td><td class="num">4</td><td class="num">0</td><td><span class="badge green">Busca direta</span></td></tr>
+          <tr><td>cardioprev pituba parque center</td><td class="num">R$ 4,20</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td><span class="badge red">Nome de outra clínica — negativado em 28/10</span></td></tr>
+          <tr><td>clínica cardiologista em salvador</td><td class="num">R$ 3,36</td><td class="num">1</td><td class="num">2</td><td class="num">0</td><td><span class="badge green">Busca direta</span></td></tr>
+          <tr><td>cardiologista garibaldi salvador</td><td class="num">R$ 3,00</td><td class="num">1</td><td class="num">2</td><td class="num">0</td><td><span class="badge green">Busca por bairro</span></td></tr>
+          <tr><td>clínica de cardiologia em salvador</td><td class="num">R$ 2,77</td><td class="num">8</td><td class="num">1</td><td class="num">0</td><td><span class="badge green">Busca direta</span></td></tr>
+          <tr><td>consulta com cardiologista</td><td class="num">R$ 2,17</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td><span class="badge green">Intenção de consulta</span></td></tr>
+          <tr><td>pro cardiaco salvador</td><td class="num">R$ 1,98</td><td class="num">2</td><td class="num">1</td><td class="num">0</td><td><span class="badge red">Nome de outra clínica — negativado em 28/10</span></td></tr>
+          <tr><td>cardiologista em salvador</td><td class="num">R$ 1,66</td><td class="num">16</td><td class="num">1</td><td class="num">1</td><td><span class="badge green">Busca direta — gerou contato</span></td></tr>
+          <tr><td>cardiologista em itapuã</td><td class="num">R$ 1,60</td><td class="num">1</td><td class="num">1</td><td class="num">0</td><td><span class="badge green">Busca por bairro</span></td></tr>
+        </tbody>
+      </table>
+      <div class="th-note">Os termos acima somam R$ 47,72 (36,5% do investimento), 20 cliques e 1 contato. Os demais R$ 82,99, 38 cliques e 9 contatos vieram de buscas que o Google não detalha por volume baixo (política de privacidade do relatório de termos). Além disso, outras 30 buscas por nomes de clínicas, institutos e médicos concorrentes (Salvacor, Angiocardio, Cardioser, Centrocor, Clinicardio, Fundação Bahiana, hospitais) exibiram o anúncio sem gerar clique.</div>
+    </div>
+
+    <div class="two-col">
+      <div class="insight-box good">
+        <h4>✅ Leitura por anúncio e palavra-chave</h4>
+        <p><b>Melhor custo por contato e maior CTR:</b> G1-B "Acolhimento/cuidado integral" (R$ 10,09 por contato, CTR 10,56%). <b>Maior volume:</b> G1-C "Agendamento facilitado" (40,5% do investimento, 4 contatos). <b>Concentração:</b> a palavra "cardiologista em salvador" em frase respondeu por 83,9% do investimento e pelos 10 contatos do mês; as 7 palavras exatas criadas em 28/10 tiveram 80 impressões e 9 cliques em 2 dias e meio, sem contato ainda. O grupo "Cardiologista particular" quase não tem busca (19 impressões em 5 dias).</p>
+      </div>
+      <div class="insight-box warn">
+        <h4>⚠️ Pontos de atenção</h4>
+        <p>Buscas pelo nome de outras clínicas (Cardioprev, Pró-Cardíaco) consumiram ao menos R$ 16,00 (6 cliques, nenhum contato) antes das 23 negativas de marca de 28/10. O Índice de Qualidade das palavras exatas ainda é baixo (2 a 4, por serem novas), o que encarece o clique nos primeiros dias. 100% do investimento veio de celular (desktop: 48 impressões, nenhum clique) — o site precisa estar impecável na tela do celular.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: DIAGNÓSTICO + O QUE FOI FEITO -->
+  <div class="slide" data-label="Diagnóstico">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Diagnóstico</div>
+      <div class="slide-title">O que foi feito, o que a clínica relatou e o que ajustar</div>
+    </div>
+
+    <div class="sec-title">Linha do tempo</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">22 a 26/10</div>
+        <div class="tl-title">Início da conta</div>
+        <p>Briefing, plano de campanha, verificação da tag de conversão no site (clique no botão de WhatsApp) e estrutura criada: campanha de Pesquisa, 3 grupos, 10 palavras-chave e 119 negativas (planos, convênios, SUS, gratuito, público infantil, outras cidades, sintomas).</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">26/10</div>
+        <div class="tl-title">Campanha no ar</div>
+        <p>6 anúncios responsivos com CRM-BA 28878 e RQE 21960 nos textos, 5 sitelinks, 6 frases de destaque e 1 snippet. R$ 33/dia, segunda a sexta, 7h às 18h, Salvador e Lauro de Freitas. O Google recusou 8 palavras-chave pela política de saúde.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">28/10</div>
+        <div class="tl-title">Negativas de marca + só exata</div>
+        <p>Retorno da clínica: contatos perguntando se era outra clínica ou pedindo plano de saúde. 23 negativas de nomes de clínicas e médicos concorrentes, frase pausada, 9 palavras exatas criadas, teto de CPC de R$ 4,50 para R$ 6,00.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">03/11</div>
+        <div class="tl-title">Recuperar volume</div>
+        <p>Frase reativada com variantes por bairro, grupo novo "Check-up e Prevenção", campanha "Cardiologista Online" (Bahia, R$ 8/dia), Perfil da Empresa no Google vinculado à conta. Detalhes no slide 05.</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="sec-title">✅ O que funcionou</div>
+        <div class="insight-box good">
+          <h4>Custo por contato abaixo da meta desde o primeiro dia</h4>
+          <p>R$ 13,07 por clique no WhatsApp contra a meta de R$ 20 — e R$ 11,28 nos três dias de volume. Com 5 dias de veiculação e R$ 130,71, a conta já tem 10 contatos registrados.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>Anúncios aprovados e com CTR alto</h4>
+          <p>Os 6 anúncios passaram na revisão do Google com o registro profissional nos textos. CTR de 8,27% (benchmark de serviços locais: acima de 1,2%) — quem vê o anúncio clica.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>O filtro de concorrentes funcionou</h4>
+          <p>Depois de 28/10, os termos de busca passaram a ser só diretos ("cardiologista salvador", "consulta com cardiologista", "médico cardiologista"). As buscas por nome de outras clínicas pararam de acionar o anúncio.</p>
+        </div>
+      </div>
+      <div>
+        <div class="sec-title">⚠️ O que ajustar</div>
+        <div class="insight-box bad">
+          <h4>Contato não virou consulta</h4>
+          <p>Pelo retorno da clínica até 03/11: 4 pessoas chegaram ao WhatsApp — 2 procuravam outra instituição (Centro Médico Cardio Pulmonar, Fundação de Cardiologia), 2 pediram informação sobre consulta e nenhuma agendou. Os 10 contatos do relatório são cliques no botão de WhatsApp, não conversas confirmadas; o resultado em consultas está em consolidação.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>O WhatsApp e o site não se apresentam</h4>
+          <p>A mensagem pré-preenchida do botão ("vim pela landing page…") e a resposta automática não dizem "Dra. Júlia Marques", "particular", valor nem endereço — por isso o paciente chega sem saber com quem está falando e pergunta por plano.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>Pouca demanda direta com correspondência exata</h4>
+          <p>De 29 a 30/10 a campanha usou um terço do orçamento (R$ 17,91 em 2 dias): com só termos exatos há 40 a 70 exibições disponíveis por dia. Para gastar os R$ 33/dia com o público certo é preciso ampliar as palavras sem reabrir as buscas por concorrentes — é o que o ajuste de 03/11 faz.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Pendências na conta</h4>
+          <p>Decidir sobre as 8 palavras-chave recusadas pelo Google (pedir isenção da política de saúde ou seguir sem elas); conferir se as 8 palavras do grupo "Check-up e Prevenção" passam na mesma política; criar a extensão de local agora que o Perfil da Empresa está vinculado.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: PLANO DE AÇÃO NOVEMBRO -->
+  <div class="slide" data-label="Plano de Ação">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Próximos Passos</div>
+      <div class="slide-title">Plano de ação — Novembro 2026</div>
+      <div class="slide-desc">Primeiro mês completo da conta. Novembro tem dois feriados (Finados 02/11 e Consciência Negra 20/11); a Black Friday (27/11) não muda a estratégia de uma conta de consulta médica. Com R$ 33/dia de segunda a sexta (21 dias úteis), o investimento previsto é de cerca de R$ 693 — dentro do teto de R$ 1.000.</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="sec-title">Na campanha (ajustes de 03/11, já aplicados)</div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>1. Recuperar o volume sem o público errado</h4>
+          <p>"cardiologista em salvador" e "cardiologista paralela" voltaram em correspondência de frase, agora protegidas pelas 23 negativas de marca, e ganharam variantes por bairro: Pituba, Itaigara, Caminho das Árvores, Patamares, Imbuí, Stiep, Costa Azul, Boca do Rio, Pituaçu e Alphaville. Em 03/11, primeiro dia do ajuste, a campanha voltou a 118 impressões, 8 cliques e 1 contato.</p>
+        </div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>2. Grupo "Check-up e Prevenção"</h4>
+          <p>Novo grupo com 8 palavras-chave de prevenção (check-up cardiológico, avaliação cardiovascular, consulta preventiva, cardiologista preventivo) e 3 anúncios próprios — é o posicionamento da Dra. Júlia e um público que ainda não estava sendo alcançado.</p>
+        </div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>3. Campanha "Cardiologista Online" (teste)</h4>
+          <p>Campanha separada para teleconsulta, cobrindo toda a Bahia, com R$ 8/dia e 7 palavras-chave (cardiologista online, telemedicina, teleconsulta). O orçamento da campanha principal passou de R$ 33 para R$ 25/dia para que o total continue em R$ 33/dia.</p>
+        </div>
+        <div class="insight-box" style="border-left-color:var(--orange);">
+          <h4>4. Revisão dos termos de busca a cada 3 a 4 dias</h4>
+          <p>Acompanhar os termos que acionam a frase reaberta e negativar o que escapar; se as exatas ganharem histórico, o Índice de Qualidade sobe e o clique fica mais barato. Avaliar em 2 semanas o grupo de prevenção e a campanha online (manter, ajustar ou pausar).</p>
+        </div>
+      </div>
+      <div>
+        <div class="sec-title">Fora da campanha (depende da clínica)</div>
+        <div class="insight-box warn">
+          <h4>5. WhatsApp que se apresenta</h4>
+          <p>Link de WhatsApp exclusivo para os anúncios com mensagem pré-preenchida do tipo "Vim pelo Google e quero agendar uma consulta particular com a Dra. Júlia Marques", e resposta automática que identifica o consultório, o CRM, informa que o atendimento é particular, o valor da consulta e o endereço no Alpha Medical Center.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>6. Site com a mensagem certa na tela do celular</h4>
+          <p>Topo do site com "Cardiologista particular em Salvador · Dra. Júlia Marques · Alpha Medical Center (Paralela)", CRM/RQE visíveis, aviso claro de que não atende planos de saúde e ancoragem de valor da consulta. 100% dos cliques vêm de celular.</p>
+        </div>
+        <div class="insight-box warn">
+          <h4>7. Registro de cada contato pela atendente</h4>
+          <p>Para cada pessoa que chega ao WhatsApp: origem, o que perguntou, se pediu plano e se agendou. É o que permite comparar os cliques do relatório com consultas reais e calcular o custo por paciente.</p>
+        </div>
+        <div class="insight-box good">
+          <h4>8. Perfil da Empresa no Google</h4>
+          <p>Vinculado à conta em 03/11: o anúncio passa a mostrar o endereço e o mapa do consultório, e o perfil ajuda a aparecer no bloco de mapas, hoje ocupado só por concorrentes. Falta criar a extensão de local na campanha.</p>
+        </div>
+      </div>
+    </div>
+    <div class="notas">
+      <div class="notas-title">Nota do Gestor</div>
+      <p>Outubro foi a semana de estreia: R$ 130,71 investidos, 58 cliques e 10 contatos a R$ 13,07 — abaixo da meta de R$ 20. O aprendizado mais importante veio da clínica: parte do público chegava procurando outra instituição ou plano de saúde, e nenhum contato virou consulta. Cortamos as buscas por concorrentes e, em 03/11, reabrimos o volume com termos diretos, bairros e um grupo de prevenção. Em novembro o foco é dobrado: dentro da campanha, encher os R$ 33/dia com o público certo; fora dela, fazer o WhatsApp e o site dizerem logo "Dra. Júlia Marques, cardiologista particular" — porque é aí que o contato vira paciente.</p>
+    </div>
+  </div>
+
+</div>
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <div id="nav-center"><div id="slide-label"></div><div id="nav-track"></div></div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</div>
+<script>
+  const slides=document.querySelectorAll('.slide'),slideLabels=Array.from(slides).map(s=>s.dataset.label||''),total=slides.length;
+  let cur=0;
+  const track=document.getElementById('nav-track'),slideLabel=document.getElementById('slide-label'),pb=document.getElementById('progress-bar');
+  slideLabels.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',()=>go(i));track.appendChild(d);});
+  function go(n){slides[cur].classList.remove('active');track.children[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');track.children[cur].classList.add('active');slideLabel.textContent=slideLabels[cur];pb.style.width=((cur+1)/total*100)+'%';}
+  document.getElementById('btn-prev').addEventListener('click',()=>go(cur-1));
+  document.getElementById('btn-next').addEventListener('click',()=>go(cur+1));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);});
+  let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)go(dx<0?cur+1:cur-1);});
+  go(0);
+</script>
+</body>
+</html>
