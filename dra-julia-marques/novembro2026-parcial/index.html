@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Dra. Júlia Marques — Novembro 2026 (Parcial)</title>
+<style>
+  :root{--orange:#FF6B00;--orange-light:#FF8C3A;--orange-pale:#FFF0E6;--dark:#1a1a1a;--gray:#6b7280;--light:#f9fafb;--white:#fff;--border:#e5e7eb;--green:#16a34a;--red:#dc2626;--amber:#d97706;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:#fff;}
+  body{overflow:hidden;}
+  #slides{position:relative;width:100%;height:100vh;overflow:hidden;}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;padding:48px 64px 80px;opacity:0;pointer-events:none;transition:opacity .4s ease;overflow-y:auto;}
+  .slide.active{opacity:1;pointer-events:all;}
+  #progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--orange);transition:width .4s ease;z-index:200;}
+  #nav{position:fixed;bottom:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-top:1px solid var(--border);z-index:100;}
+  .nav-btn{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--border);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--dark);font-size:16px;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .nav-btn:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-pale);}
+  #nav-center{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+  #slide-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--orange);}
+  #nav-track{display:flex;align-items:center;gap:5px;}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .3s;}
+  .dot.active{background:var(--orange);transform:scale(1.6);width:14px;border-radius:3px;}
+  .cover-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;text-align:center;}
+  .cover-badge{background:var(--orange-pale);color:var(--orange);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:28px;}
+  .cover-title{font-size:52px;font-weight:800;color:var(--dark);line-height:1.1;margin-bottom:12px;}
+  .cover-sub{font-size:18px;color:var(--gray);margin-bottom:40px;}
+  .cover-meta{display:flex;gap:32px;justify-content:center;align-items:center;}
+  .cover-meta-item{text-align:center;}
+  .cover-meta-item .val{font-size:28px;font-weight:800;color:var(--orange);}
+  .cover-meta-item .lbl{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+  .cover-divider{width:1px;height:48px;background:var(--border);}
+  .slide-header{width:100%;margin-bottom:24px;flex-shrink:0;}
+  .slide-tag{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+  .slide-title{font-size:28px;font-weight:800;color:var(--dark);line-height:1.15;}
+  .slide-desc{font-size:14px;color:var(--gray);margin-top:6px;}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;width:100%;margin-bottom:20px;flex-shrink:0;}
+  .kpi-row-3{grid-template-columns:repeat(3,1fr);}
+  .kpi{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--orange);}
+  .kpi .k-label{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--gray);margin-bottom:5px;}
+  .kpi .k-val{font-size:22px;font-weight:800;color:var(--dark);line-height:1;}
+  .kpi .k-sub{font-size:11px;color:var(--gray);margin-top:4px;}
+  .kpi .k-delta{font-size:11px;font-weight:600;margin-top:4px;}
+  .kpi .k-delta.up{color:var(--green);}
+  .kpi .k-delta.dn{color:var(--red);}
+  .tbl-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative;}
+  /* Tabelas nunca encolhem: o slide rola em vez de cortar a tabela */
+  .slide .tbl-wrap{flex-shrink:0;}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;}
+  .tbl th{background:var(--dark);color:white;padding:10px 12px;text-align:left;font-weight:600;font-size:12px;}
+  .tbl th:first-child{border-radius:6px 0 0 6px;}
+  .tbl th:last-child{border-radius:0 6px 6px 0;}
+  .tbl td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--dark);vertical-align:middle;}
+  .tbl tr:hover td{background:var(--orange-pale);}
+  .tbl tr:last-child td{border-bottom:none;}
+  .tbl .num{text-align:right;font-variant-numeric:tabular-nums;}
+  .tbl .total-row td{font-weight:700;background:var(--light);}
+  .tbl.compact td{padding:7px 10px;font-size:12px;}
+  .tbl.compact th{padding:8px 10px;font-size:11px;}
+  .th-sub{font-size:11px;color:var(--gray);}
+  .th-note{font-size:11px;color:var(--gray);margin-top:8px;}
+  .badge{display:inline-block;padding:2px 10px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap;}
+  .badge.green{background:#dcfce7;color:var(--green);}
+  .badge.red{background:#fee2e2;color:var(--red);}
+  .badge.amber{background:#fef3c7;color:var(--amber);}
+  .badge.orange{background:var(--orange-pale);color:var(--orange);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;}
+  .insight-box{background:white;border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:14px 18px;margin-bottom:10px;}
+  .insight-box h4{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+  .insight-box p{font-size:13px;color:var(--gray);line-height:1.5;}
+  .insight-box.good{border-left-color:var(--green);}
+  .insight-box.warn{border-left-color:var(--amber);}
+  .insight-box.bad{border-left-color:var(--red);}
+  .notas{width:100%;background:var(--dark);border-radius:8px;padding:14px 18px;margin-top:16px;}
+  .notas .notas-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+  .notas p{font-size:12px;color:#9ca3af;line-height:1.6;}
+  .notas ol,.notas ul{padding-left:16px;margin-top:4px;}
+  .notas li{font-size:12px;color:#9ca3af;line-height:1.7;}
+  .compare-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;margin-bottom:20px;}
+  .compare-col{border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+  .compare-col .cc-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-bottom:10px;}
+  .compare-col .cc-val{font-size:20px;font-weight:800;color:var(--dark);}
+  .compare-col .cc-label{font-size:11px;color:var(--gray);margin-top:2px;}
+  .compare-col.highlight{background:var(--orange-pale);border-color:var(--orange);}
+  .timeline{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+  .tl-item{border:1px solid var(--border);border-radius:10px;padding:12px 14px;background:white;}
+  .tl-item .tl-date{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+  .tl-item .tl-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+  .tl-item p{font-size:12px;color:var(--gray);line-height:1.5;}
+  .sec-title{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px;}
+  .slide > * { flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="slides">
+  <div class="slide active" data-label="Novembro 2026">
+    <div class="cover-wrap">
+      <div class="cover-badge">Google Ads · Novembro 2026 · Parcial (01 a 22/11)</div>
+      <div class="cover-title">Dra. Júlia Marques</div>
+      <div class="cover-sub">Cardiologista · Alpha Medical Center (Alphaville) · Salvador – BA</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item"><div class="val">R$ 872,24</div><div class="lbl">Investido (01–22/11)</div></div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item"><div class="val">36</div><div class="lbl">Contatos (cliques no WhatsApp)</div></div>
+        <div class="cover-divider"></div>
+        <div class="cover-meta-item"><div class="val">R$ 24,23</div><div class="lbl">Custo por contato</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide" data-label="Visão Geral">
+    <div class="slide-header">
+      <div class="slide-tag">01 · Novembro 2026 (parcial)</div>
+      <div class="slide-title">Três semanas de campanha: mais alcance, e agora o desafio é a conversão em consulta</div>
+      <div class="slide-desc">Dados reais — Google Ads API, conta 299-262-6137, de 01 a 22/11 (o mês ainda está em curso; o fechamento oficial sai em dezembro). Duas campanhas ativas: Cardiologia-Salvador (presencial) e Cardiologista-Online (teleconsulta). A campanha de Prevenção/Check-up foi pausada após 36 exibições.</div>
+    </div>
+    <div class="kpi-row"><div class="kpi"><div class="k-label">Investimento</div><div class="k-val">R$ 872,24</div><div class="k-sub">48,5% da verba mensal de R$ 1.800</div><div class="k-delta">R$ 39,65 por dia no mês · R$ 52,31 por dia na última semana</div></div><div class="kpi"><div class="k-label">Contatos (conversões)</div><div class="k-val">36</div><div class="k-sub">Cliques no botão de WhatsApp do site</div><div class="k-delta">Presencial 28 · Online 8</div></div><div class="kpi"><div class="k-label">Custo por contato</div><div class="k-val">R$ 24,23</div><div class="k-sub">Meta: R$ 20,00 por conversa</div><div class="k-delta">⚠ 21% acima da meta no mês · semanas 2 e 3 em ~R$ 21</div></div><div class="kpi"><div class="k-label">CTR</div><div class="k-val">5,86%</div><div class="k-sub">411 cliques em 7.017 impressões</div><div class="k-delta up">↑ Acima do benchmark de serviços locais (&gt;1,2%)</div></div>
+    </div>
+    <div class="kpi-row kpi-row-3"><div class="kpi"><div class="k-label">Cliques</div><div class="k-val">411</div><div class="k-sub">CPC médio: R$ 2,12 · 96% em celular na campanha presencial</div></div><div class="kpi"><div class="k-label">Participação nos leilões (presencial)</div><div class="k-val">32,5%</div><div class="k-sub">60,0% das exibições possíveis perdidas por orçamento · 7,6% por classificação</div></div><div class="kpi"><div class="k-label">Taxa clique → contato</div><div class="k-val">8,8%</div><div class="k-sub">36 contatos / 411 cliques</div></div>
+    </div>
+    <div class="notas">
+      <div class="notas-title">Nota do Gestor</div>
+      <p>O volume de novembro está bem acima de outubro (411 cliques contra 58) e o custo por contato caiu de R$ 56 na primeira semana para cerca de R$ 21 nas semanas 2 e 3, perto da meta. O ponto de atenção é outro: segundo a clínica, <b>nenhum desses contatos virou consulta realizada</b>. Há procura (valor, localização, horários) e chegamos até o agendamento, mas há desistências e cancelamentos. Por isso, o foco deixa de ser "mais cliques" e passa a ser "o clique certo, na hora em que há alguém para atender". O diagnóstico e as ações estão nos slides 04 e 05. Obs.: não há registro de gasto em 22/11 na API até o momento da coleta.</p>
+    </div>
+  </div>
+
+  <div class="slide" data-label="Evolução">
+    <div class="slide-header">
+      <div class="slide-tag">02 · Evolução</div>
+      <div class="slide-title">Semana a semana e dia a dia</div>
+      <div class="slide-desc">Soma das campanhas por semana, e o dia a dia da campanha principal (Cardiologia-Salvador), que concentra 87% do investimento. Dias sem linha (01, 07, 08 e 22/11) não tiveram entrega registrada.</div>
+    </div>
+    <div class="sec-title">Por semana (todas as campanhas)</div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl"><thead><tr><th>Semana</th><th class="num">Invest.</th><th class="num">Impressões</th><th class="num">Cliques</th><th class="num">Contatos</th><th class="num">Custo/contato</th><th>Contexto</th></tr></thead><tbody><tr><td>01 a 08/11</td><td class="num">R$ 168,45</td><td class="num">1.685</td><td class="num">89</td><td class="num">3</td><td class="num">R$ 56,15</td><td><span class="badge red">Início lento: 7 a 8/11 sem entrega</span></td></tr><tr><td>09 a 15/11</td><td class="num">R$ 337,62</td><td class="num">2.850</td><td class="num">156</td><td class="num">16</td><td class="num">R$ 21,10</td><td><span class="badge green">Horário aberto + verba ↑ + negativas</span></td></tr><tr><td>16 a 22/11</td><td class="num">R$ 366,17</td><td class="num">2.482</td><td class="num">166</td><td class="num">17</td><td class="num">R$ 21,54</td><td><span class="badge amber">Pico em 16/11: 9 contatos</span></td></tr><tr class="total-row"><td>Total</td><td class="num">R$ 872,24</td><td class="num">7.017</td><td class="num">411</td><td class="num">36</td><td class="num">R$ 24,23</td><td><span class="badge amber">Meta R$ 20</span></td></tr></tbody></table></div><div class="sec-title">Dia a dia — Cardiologia-Salvador</div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl compact"><thead><tr><th>Dia</th><th class="num">Invest.</th><th class="num">Impressões</th><th class="num">Cliques</th><th class="num">CTR</th><th class="num">Contatos</th><th class="num">Custo/contato</th><th>Leitura</th></tr></thead><tbody><tr><td>02/11 (seg)</td><td class="num">R$ 9,46</td><td class="num">25</td><td class="num">2</td><td class="num">8,00%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>03/11 (ter)</td><td class="num">R$ 36,22</td><td class="num">133</td><td class="num">10</td><td class="num">7,52%</td><td class="num">1</td><td class="num">R$ 36,22</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>04/11 (qua)</td><td class="num">R$ 33,83</td><td class="num">583</td><td class="num">24</td><td class="num">4,12%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>05/11 (qui)</td><td class="num">R$ 34,56</td><td class="num">585</td><td class="num">28</td><td class="num">4,79%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>06/11 (sex)</td><td class="num">R$ 36,36</td><td class="num">320</td><td class="num">21</td><td class="num">6,56%</td><td class="num">1</td><td class="num">R$ 36,36</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>09/11 (seg)</td><td class="num">R$ 30,03</td><td class="num">402</td><td class="num">21</td><td class="num">5,22%</td><td class="num">2</td><td class="num">R$ 15,02</td><td><span class="badge green">Dentro da meta</span></td></tr><tr><td>10/11 (ter)</td><td class="num">R$ 36,70</td><td class="num">223</td><td class="num">16</td><td class="num">7,17%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>11/11 (qua)</td><td class="num">R$ 59,43</td><td class="num">528</td><td class="num">27</td><td class="num">5,11%</td><td class="num">2</td><td class="num">R$ 29,71</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>12/11 (qui)</td><td class="num">R$ 51,76</td><td class="num">478</td><td class="num">29</td><td class="num">6,07%</td><td class="num">2</td><td class="num">R$ 25,88</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>13/11 (sex)</td><td class="num">R$ 51,85</td><td class="num">502</td><td class="num">25</td><td class="num">4,98%</td><td class="num">6</td><td class="num">R$ 8,64</td><td><span class="badge green">Dentro da meta</span></td></tr><tr><td>14/11 (sáb)</td><td class="num">R$ 22,09</td><td class="num">249</td><td class="num">11</td><td class="num">4,42%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>15/11 (dom)</td><td class="num">R$ 29,98</td><td class="num">328</td><td class="num">14</td><td class="num">4,27%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>16/11 (seg)</td><td class="num">R$ 96,73</td><td class="num">729</td><td class="num">41</td><td class="num">5,62%</td><td class="num">9</td><td class="num">R$ 10,75</td><td><span class="badge green">Dentro da meta</span></td></tr><tr><td>17/11 (ter)</td><td class="num">R$ 53,88</td><td class="num">534</td><td class="num">29</td><td class="num">5,43%</td><td class="num">2</td><td class="num">R$ 26,94</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>18/11 (qua)</td><td class="num">R$ 54,97</td><td class="num">331</td><td class="num">32</td><td class="num">9,67%</td><td class="num">2</td><td class="num">R$ 27,48</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>19/11 (qui)</td><td class="num">R$ 48,90</td><td class="num">378</td><td class="num">29</td><td class="num">7,67%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>20/11 (sex)</td><td class="num">R$ 20,93</td><td class="num">236</td><td class="num">11</td><td class="num">4,66%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>21/11 (sáb)</td><td class="num">R$ 47,95</td><td class="num">170</td><td class="num">16</td><td class="num">9,41%</td><td class="num">1</td><td class="num">R$ 47,95</td><td><span class="badge amber">Acima da meta</span></td></tr><tr class="total-row"><td>Total (18 dias com entrega)</td><td class="num">R$ 755,63</td><td class="num">6.734</td><td class="num">386</td><td class="num">5,73%</td><td class="num">28</td><td class="num">R$ 26,99</td><td><span class="badge amber">Meta R$ 20</span></td></tr></tbody></table></div>
+    <div class="insight-box good"><h4>✅ O que funcionou</h4><p>A abertura do horário (09/11), o aumento gradual de verba (R$ 25 → R$ 30 → R$ 36 → R$ 50 por dia) e as negativas de exames derrubaram o custo por contato de R$ 56 para ~R$ 21 e multiplicaram o volume por 4 entre a primeira e a terceira semana.</p></div>
+    <div class="insight-box warn"><h4>⚠️ O que ainda oscila</h4><p>Os contatos se concentram em poucos dias (16/11 sozinho teve 9 de 28). Em dias como 19 e 20/11 gastamos R$ 70 sem nenhum contato. A média é boa, a regularidade não.</p></div>
+  </div>
+
+  <div class="slide" data-label="Campanhas e Buscas">
+    <div class="slide-header">
+      <div class="slide-tag">03 · Estrutura</div>
+      <div class="slide-title">Por campanha, palavra-chave e termo de busca</div>
+      <div class="slide-desc">A campanha Online é a mais barata por contato e a presencial concentra o volume. Dentro da presencial, a mesma palavra "cardiologista salvador" rende R$ 19,89 por contato em correspondência exata e R$ 49,44 em correspondência de frase: a frase traz mais gente, mas parte dela procura outro profissional.</div>
+    </div>
+    <div class="sec-title">Campanhas</div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl compact"><thead><tr><th>Campanha</th><th class="num">Invest.</th><th class="num">% da verba</th><th class="num">Impr.</th><th class="num">Cliques</th><th class="num">CTR</th><th class="num">Contatos</th><th class="num">Custo/contato</th><th>Status vs meta</th></tr></thead><tbody><tr><td>Cardiologia-Salvador (presencial)</td><td class="num">R$ 755,63</td><td class="num">86,6%</td><td class="num">6.734</td><td class="num">386</td><td class="num">5,73%</td><td class="num">28</td><td class="num">R$ 26,99</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>Cardiologista-Online (teleconsulta)</td><td class="num">R$ 112,35</td><td class="num">12,9%</td><td class="num">247</td><td class="num">23</td><td class="num">9,31%</td><td class="num">8</td><td class="num">R$ 14,04</td><td><span class="badge green">Melhor custo</span></td></tr><tr><td>Prevenção/Check-up (pausada)</td><td class="num">R$ 4,26</td><td class="num">0,5%</td><td class="num">36</td><td class="num">2</td><td class="num">5,56%</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Pausada: pouca demanda</span></td></tr><tr class="total-row"><td>Total</td><td class="num">R$ 872,24</td><td class="num">100%</td><td class="num">7.017</td><td class="num">411</td><td class="num">5,86%</td><td class="num">36</td><td class="num">R$ 24,23</td><td><span class="badge amber">Meta R$ 20</span></td></tr></tbody></table></div><div class="sec-title">Palavras-chave com maior investimento</div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl compact"><thead><tr><th>Palavra-chave</th><th class="num">Invest.</th><th class="num">Cliques</th><th class="num">Contatos</th><th class="num">Custo/contato</th><th>Status vs meta</th></tr></thead><tbody><tr><td>cardiologista salvador (frase)</td><td class="num">R$ 444,99</td><td class="num">216</td><td class="num">9</td><td class="num">R$ 49,44</td><td><span class="badge red">2,5× a meta</span></td></tr><tr><td>cardiologista salvador (exata)</td><td class="num">R$ 69,62</td><td class="num">36</td><td class="num">3,5</td><td class="num">R$ 19,89</td><td><span class="badge green">Dentro da meta</span></td></tr><tr><td>cardiologista pituba</td><td class="num">R$ 39,03</td><td class="num">21</td><td class="num">4</td><td class="num">R$ 9,76</td><td><span class="badge green">Melhor custo</span></td></tr><tr><td>cardiologista online (Online)</td><td class="num">R$ 37,49</td><td class="num">8</td><td class="num">2</td><td class="num">R$ 18,75</td><td><span class="badge green">Dentro da meta</span></td></tr><tr><td>cardiologista telemedicina (Online)</td><td class="num">R$ 32,93</td><td class="num">6</td><td class="num">2</td><td class="num">R$ 16,47</td><td><span class="badge green">Dentro da meta</span></td></tr><tr><td>cardiologista perto de mim</td><td class="num">R$ 26,57</td><td class="num">14</td><td class="num">1</td><td class="num">R$ 26,57</td><td><span class="badge amber">Acima da meta</span></td></tr><tr><td>cardiologista em salvador (frase)</td><td class="num">R$ 21,63</td><td class="num">12</td><td class="num">3</td><td class="num">R$ 7,21</td><td><span class="badge green">Melhor custo</span></td></tr><tr><td>consulta cardiologista online (Online)</td><td class="num">R$ 21,47</td><td class="num">5</td><td class="num">3</td><td class="num">R$ 7,16</td><td><span class="badge green">Melhor custo</span></td></tr><tr><td>cardiologistas em salvador (exata)</td><td class="num">R$ 21,24</td><td class="num">9</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Sem contato</span></td></tr><tr><td>cardiologista em salvador (exata)</td><td class="num">R$ 17,62</td><td class="num">9</td><td class="num">2</td><td class="num">R$ 8,81</td><td><span class="badge green">Dentro da meta</span></td></tr><tr><td>avaliação cardiológica (grupo pausado)</td><td class="num">R$ 59,92</td><td class="num">39</td><td class="num">1</td><td class="num">R$ 59,92</td><td><span class="badge red">Pausado</span></td></tr></tbody></table></div><div class="sec-title">Termos de busca que mais custaram</div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl compact"><thead><tr><th>Termo digitado</th><th class="num">Invest.</th><th class="num">Cliques</th><th class="num">Contatos</th><th>Leitura</th></tr></thead><tbody><tr><td>cardiologista salvador</td><td class="num">R$ 57,14</td><td class="num">30</td><td class="num">2</td><td><span class="badge green">Busca direta</span></td></tr><tr><td>pro cardiaco salvador</td><td class="num">R$ 18,15</td><td class="num">9</td><td class="num">1</td><td><span class="badge red">Nome de outra instituição</span></td></tr><tr><td>telecardio (Online)</td><td class="num">R$ 17,23</td><td class="num">3</td><td class="num">0</td><td><span class="badge red">Nome de outra empresa</span></td></tr><tr><td>cardiologista em salvador</td><td class="num">R$ 15,74</td><td class="num">8</td><td class="num">2</td><td><span class="badge green">Busca direta</span></td></tr><tr><td>cardiologista telemedicina</td><td class="num">R$ 9,70</td><td class="num">2</td><td class="num">2</td><td><span class="badge green">Busca direta</span></td></tr><tr><td>clínicas de cardiologia salvador</td><td class="num">R$ 8,54</td><td class="num">5</td><td class="num">0</td><td><span class="badge amber">Procura clínica, não médico</span></td></tr><tr><td>cardiologista (genérica)</td><td class="num">R$ 7,56</td><td class="num">4</td><td class="num">0</td><td><span class="badge amber">Sem cidade</span></td></tr><tr><td>check cardio lauro de freitas</td><td class="num">R$ 7,35</td><td class="num">2</td><td class="num">0</td><td><span class="badge red">Outra clínica</span></td></tr><tr><td>clínica cardiológica da pituba</td><td class="num">R$ 6,14</td><td class="num">4</td><td class="num">0</td><td><span class="badge amber">Procura clínica</span></td></tr></tbody></table></div>
+    <div class="insight-box warn"><h4>⚠️ Buscas por nome de outro médico ou clínica</h4><p>Nos termos que o Google reporta, ao menos R$ 70 na campanha presencial e R$ 23 na Online (cerca de 11% do investimento) foram para buscas pelo nome de outros médicos, institutos e empresas de telecardiologia, com 1 contato no total. Esse público compara preço e some, que é exatamente o comportamento descrito pela atendente.</p></div>
+  </div>
+
+  <div class="slide" data-label="Diagnóstico">
+    <div class="slide-header">
+      <div class="slide-tag">04 · Diagnóstico</div>
+      <div class="slide-title">Por que o contato não está virando consulta</div>
+      <div class="slide-desc">A clínica relatou procura por valores, localização e horários, avanço até o agendamento e desistências e cancelamentos, inclusive na confirmação, sem consultas realizadas até agora. Cruzamos o relato com os dados da conta; as hipóteses abaixo estão ordenadas pela evidência.</div>
+    </div>
+    <div class="sec-title">1. Quando o contato chega, não há ninguém para atender</div>
+    <div class="insight-box"><p>A secretária atende de 8h às 17h, mas os anúncios veiculam das 6h às 22h, todos os dias. Entre 6h–7h e 17h–18h foram R$ 134 e 64 cliques sem nenhum contato; os contatos das 19h–21h e dos fins de semana só são respondidos no dia seguinte, e é aí que o paciente "deixa de responder". A melhor faixa é 8h–12h: R$ 19,22 por contato e 68% de todos os contatos.</p></div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl compact"><thead><tr><th>Faixa de horário</th><th class="num">Invest.</th><th class="num">Cliques</th><th class="num">Contatos</th><th class="num">Custo/contato</th><th>Leitura</th></tr></thead><tbody><tr><td>6h–7h</td><td class="num">R$ 61,70</td><td class="num">30</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Clínica fechada</span></td></tr><tr><td>8h–12h</td><td class="num">R$ 365,23</td><td class="num">184</td><td class="num">19</td><td class="num">R$ 19,22</td><td><span class="badge green">Melhor faixa</span></td></tr><tr><td>13h–16h</td><td class="num">R$ 198,74</td><td class="num">111</td><td class="num">5</td><td class="num">R$ 39,75</td><td><span class="badge amber">Contato esfria</span></td></tr><tr><td>17h–18h</td><td class="num">R$ 72,42</td><td class="num">34</td><td class="num">0</td><td class="num">—</td><td><span class="badge red">Fim do expediente</span></td></tr><tr><td>19h–21h</td><td class="num">R$ 57,54</td><td class="num">27</td><td class="num">4</td><td class="num">R$ 14,39</td><td><span class="badge amber">Contato sem resposta até o dia seguinte</span></td></tr><tr class="total-row"><td>Total</td><td class="num">R$ 755,63</td><td class="num">386</td><td class="num">28</td><td class="num">R$ 26,99</td><td><span class="badge amber">Meta R$ 20</span></td></tr></tbody></table></div><div class="sec-title">Por dia da semana (campanha presencial)</div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl compact"><thead><tr><th>Dia</th><th class="num">Invest.</th><th class="num">Cliques</th><th class="num">Contatos</th><th>Custo/contato</th></tr></thead><tbody><tr><td>Segunda</td><td class="num">R$ 136,22</td><td class="num">64</td><td class="num">11</td><td class="num">R$ 12,38</td></tr><tr><td>Terça</td><td class="num">R$ 126,80</td><td class="num">55</td><td class="num">3</td><td class="num">R$ 42,27</td></tr><tr><td>Quarta</td><td class="num">R$ 148,23</td><td class="num">83</td><td class="num">4</td><td class="num">R$ 37,06</td></tr><tr><td>Quinta</td><td class="num">R$ 135,22</td><td class="num">86</td><td class="num">2</td><td class="num">R$ 67,61</td></tr><tr><td>Sexta</td><td class="num">R$ 109,14</td><td class="num">57</td><td class="num">7</td><td class="num">R$ 15,59</td></tr><tr><td>Sábado</td><td class="num">R$ 70,04</td><td class="num">27</td><td class="num">1</td><td class="num">R$ 70,04</td></tr><tr><td>Domingo</td><td class="num">R$ 29,98</td><td class="num">14</td><td class="num">0</td><td class="num">—</td></tr></tbody></table></div>
+    <div class="sec-title">2. Parte do tráfego está comparando, não decidindo</div>
+    <div class="insight-box"><p>A busca "cardiologista salvador" em correspondência de frase responde por 59% do gasto e casa com buscas pelo nome de outros profissionais e instituições (slide 03). Quem pesquisa um nome específico pergunta valor e some. Em correspondência exata, a mesma palavra converte dentro da meta.</p></div>
+    <div class="sec-title">3. Distância</div>
+    <div class="insight-box"><p>A campanha cobre Salvador e Lauro de Freitas inteiros, e a clínica fica no Alpha Medical Center (Paralela). Pacientes de bairros distantes leem o endereço quando recebem o horário e desistem. A API não mostra a origem por bairro, então vamos pedir à atendente o bairro de quem desistiu para decidir se restringimos o raio ou se reduzimos o lance nas regiões mais afastadas. A campanha Online (R$ 14,04 por contato) não sofre desse problema.</p></div>
+    <div class="sec-title">4. O contato não mede o agendamento</div>
+    <div class="insight-box"><p>O que medimos é o clique no botão de WhatsApp. Ele é o melhor sinal que temos no Google, mas ainda não diz se a pessoa quer consulta particular, plano ou apenas informação. Para saber onde exatamente se perde, o ideal é a atendente registrar por contato: veio do Google, perguntou plano ou valor, recebeu horário, agendou, compareceu.</p></div>
+  </div>
+
+  <div class="slide" data-label="Plano de Ação">
+    <div class="slide-header">
+      <div class="slide-tag">05 · Próximos Passos</div>
+      <div class="slide-title">Plano de ação até o fechamento de novembro</div>
+      <div class="slide-desc">Verba do mês: R$ 1.800. Investido até 22/11: R$ 872,24. Mantido o ritmo atual (R$ 50 a R$ 58 por dia), o fechamento fica em torno de R$ 1.250 a R$ 1.350, dentro do teto. Nenhuma das ações abaixo foi aplicada na conta ainda.</div>
+    </div><div class="tbl-wrap" style="margin-bottom:20px;"><table class="tbl compact"><thead><tr><th>Ação</th><th class="num">O que será feito</th><th class="num">Efeito esperado</th><th>Status</th></tr></thead><tbody><tr><td>Negativar nomes de outros médicos, clínicas e empresas</td><td class="num">28 negativas (frase) nas campanhas presencial e Online</td><td class="num">Corta ~11% do gasto sem retorno</td><td><span class="badge orange">Aguardando aprovação</span></td></tr><tr><td>Ampliar alcance com buscas de decisão</td><td class="num">12 palavras novas no grupo "Cardiologista Particular": agendar / marcar consulta, cardiologista para hoje, urgente, médica mulher, risco cirúrgico e avaliação pré-operatória</td><td class="num">Mais volume com intenção de consulta particular</td><td><span class="badge orange">Aguardando aprovação</span></td></tr><tr><td>Alinhar o horário ao atendimento</td><td class="num">Segunda a sexta 7h–18h e sábado 8h–12h (hoje 6h–22h todos os dias); verba concentrada onde há resposta</td><td class="num">Menos contato sem resposta</td><td><span class="badge orange">Aguardando aprovação</span></td></tr><tr><td>Ganhar posição na campanha Online</td><td class="num">Subir o lance máximo: perde 43% das exibições por classificação e é o canal mais barato</td><td class="num">Mais contatos a ~R$ 14</td><td><span class="badge orange">Aguardando aprovação</span></td></tr><tr><td>Revisar a distância</td><td class="num">Cruzar o bairro dos pacientes que desistiram com a região de veiculação</td><td class="num">Decidir raio ou ajuste de lance</td><td><span class="badge amber">Depende da clínica</span></td></tr><tr><td>Medir até a consulta</td><td class="num">Planilha da atendente: origem, plano ou particular, recebeu horário, agendou, compareceu</td><td class="num">Custo por consulta realizada</td><td><span class="badge amber">Depende da clínica</span></td></tr></tbody></table></div>
+    <div class="insight-box good"><h4>Do lado da clínica</h4><p>Pedimos três coisas: (1) responder o WhatsApp rapidamente dentro do horário e informar com clareza que o atendimento é particular, o valor e o endereço já na primeira mensagem; (2) registrar bairro e motivo da desistência em cada paciente que não compareceu; (3) trocar os 4 botões do site que ainda usam o link antigo de WhatsApp pelo link novo com a mensagem "vim pelo Google", para identificarmos a origem.</p></div>
+    <div class="notas"><div class="notas-title">Nota do Gestor</div>
+      <p>Novembro mostrou que a conta entrega volume e já chega perto da meta de custo por contato. O que falta para virar consulta está em duas frentes: tirar da campanha o público que só compara e ajustar horário, e tornar o atendimento da clínica mais rápido e mais claro. Reavaliamos com os dados completos no fechamento de novembro (relatório oficial de dezembro).</p></div>
+  </div>
+</div>
+</div>
+<div id="nav">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <div id="nav-center"><div id="slide-label"></div><div id="nav-track"></div></div>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</div>
+<script>
+  const slides=document.querySelectorAll('.slide'),slideLabels=Array.from(slides).map(s=>s.dataset.label||''),total=slides.length;
+  let cur=0;
+  const track=document.getElementById('nav-track'),slideLabel=document.getElementById('slide-label'),pb=document.getElementById('progress-bar');
+  slideLabels.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',()=>go(i));track.appendChild(d);});
+  function go(n){slides[cur].classList.remove('active');track.children[cur].classList.remove('active');cur=(n+total)%total;slides[cur].classList.add('active');track.children[cur].classList.add('active');slideLabel.textContent=slideLabels[cur];pb.style.width=((cur+1)/total*100)+'%';}
+  document.getElementById('btn-prev').addEventListener('click',()=>go(cur-1));
+  document.getElementById('btn-next').addEventListener('click',()=>go(cur+1));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')go(cur+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);});
+  let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)go(dx<0?cur+1:cur-1);});
+  go(0);
+</script>
+</body>
+</html>
